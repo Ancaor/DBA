@@ -22,9 +22,11 @@ public class GugleCar {
         AgentsConnection.connect("isg2.ugr.es",6000,"Keid","Cancer","Kipling",false);
         
         Agent pepe = new AgentCar(new AgentID("PEPE"));
-        Agent hablador = new AgentHablador(new AgentID("a"));
+        //Agent hablador = new AgentHablador(new AgentID("a"));
+        Agent GPS = new AgentGPS(new AgentID("GPS"), "PEPE");
         pepe.start();
-        hablador.start();
+        //hablador.start();
+        GPS.start();
     }
     
 }
