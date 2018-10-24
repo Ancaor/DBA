@@ -82,7 +82,7 @@ public class AgentBattery extends Agent{
             this.sendMessage(new AgentID(Car_ID), "true");
         }
         else{
-            this.sendMessage(new AgentID(Car_ID), "true");
+            this.sendMessage(new AgentID(Car_ID), "false");
         }
         
         state = IDLE;
