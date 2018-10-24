@@ -19,10 +19,10 @@ public class AgentHablador extends Agent{
     
     @Override
     public void execute(){
-        while(true){
+     
         String msg = "Hola que tal";
         this.sendMessage(new AgentID("PEPE"), msg);
         //System.out.print(msg);
         }
-    }
+    
 }

@@ -13,18 +13,21 @@ import es.upv.dsic.gti_ia.core.AgentsConnection;
  * @author Anton
  */
 public class GugleCar {
+    
+    private static final AgentID SERVER_AGENT = new AgentID("Keid");
+    private static final AgentID CAR_AGENT = new AgentID("Pepe1");
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
-        AgentsConnection.connect("isg2.ugr.es",6000,"Keid","Cancer","Kipling",false);
+        AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
         
-        Agent pepe = new AgentCar(new AgentID("PEPE"));
-        Agent hablador = new AgentHablador(new AgentID("a"));
+        Agent pepe = new AgentCar(CAR_AGENT,SERVER_AGENT);
+       // Agent hablador = new AgentHablador(new AgentID("a"));
         pepe.start();
-        hablador.start();
+       // hablador.start();
     }
     
 }
