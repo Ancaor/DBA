@@ -16,6 +16,7 @@ import es.upv.dsic.gti_ia.core.AgentID;
 public class AgentGPS extends Agent{
     
     String Car_ID;
+    String Explorer_ID;
     
     private int x;
     private int y;
@@ -30,16 +31,16 @@ public class AgentGPS extends Agent{
     private final static int PROCESS_DATA = 2;
     private final static int UPDATE_MAP = 3;
     private final static int WAIT_CONFIRM = 4;
-    private final static int WARN_RADAR = 5;
-    private final static int FINISH = 6;
+    private final static int FINISH = 5;
     
     
     
     
     
-    public AgentGPS(AgentID aid, String car) throws Exception {
+    public AgentGPS(AgentID aid, String car, String explorer) throws Exception {
         super(aid);
         Car_ID = car;
+        Explorer_ID = explorer;
     }
     
     
@@ -51,7 +52,8 @@ public class AgentGPS extends Agent{
         state = IDLE;
         msg = "\nGPS: Wake_up\n";
         
-        this.sendMessage(new AgentID(Car_ID), msg);
+        //this.sendMessage(new AgentID(Car_ID), msg);
+
     }
     
     /*
@@ -61,9 +63,12 @@ public class AgentGPS extends Agent{
     
         //msg = this.receiveMessage();
         
+        int x_random = (int) (Math.random() * 100) + 1;
+        int y_random = (int) (Math.random() * 100) + 1;
+        
         msgJson = new JsonObject();
-        msgJson.add("x", 32);
-        msgJson.add("y", 5);
+        msgJson.add("x", x_random);
+        msgJson.add("y", y_random);
         
         msg = msgJson.toString();
         
@@ -73,7 +78,7 @@ public class AgentGPS extends Agent{
         else{
             state = PROCESS_DATA;
         }
-        
+       
     }
     
     /*
@@ -88,9 +93,8 @@ public class AgentGPS extends Agent{
         
         
         state = UPDATE_MAP;
-        msg = "GPS: x = " +x+"\ty = "+y+"\n";
         
-        this.sendMessage(new AgentID(Car_ID), msg);
+        //this.sendMessage(new AgentID(Car_ID), msg);
     }
     
     
@@ -100,38 +104,20 @@ public class AgentGPS extends Agent{
    
     private void UPDATE_MAP(){
     
-        state = WAIT_CONFIRM;
-        msg = "GPS: Update_Map\n";
-        
-        this.sendMessage(new AgentID(Car_ID), msg);
-    }
-    
-    /*
-        Espero respuesta del agente del mapa.
-    */
-    private void WAIT_CONFIRM(){
-    
-        state = WARN_RADAR;
-        msg = "GPS: Wait_Confirm\n";
-        
-        this.sendMessage(new AgentID(Car_ID), msg);
-    }
-    
-    /*
-        Enviar mensaje al agente del radar.
-    */
-    private void WARN_RADAR(){
-    
         state = IDLE;
-        msg = "GPS: Warn_Radar\n";
+        this.sendMessage(new AgentID(Explorer_ID), msg);
+        if(x == 90)
+            state = FINISH;
         
-        this.sendMessage(new AgentID(Car_ID), msg);
     }
+
     
     private void FINISH(){
     
         end = true;
         
+        msg = "FINISH";
+        this.sendMessage(new AgentID(Explorer_ID), msg);
         msg = "\nEl GPS ha finalizado su ejecución.\n";
         this.sendMessage(new AgentID(Car_ID), msg);
     }
@@ -154,10 +140,7 @@ public class AgentGPS extends Agent{
                     UPDATE_MAP();
                     break;
                 case WAIT_CONFIRM: 
-                    WAIT_CONFIRM();
-                    break;
-                case WARN_RADAR: 
-                    WARN_RADAR();
+                    //WAIT_CONFIRM();
                     break;
                 case FINISH:
                     FINISH();

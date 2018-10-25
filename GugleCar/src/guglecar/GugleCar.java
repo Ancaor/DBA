@@ -21,12 +21,14 @@ public class GugleCar {
         // TODO code application logic here
         AgentsConnection.connect("isg2.ugr.es",6000,"Keid","Cancer","Kipling",false);
         
-        Agent pepe = new AgentCar(new AgentID("PEPE"));
+        Agent pepe = new AgentCar(new AgentID("PEPe"));
         //Agent hablador = new AgentHablador(new AgentID("a"));
-        Agent GPS = new AgentGPS(new AgentID("GPS"), "PEPE");
+        Agent explorer = new AgentExplorer(new AgentID("explorer"), "GPs", "PEPe");
+        Agent GPS = new AgentGPS(new AgentID("GPs"), "PEPe", "explorer");
         pepe.start();
         //hablador.start();
         GPS.start();
+        explorer.start();
     }
     
 }
