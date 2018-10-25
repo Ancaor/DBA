@@ -25,10 +25,12 @@ public class GugleCar {
         //Agent hablador = new AgentHablador(new AgentID("a"));
         Agent explorer = new AgentExplorer(new AgentID("explorer"), "GPs", "PEPe");
         Agent GPS = new AgentGPS(new AgentID("GPs"), "PEPe", "explorer");
+        Agent radar = new AgentRadar(new AgentID("radar"), "PEPe", "explorer");
         pepe.start();
         //hablador.start();
-        GPS.start();
+        //GPS.start();
         explorer.start();
+        radar.start();
     }
     
 }
