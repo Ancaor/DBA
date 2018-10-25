@@ -15,7 +15,7 @@ import es.upv.dsic.gti_ia.core.AgentsConnection;
 public class GugleCar {
     
     private static final AgentID SERVER_AGENT = new AgentID("Keid");
-    private static final AgentID CAR_AGENT = new AgentID("Pepe1");
+    private static final AgentID CAR_AGENT = new AgentID("JUANETE1");
 
     /**
      * @param args the command line arguments
