@@ -24,10 +24,9 @@ public class GugleCar {
         // TODO code application logic here
         AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
         
-        Agent pepe = new AgentCar(CAR_AGENT,SERVER_AGENT);
-       // Agent hablador = new AgentHablador(new AgentID("a"));
-        pepe.start();
-       // hablador.start();
+        
+        Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
+        Car.start();
     }
     
 }

@@ -9,7 +9,7 @@ import es.upv.dsic.gti_ia.core.AgentID;
  * @author Ruben
  */
 public class AgentBattery extends Agent{
-    String Car_ID;
+    AgentID Car_ID;
     
     private boolean end;
     private int state;
@@ -21,7 +21,7 @@ public class AgentBattery extends Agent{
     private static final int SEND_CONF = 3;
     
     
-    public AgentBattery(AgentID aid, String car) throws Exception {
+    public AgentBattery(AgentID aid, AgentID car) throws Exception {
         super(aid);
         Car_ID = car;
     }
@@ -87,11 +87,11 @@ public class AgentBattery extends Agent{
         
         if(this.battery < 10.0){        //Valor de prueba
             response.add("battery", true);
-            this.sendMessage(new AgentID(Car_ID), response.toString());
+            this.sendMessage(Car_ID, response.toString());
         }
         else{
             response.add("battery", false);
-            this.sendMessage(new AgentID(Car_ID), response.toString());
+            this.sendMessage(Car_ID, response.toString());
         }
         
         state = IDLE;

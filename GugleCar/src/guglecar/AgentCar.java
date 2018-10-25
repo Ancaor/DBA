@@ -46,11 +46,17 @@ public class AgentCar extends Agent{
     private JsonObject command;
     
     AgentBattery agentBattery;
+    AgentExplorer agentExplorer;
+    AgentGPS agentGPS;
+    AgentRadar agentRadar;
     
     AgentID serverAgent;
-    AgentID radarAgent;
+    AgentID radarAgent = new AgentID("Radar7");
     AgentID scannerAgent;
+    AgentID gpsAgent = new AgentID("gps6");
     AgentID batteryAgent = new AgentID("bateriCoche");
+    AgentID explorerAgent = new AgentID("Explorador7");
+    
     
     
     
@@ -63,12 +69,16 @@ public class AgentCar extends Agent{
     
     public void awakeAgents(){
         try {
-            this.agentBattery = new AgentBattery(batteryAgent,this.getAid().getLocalName());
+            this.agentBattery = new AgentBattery(batteryAgent,this.getAid());
+            //this.agentGPS = new AgentGPS(gpsAgent, explorerAgent, this.getAid());
+            //this.agentRadar = new AgentRadar()
+           
         } catch (Exception ex) {
             Logger.getLogger(AgentCar.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error inicializando agentes");
         }
         this.agentBattery.start();
+       // this.agentGPS.start();
     }
     
     public void loginAgentsState(){
@@ -77,8 +87,9 @@ public class AgentCar extends Agent{
         JsonObject outjson = Json.object().add("command", "login")
                 .add("world", "map1")
                 .add("battery", batteryAgent.getLocalName());
-               // .add("radar", radarAgent.getLocalName())
-               // .add("scanner", radarAgent.getLocalName())
+                //.add("gps", gpsAgent.getLocalName());
+               //.add("radar", radarAgent.getLocalName());
+               // .add("scanner", radarAgent.getLocalName());
                // .add("battery", batteryAgent.getLocalName());
                
         if(DEBUG){
@@ -260,7 +271,6 @@ public class AgentCar extends Agent{
         for(int i = 0; i < this.agentsNum; i++){
             messages.add(this.receiveMessage());
         }
-        
         for(int i = 0; i < messages.size(); i++){
             if(messages.get(i).contains("battery")){
                 this.refuel = Json.parse(messages.get(i)).asObject().get("battery").asBoolean();
@@ -310,6 +320,7 @@ public class AgentCar extends Agent{
         JsonObject outjson = Json.object().add("signal", "FINISH");
         
         this.sendMessage(this.batteryAgent, outjson.toString());
+       // this.sendMessage(this.gpsAgent, outjson.toString());
         
         if(aux1.contains("trace")){
             try{
