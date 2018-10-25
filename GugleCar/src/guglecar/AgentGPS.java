@@ -63,8 +63,8 @@ public class AgentGPS extends Agent{
     
         //msg = this.receiveMessage();
         
-        int x_random = (int) (Math.random() * 100) + 1;
-        int y_random = (int) (Math.random() * 100) + 1;
+        int x_random = (int) (Math.random() * 15) + 3;
+        int y_random = (int) (Math.random() * 15) + 3;
         
         msgJson = new JsonObject();
         msgJson.add("x", x_random);
@@ -72,7 +72,7 @@ public class AgentGPS extends Agent{
         
         msg = msgJson.toString();
         
-        if(msg.contains("CRASHED") || msg.contains("BAD")){
+        if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH")){
             state = FINISH;
         }
         else{
@@ -104,7 +104,7 @@ public class AgentGPS extends Agent{
    
     private void UPDATE_MAP(){
     
-        state = IDLE;
+        state = FINISH;
         this.sendMessage(new AgentID(Explorer_ID), msg);
         if(x == 90)
             state = FINISH;
@@ -116,10 +116,8 @@ public class AgentGPS extends Agent{
     
         end = true;
         
-        msg = "FINISH";
-        this.sendMessage(new AgentID(Explorer_ID), msg);
         msg = "\nEl GPS ha finalizado su ejecución.\n";
-        this.sendMessage(new AgentID(Car_ID), msg);
+       // this.sendMessage(new AgentID(Car_ID), msg);
     }
     
     @Override

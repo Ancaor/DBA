@@ -6,9 +6,11 @@
 package guglecar;
 
 import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import es.upv.dsic.gti_ia.core.AgentID;
 import java.util.ArrayList;
+import org.apache.log4j.BasicConfigurator;
 
 /**
  *
@@ -20,13 +22,15 @@ public class AgentExplorer extends Agent {
     private String Car_ID;
     
     private ArrayList<Integer> map = new ArrayList<>();
-    private final static int m = 500;
-    private final static int n = 500;
+    private final static int m = 24;
+    private final static int n = 24;
     
     private int x;
     private int y;
+    private ArrayList<Integer> array_radar = new ArrayList<>(); 
     
     private String msg;
+    private String msg2;
     private JsonObject msgJson;
     private int state = 0;
     Boolean end = false;
@@ -41,9 +45,20 @@ public class AgentExplorer extends Agent {
         super(aid);
         GPS_ID = gps;
         Car_ID = car;
-        for(int i = 0; i < m; i+=1)
-            for(int j = 0; j < n; j+=1)
-                map.add(-1);
+        for(int i = 0; i < m*2; i+=1)
+            map.add(1);
+ 
+        for(int i = 0; i < m-4; i+=1){
+           map.add(1);
+           map.add(1);
+           for (int j = 0; j < m-4; j+=1)
+               map.add(-1);
+           map.add(1);
+           map.add(1);
+        }
+        
+        for(int i = 0; i < m*2; i+=1)
+            map.add(1);
     }
     
      private void WAKE_UP(){
@@ -51,7 +66,7 @@ public class AgentExplorer extends Agent {
         state = IDLE;
         msg = "\nExplorer: Wake_up\n";
         
-        this.sendMessage(new AgentID(Car_ID), msg);
+       // this.sendMessage(new AgentID(Car_ID), msg);
     }
     
     /*
@@ -60,6 +75,7 @@ public class AgentExplorer extends Agent {
     private void IDLE(){
     
         msg = this.receiveMessage();
+        msg2 = this.receiveMessage();
         
         if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH")){
             state = FINISH;
@@ -75,17 +91,44 @@ public class AgentExplorer extends Agent {
     */
     
     private void PROCESS_DATA(){
-        JsonObject object = Json.parse(msg).asObject();
+        BasicConfigurator.configure();
+        String msg_radar;
+        String msg_gps;
+        
+        if(msg.contains("radar")){
+            msg_radar = msg;
+            msg_gps = msg2;
+        }else{
+            msg_radar = msg2;
+            msg_gps = msg;
+        }
+       /* 
+        System.out.println("Radar: " + msg_radar);
+        System.out.println("GPS: " + msg_gps);
+        */
+      
+        JsonObject object = Json.parse(msg_gps).asObject();
+        
         
         x = object.get("x").asInt();
         y = object.get("y").asInt();
         
+        msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
+       // this.sendMessage(new AgentID(Car_ID), msg);
         
+       
+        JsonObject object2 = Json.parse(msg_radar).asObject();
         
+        JsonArray ja = object2.get("radar").asArray();
+        
+        for (int i = 0; i < 25; i+=1){
+            array_radar.add(ja.get(i).asInt());
+        }
         
         state = UPDATE_MAP;
-        msg = "Explorer: x = " +x+"\ty = "+y+"\n";
-        this.sendMessage(new AgentID(Car_ID), msg);
+        
+        msg = "Explorer: Radar = " + array_radar.toString();
+       // this.sendMessage(new AgentID(Car_ID), msg);
         
     }
     
@@ -95,11 +138,16 @@ public class AgentExplorer extends Agent {
     */
    
     private void UPDATE_MAP(){
-        int index = x*m + y;
+        int index = 0;
+        /*
+        for(int i = x-2; i <= x+2; i+=1)
+            for(int j = y-2; j <= y+2; j+=1){
+                map.set(i*m+j, array_radar.get(index));
+                index+=1;
+            }
         
-        map.set(index, 0);
-    
-        state = IDLE;
+        map.set(x*m+y, 9);*/
+        state = FINISH;
         
         
     }
@@ -108,17 +156,22 @@ public class AgentExplorer extends Agent {
     private void FINISH(){
     
         end = true;
-        //PrintMap();
+        PrintMap();
         msg = "\nEl Explorer ha finalizado su ejecución.\n";
-        this.sendMessage(new AgentID(Car_ID), msg);
+        //this.sendMessage(new AgentID(Car_ID), msg);
     }
     
     private void PrintMap(){
         for(int i = 0; i < m; i+=1){
             System.out.print("\n");
-            for(int j = 0; j < n; j+=1)
-                System.out.print(map.get(i*m+j));
-            
+            for(int j = 0; j < n; j+=1){
+                if(map.get(i*m+j) == 1)
+                    System.out.print((char)1);
+                else{
+                    System.out.print("1");
+                }
+                System.out.print("  ");
+            }
         }
     }
     

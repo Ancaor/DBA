@@ -17,8 +17,9 @@ import java.util.ArrayList;
 
 public class AgentRadar extends Agent{
     
-    String Car_ID;
-    String Explorer_ID;
+    private String Car_ID;
+    private String Explorer_ID;
+    private ArrayList<Integer> array_radar = new ArrayList<>(); 
     
     private int x;
     private int y;
@@ -54,7 +55,7 @@ public class AgentRadar extends Agent{
     
         state = IDLE;
         msg = "\nRadar: Wake_up\n";
-        this.sendMessage(new AgentID(Car_ID), msg);
+        //this.sendMessage(new AgentID(Car_ID), msg);
 
     }
     
@@ -66,7 +67,6 @@ public class AgentRadar extends Agent{
         //msg = this.receiveMessage();
        
 
-        ArrayList<Integer> array_radar = new ArrayList<>(); 
         for (int i = 0; i < 25; i+=1)
             array_radar.add((int) (Math.random() * 3) + 0);
         
@@ -79,36 +79,41 @@ public class AgentRadar extends Agent{
         
         msg = msgJsonArray.toString();
         
-        msgJsonObject.add("RAdar", msgJsonArray);
+        msgJsonObject = new JsonObject();
+        msgJsonObject.add("radar", msgJsonArray);
         msg = msgJsonObject.toString();
-        this.sendMessage(new AgentID(Car_ID), msg);
+        //this.sendMessage(new AgentID(Car_ID), msg);
+
         
-        
-        state = FINISH;
-        //msg = "\nRadar: IDLE_up\n";
-        
-        /*
-        this.sendMessage(new AgentID(Car_ID), msg);
-        msg = msgJsonObject.toString();
-                
-        this.sendMessage(new AgentID(Car_ID), msg);
-        
-        if(msg.contains("CRASHED") || msg.contains("BAD")){
+        if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH")){
             state = FINISH;
         }
         else{
             state = PROCESS_DATA;
-        }*/
+        }
     }
     
     
     private void PROCESS_DATA(){
-
+        
+        JsonObject object = Json.parse(msg).asObject();
+        array_radar.clear();
+        
+        JsonArray ja = object.get("radar").asArray();
+        
+        for (int i = 0; i < 25; i+=1){
+            array_radar.add(ja.get(0).asInt());
+        }
+                
+        state = UPDATE_MAP;
     }
     
    
     private void UPDATE_MAP(){
     
+        state = FINISH;
+        //this.sendMessage(new AgentID(Car_ID), msg);
+        this.sendMessage(new AgentID(Explorer_ID), msg);
         
     }
 
@@ -117,7 +122,7 @@ public class AgentRadar extends Agent{
     
         end = true;
         msg = "\nEl radar ha finalizado su ejecución.\n";
-        this.sendMessage(new AgentID(Car_ID), msg);
+   //     this.sendMessage(new AgentID(Car_ID), msg);
     }
     
     @Override

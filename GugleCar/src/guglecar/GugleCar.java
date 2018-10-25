@@ -21,14 +21,19 @@ public class GugleCar {
         // TODO code application logic here
         AgentsConnection.connect("isg2.ugr.es",6000,"Keid","Cancer","Kipling",false);
         
-        Agent pepe = new AgentCar(new AgentID("PEPe"));
+        String Car_ID = "Carro4";
+        String GPS_ID = "gps4";
+        String Radar_ID = "Radar4";
+        String Explorer_ID = "Explorador4";
+        
+        Agent Car = new AgentCar(new AgentID(Car_ID));
         //Agent hablador = new AgentHablador(new AgentID("a"));
-        Agent explorer = new AgentExplorer(new AgentID("explorer"), "GPs", "PEPe");
-        Agent GPS = new AgentGPS(new AgentID("GPs"), "PEPe", "explorer");
-        Agent radar = new AgentRadar(new AgentID("radar"), "PEPe", "explorer");
-        pepe.start();
+        Agent explorer = new AgentExplorer(new AgentID(Explorer_ID), GPS_ID, Car_ID);
+        Agent GPS = new AgentGPS(new AgentID(GPS_ID), Car_ID, Explorer_ID);
+        Agent radar = new AgentRadar(new AgentID(Radar_ID), Car_ID, Explorer_ID);
+        Car.start();
         //hablador.start();
-        //GPS.start();
+        GPS.start();
         explorer.start();
         radar.start();
     }
