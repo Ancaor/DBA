@@ -21,10 +21,10 @@ public class GugleCar {
         // TODO code application logic here
         AgentsConnection.connect("isg2.ugr.es",6000,"Keid","Cancer","Kipling",false);
         
-        String Car_ID = "Carro4";
-        String GPS_ID = "gps4";
-        String Radar_ID = "Radar4";
-        String Explorer_ID = "Explorador4";
+        String Car_ID = "Carro5";
+        String GPS_ID = "gps6";
+        String Radar_ID = "Radar7";
+        String Explorer_ID = "Explorador7";
         
         Agent Car = new AgentCar(new AgentID(Car_ID));
         //Agent hablador = new AgentHablador(new AgentID("a"));

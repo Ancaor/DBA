@@ -9,7 +9,21 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import es.upv.dsic.gti_ia.core.AgentID;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.awt.image.ComponentSampleModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.apache.log4j.BasicConfigurator;
 
 /**
@@ -22,8 +36,8 @@ public class AgentExplorer extends Agent {
     private String Car_ID;
     
     private ArrayList<Integer> map = new ArrayList<>();
-    private final static int m = 24;
-    private final static int n = 24;
+    private final static int m = 250;
+    private final static int n = 250;
     
     private int x;
     private int y;
@@ -173,6 +187,41 @@ public class AgentExplorer extends Agent {
                 System.out.print("  ");
             }
         }
+        System.out.println();
+        
+        
+        // Crear una imagen con el contenido del mapa
+        
+        // Esta en sucio pero funciona
+        
+        byte [][] a = new byte[m][n];
+        for(int i = 0; i < m; i++)
+            for(int j = 0; j < n; j++){
+                if(map.get(i*m+j) == 1)
+                a[i][j] = 0;
+                else a[i][j] = 1;
+            }
+        
+        byte raw[] = new byte[m * n];
+        for (int i = 0; i < a.length; i++) {
+            System.arraycopy(a[i], 0, raw, i*m, n);
+        }
+
+        byte levels[] = new byte[]{0, -1};
+        BufferedImage image = new BufferedImage(m, n, 
+                BufferedImage.TYPE_BYTE_INDEXED,
+                new IndexColorModel(8, 2, levels, levels, levels));
+        DataBuffer buffer = new DataBufferByte(raw, raw.length);
+        SampleModel sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, m, n, 1, m * 1, new int[]{0});
+        Raster raster = Raster.createRaster(sampleModel, buffer, null);
+        image.setData(raster);
+        try {
+            ImageIO.write(image, "png", new File("test.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(AgentExplorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
     }
     
     @Override
@@ -198,6 +247,7 @@ public class AgentExplorer extends Agent {
                     break;
             }
         }   
+        System.out.println("Fin de AgentExplorer");
         
     }
 }
