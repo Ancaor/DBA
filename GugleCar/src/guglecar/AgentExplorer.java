@@ -153,14 +153,14 @@ public class AgentExplorer extends Agent {
    
     private void UPDATE_MAP(){
         int index = 0;
-        /*
+        
         for(int i = x-2; i <= x+2; i+=1)
             for(int j = y-2; j <= y+2; j+=1){
                 map.set(i*m+j, array_radar.get(index));
                 index+=1;
             }
         
-        map.set(x*m+y, 9);*/
+        map.set(x*m+y, 9);
         state = FINISH;
         
         
@@ -176,6 +176,8 @@ public class AgentExplorer extends Agent {
     }
     
     private void PrintMap(){
+        
+        /*
         for(int i = 0; i < m; i+=1){
             System.out.print("\n");
             for(int j = 0; j < n; j+=1){
@@ -188,7 +190,7 @@ public class AgentExplorer extends Agent {
             }
         }
         System.out.println();
-        
+        */
         
         // Crear una imagen con el contenido del mapa
         
