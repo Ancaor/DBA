@@ -12,14 +12,14 @@ import java.util.ArrayList;
  *
  * @author Rubén
  */
-public class AgentMap extends Agent {
+public class AgentExplorer extends Agent {
     
     private ArrayList<Integer> map = new ArrayList<>();
     private final static int m = 500;
     private final static int n = 500;
     
     
-    public AgentMap(AgentID aid) throws Exception {
+    public AgentExplorer(AgentID aid) throws Exception {
         super(aid);
         for(int i = 0; i < m; i+=1)
             for(int j = 0; j < n; j+=1)
