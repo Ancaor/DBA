@@ -24,7 +24,11 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author Antonio
+ * Agente controlador, es el que lanza a los demas agentes.
+ * Además es el que se comunica con el servidor.
+ * 
+ * @author Antonio José Camarero Ortega.
+ * 
  */
 public class AgentCar extends Agent{
     
@@ -59,9 +63,14 @@ public class AgentCar extends Agent{
     AgentID batteryAgent = new AgentID("bateriCoche");
     AgentID explorerAgent = new AgentID("Explorador7");
     
-    
-    
-    
+    /**
+    *
+    * Asigna los nombres del agentCar y del servidor
+    * además inicializa algunas variables.
+    * 
+    * @author Antonio José Camarero Ortega
+    */
+ 
     public AgentCar(AgentID aid, AgentID server_id) throws Exception {
         super(aid);
         this.serverAgent = server_id;
@@ -69,6 +78,12 @@ public class AgentCar extends Agent{
         this.refuel = false;
     }
     
+    /**
+    *
+    * Inistancia los demás agentes y los inicia.
+    * 
+    * @author Antonio José Camarero Ortega
+    */
     
     public void awakeAgents(){
         try {
@@ -86,7 +101,13 @@ public class AgentCar extends Agent{
     }
     
     
-    
+    /**
+    *
+    * Logea a los agentes en el servidor para que cada uno
+    * reciba la informacion que necesita.
+    * 
+    * @author Antonio José Camarero Ortega
+    */
     
     public void loginAgentsState(){
        // String response  = this.receiveMessage();
@@ -114,7 +135,20 @@ public class AgentCar extends Agent{
     
     
     
-    
+    /**
+    *
+    * Espera la respuesta del servidor y la analiza.
+    * Si recibe un "result":
+    *   a) Si es un BAD o un CRASH va al estado FINISH.
+    *   b) Si la clave no esta asignada, el contenido es la clave.
+    *   c) Si tiene clave asignada el contenido es un OK.
+    * En los casos a) y b) se va a al estado WAIT_AGENTS.
+    * 
+    * Si recibe un "trace":
+    *   Guarda la traza y finaliza. 
+    * 
+    * @author Antonio José Camarero Ortega
+    */
     
     public void waitServerResponse(){
         
@@ -187,7 +221,20 @@ public class AgentCar extends Agent{
  
     
     
-    
+    /**
+    *
+    * Espera la respuesta de agentBattery y de agentExplorer
+    * para determinar que acción realizar.
+    * 
+    * El agentBattery indica el valor de refuel
+    * El agentExplorer indica el valor de movement
+    * 
+    * Si el comando anteriormente enviado fue "logout" se pasa al estado FINISH
+    * Si no, se pasa al estado SEND_COMMAND.
+    * 
+    * 
+    * @author Antonio José Camarero Ortega
+    */
     
     public void waitAgents(){
         
@@ -214,7 +261,14 @@ public class AgentCar extends Agent{
     
     
     
-    
+    /**
+     * 
+     * Decide el comando que va a realizar y lo envia al servidor.
+     * 
+     * 
+     * 
+     * @author Antonio José Camarero Ortega
+     */
     
     
     public void sendCommand(){
@@ -232,6 +286,17 @@ public class AgentCar extends Agent{
         
         //
     }
+    
+    
+    
+    /**
+     * 
+     * Recibe la traza y avisa a los demas agentes de que se ha finalizado.
+     * 
+     * 
+     * 
+     * @author Antonio José Camarero Ortega
+     */
     
     public void finish(){
         
@@ -310,6 +375,13 @@ public class AgentCar extends Agent{
         
     }
     
+    /**
+     * 
+     *Inicializa algunas variables y asigna el estado a AWAKE_AGENTS
+     * 
+     * 
+     * @author Antonio José Camarero Ortega
+     */
     
     @Override
     public void init(){
@@ -318,6 +390,15 @@ public class AgentCar extends Agent{
         this.state = AWAKE_AGENTS;
         //this.state = WAIT_AGENTS;
     }
+    
+    /**
+     * 
+     * Ejecución del agente.
+     * Va entrando en cada estado segun el momento de la ejecucion
+     * y acaba cuando se le indica con la variable finish.
+     * 
+     * @author Antonio José Camarero Ortega
+     */
     
     @Override
     public void execute(){
