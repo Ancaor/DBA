@@ -60,7 +60,7 @@ public class AgentGPS extends Agent{
     
         msg = this.receiveMessage();
         
-                System.out.println("LO QUE RECIVE EL GPS : " + msg);
+                System.out.println(ANSI_GREEN+"LO QUE RECIVE EL GPS : " + msg);
 
         /*
         int x_random = (int) (Math.random() * 15) + 3;
@@ -86,7 +86,7 @@ public class AgentGPS extends Agent{
     */
     
     private void PROCESS_DATA(){
-                        System.out.println("PROCESS DATA");
+                        System.out.println(ANSI_GREEN+"PROCESS DATA");
 
         JsonObject object = Json.parse(msg).asObject();
                 
@@ -115,7 +115,7 @@ public class AgentGPS extends Agent{
         JsonObject response = new JsonObject();
         
         response.add("gps", true);
-        System.out.println("CONFIRMACION GPS : " + response.toString() );
+        System.out.println(ANSI_GREEN+"CONFIRMACION GPS : " + response.toString() );
         //this.sendMessage(Car_ID, response.toString());
         
         state = IDLE;
@@ -153,7 +153,7 @@ public class AgentGPS extends Agent{
                     break;
             }
         }
-        System.out.println("------- GPS FINISHED -------");
+        System.out.println(ANSI_GREEN+"------- GPS FINISHED -------");
     }
 }
 

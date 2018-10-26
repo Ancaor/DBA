@@ -52,11 +52,9 @@ public class AgentRadar extends Agent{
         Levanta al agente que crea el mapa.
     */
     private void WAKE_UP(){
-    
-        state = IDLE;
-        msg = "\nRadar: Wake_up\n";
-        //this.sendMessage(new AgentID(Car_ID), msg);
 
+        System.out.println(ANSI_PURPLE+"Radar: Wake_up\n");
+        state = IDLE;
     }
     
     /*
@@ -64,9 +62,10 @@ public class AgentRadar extends Agent{
     */
     private void IDLE(){
         
-        //msg = this.receiveMessage();
+        msg = this.receiveMessage();
        
-
+        System.out.println(ANSI_PURPLE+"LO QUE RECIVE EL RADAR : " + msg);
+/*
         for (int i = 0; i < 25; i+=1)
             array_radar.add((int) (Math.random() * 3) + 0);
         
@@ -84,7 +83,7 @@ public class AgentRadar extends Agent{
         msg = msgJsonObject.toString();
         //this.sendMessage(new AgentID(Car_ID), msg);
 
-        
+        */
         if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH")){
             state = FINISH;
         }
@@ -98,11 +97,12 @@ public class AgentRadar extends Agent{
         
         JsonObject object = Json.parse(msg).asObject();
         array_radar.clear();
-        
+                
         JsonArray ja = object.get("radar").asArray();
         
         for (int i = 0; i < 25; i+=1){
-            array_radar.add(ja.get(0).asInt());
+            array_radar.add(ja.get(i).asInt());
+            System.out.println(ANSI_PURPLE + "posicion " + i + " : " + ja.get(i).asInt());
         }
                 
         state = UPDATE_MAP;
@@ -111,9 +111,10 @@ public class AgentRadar extends Agent{
    
     private void UPDATE_MAP(){
     
-        state = FINISH;
+        state = IDLE;
+        
         //this.sendMessage(new AgentID(Car_ID), msg);
-        this.sendMessage(Explorer_ID, msg);
+        //this.sendMessage(Explorer_ID, msg);
         
     }
 
@@ -121,7 +122,8 @@ public class AgentRadar extends Agent{
     private void FINISH(){
     
         end = true;
-        msg = "\nEl radar ha finalizado su ejecución.\n";
+        
+        //msg = "\nEl radar ha finalizado su ejecución.\n";
    //     this.sendMessage(new AgentID(Car_ID), msg);
     }
     
@@ -150,7 +152,7 @@ public class AgentRadar extends Agent{
                     break;
             }
         }
-        System.out.println("------- RADAR FINISHED -------");
+        System.out.println(ANSI_PURPLE+"------- RADAR FINISHED -------");
     }
 }
 
