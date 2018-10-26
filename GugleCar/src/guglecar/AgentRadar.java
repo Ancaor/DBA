@@ -64,7 +64,7 @@ public class AgentRadar extends Agent{
         
         msg = this.receiveMessage();
        
-        System.out.println(ANSI_PURPLE+"LO QUE RECIVE EL RADAR : " + msg);
+        System.out.println(ANSI_PURPLE+"LO QUE RECIBE EL RADAR : " + msg);
 /*
         for (int i = 0; i < 25; i+=1)
             array_radar.add((int) (Math.random() * 3) + 0);
@@ -104,7 +104,17 @@ public class AgentRadar extends Agent{
             array_radar.add(ja.get(i).asInt());
             System.out.println(ANSI_PURPLE + "posicion " + i + " : " + ja.get(i).asInt());
         }
-                
+           
+        System.out.println("Vision de matriz del radar");
+        for (int i = 0; i < 25; i+=1){
+            if(i%5 == 0){
+                System.out.print("\n");
+            }
+            System.out.print(ANSI_PURPLE + array_radar.get(i));
+            System.out.print("   ");
+        }
+        System.out.print("\n");        
+        
         state = UPDATE_MAP;
     }
     
