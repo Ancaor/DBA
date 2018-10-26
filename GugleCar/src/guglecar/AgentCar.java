@@ -36,7 +36,7 @@ public class AgentCar extends Agent{
     private static final int FINISH = 5;
     private static final int SEND_COMMAND = 6;
     
-    private static final String MAPA = "map1";
+    private static final String MAPA = "map6";
     
     private static final boolean DEBUG = true;
     
@@ -72,7 +72,7 @@ public class AgentCar extends Agent{
     public void awakeAgents(){
         try {
             this.agentBattery = new AgentBattery(batteryAgent,this.getAid());
-            //this.agentGPS = new AgentGPS(gpsAgent, explorerAgent, this.getAid());
+            this.agentGPS = new AgentGPS(gpsAgent, explorerAgent, this.getAid());
             //this.agentRadar = new AgentRadar()
            
         } catch (Exception ex) {
@@ -80,7 +80,7 @@ public class AgentCar extends Agent{
             System.out.println("Error inicializando agentes");
         }
         this.agentBattery.start();
-       // this.agentGPS.start();
+        this.agentGPS.start();
     }
     
     public void loginAgentsState(){
@@ -88,8 +88,8 @@ public class AgentCar extends Agent{
        // JsonObject injson = Json.parse(response).asObject();
          command = Json.object().add("command", "login")
                 .add("world", MAPA)
-                .add("battery", batteryAgent.getLocalName());
-                //.add("gps", gpsAgent.getLocalName());
+                .add("battery", batteryAgent.getLocalName())
+                .add("gps", gpsAgent.getLocalName());
                //.add("radar", radarAgent.getLocalName());
                // .add("scanner", radarAgent.getLocalName());
                // .add("battery", batteryAgent.getLocalName());
@@ -309,13 +309,7 @@ public class AgentCar extends Agent{
         String aux1 = this.receiveMessage(); // OK
         
         String aux2 = this.receiveMessage(); // traza
-        
-        
-        //
-        //se podrian recibir o no los mensajes de los sensores  ->> hace falta ?, es util ?  
-        // String var = this.receiveMessage(); -> batteryAgent , por ejemplo
-        // ...
-        //
+     
         
         if(DEBUG)
         System.out.println("aux1 : " + aux1);
@@ -326,7 +320,7 @@ public class AgentCar extends Agent{
         JsonObject outjson = Json.object().add("signal", "FINISH");
         
         this.sendMessage(this.batteryAgent, outjson.toString());
-       // this.sendMessage(this.gpsAgent, outjson.toString());
+        this.sendMessage(this.gpsAgent, outjson.toString());
         
         if(aux1.contains("trace")){
             try{

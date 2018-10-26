@@ -59,6 +59,9 @@ public class AgentGPS extends Agent{
     private void IDLE(){
     
         msg = this.receiveMessage();
+        
+                System.out.println("LO QUE RECIVE EL GPS : " + msg);
+
         /*
         int x_random = (int) (Math.random() * 15) + 3;
         int y_random = (int) (Math.random() * 15) + 3;
@@ -83,10 +86,13 @@ public class AgentGPS extends Agent{
     */
     
     private void PROCESS_DATA(){
+                        System.out.println("PROCESS DATA");
+
         JsonObject object = Json.parse(msg).asObject();
+                
         
-        x = object.get("x").asInt();
-        y = object.get("y").asInt();
+        x = object.get("gps").asObject().get("x").asInt();
+        y = object.get("gps").asObject().get("y").asInt();
         
         
         state = UPDATE_MAP;
@@ -109,6 +115,7 @@ public class AgentGPS extends Agent{
         JsonObject response = new JsonObject();
         
         response.add("gps", true);
+        System.out.println("CONFIRMACION GPS : " + response.toString() );
         //this.sendMessage(Car_ID, response.toString());
         
         state = IDLE;
