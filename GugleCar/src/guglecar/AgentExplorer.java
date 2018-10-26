@@ -17,10 +17,16 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -36,8 +42,10 @@ public class AgentExplorer extends Agent {
     private AgentID Car_ID;
     
     private ArrayList<Integer> map = new ArrayList<>();
-    private final static int m = 250;
-    private final static int n = 250;
+    
+    
+    private static int m = 504;
+    private static int n = 504;
     
     private int x;
     private int y;
@@ -54,11 +62,28 @@ public class AgentExplorer extends Agent {
     private final static int UPDATE_MAP = 3;
     private final static int FINISH = 4;
     
+    private String mapName;
     
-    public AgentExplorer(AgentID aid, AgentID gps, AgentID car) throws Exception {
+    //-------------Pulgarcito START------------------
+    
+    private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
+    private boolean MPCreado = false;
+    private int MPtam = 500;
+    private boolean MapCompleted = false;
+    
+    
+    public AgentExplorer(AgentID aid, AgentID gps, AgentID car, String mapName) throws Exception {
         super(aid);
         GPS_ID = gps;
         Car_ID = car;
+        this.mapName = mapName;
+        
+        this.loadMap(mapName);
+        
+        
+    }
+    
+    public void initMap(){
         for(int i = 0; i < m*2; i+=1)
             map.add(1);
  
@@ -166,6 +191,73 @@ public class AgentExplorer extends Agent {
         
         
     }
+    
+    private void actualizarMapa(){
+        int index = 0;
+        for(int i = x-2; i <= x+2; i+=1){
+            for(int j = y-2; j <= y+2; j+=1){
+                if(mapPulgarcito.get(i*m+j)>=10 && mapPulgarcito.get(i*m+j)<=999990){
+                    mapPulgarcito.set(i*m+j, mapPulgarcito.get(i*m+j)+1);
+                }
+                else{
+                    if(array_radar.get(index) == 1){
+                        mapPulgarcito.set(i*m+j, 999999);
+                    }
+                    if(array_radar.get(index) == 2){
+                        mapPulgarcito.set(i*m+j, 999998);
+                    }
+                    if(array_radar.get(index) == 0){
+                        mapPulgarcito.set(i*m+j, 10);
+                    }
+                }
+                index+=1;
+            }
+        }
+    }
+    
+    private void testEnd(){
+        
+        boolean cAux = true;
+        int aux;
+        
+        for(int i = 501; i < MPtam*MPtam - 500 && cAux == true; i++){
+            
+            if(i%MPtam == 499){
+                i+=2;
+            }
+            aux = mapPulgarcito.get(i);
+            if(aux >= 10 && aux <= 999990 ){
+                for(int j = x-1; i <= x+1 && cAux ==  true; i+=2){
+                    for(int k = y-1; j <= y+1 && cAux ==  true; j+=2){
+                        if(mapPulgarcito.get(j*m+k)==-1){
+                            cAux = false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        MapCompleted = cAux;
+    }
+    
+    private void pulgarcito(){
+        if(!MPCreado){
+            for(int i = 0; i < MPtam*MPtam; i++){
+                mapPulgarcito.set(i, -1);
+            }
+            MPCreado = true;
+        }
+        
+        actualizarMapa();
+        testEnd();
+        
+        if(!MapCompleted){
+            
+        }
+        
+        
+        
+    }
 
     
     private void FINISH(){
@@ -225,6 +317,49 @@ public class AgentExplorer extends Agent {
         }
        
         
+    }
+    
+    public void saveMap(String mapName){
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(mapName+".map"));
+            bw.write(m + " " + n);
+            bw.newLine();
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    bw.write(map.get(i*m + j) + ((j ==m-1) ? "" : ","));
+                }
+                bw.newLine();
+            }
+            bw.flush();
+        } catch (IOException e) {}
+    }
+    
+    public void loadMap(String mapName){
+        Scanner sc;
+        
+        try {
+            sc = new Scanner(new BufferedReader(new FileReader(mapName+".map")));
+            String[] line = sc.nextLine().trim().split(" ");
+      
+            m = Integer.valueOf(line[0]);
+            n = Integer.valueOf(line[1]);
+            
+            int [][] myArray = new int[m][n];
+            while(sc.hasNextLine()) {
+              for (int i=0; i<myArray.length; i++) {
+                  line = sc.nextLine().trim().split(",");
+                 for (int j=0; j<line.length; j++) {
+                    myArray[i][j] = Integer.parseInt(line[j]);
+                 }
+              }
+           }
+        } catch (FileNotFoundException ex) {   // SI NO EXISTE EL ARCHIVO
+            m = 504;
+            n= 504;
+            initMap();
+            System.out.println("No existe mapa, se utilizan valores por defecto");
+        }
+      
     }
     
     @Override
