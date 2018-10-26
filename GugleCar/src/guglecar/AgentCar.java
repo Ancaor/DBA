@@ -55,6 +55,7 @@ public class AgentCar extends Agent{
     AgentExplorer agentExplorer;
     AgentGPS agentGPS;
     AgentRadar agentRadar;
+    AgentScanner agentScanner;
     
     AgentID serverAgent;
     AgentID radarAgent = new AgentID("Radar7");
@@ -88,9 +89,9 @@ public class AgentCar extends Agent{
     public void awakeAgents(){
         try {
             this.agentBattery = new AgentBattery(batteryAgent,this.getAid());
-            this.agentGPS = new AgentGPS(gpsAgent, explorerAgent, this.getAid());
+            this.agentGPS = new AgentGPS(gpsAgent, scannerAgent, this.getAid());
             this.agentRadar = new AgentRadar(this.radarAgent,this.scannerAgent, this.getAid());
-           
+            this.agentScanner = new AgentScanner(this.scannerAgent,this.getAid(),this.gpsAgent);
         } catch (Exception ex) {
             Logger.getLogger(AgentCar.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ANSI_RED+"Error inicializando agentes");
@@ -98,6 +99,7 @@ public class AgentCar extends Agent{
         this.agentBattery.start();
         this.agentGPS.start();
         this.agentRadar.start();
+        this.agentScanner.start();
     }
     
     
@@ -116,9 +118,9 @@ public class AgentCar extends Agent{
                 .add("world", MAPA)
                 .add("battery", batteryAgent.getLocalName())
                 .add("gps", gpsAgent.getLocalName())
-               .add("radar", radarAgent.getLocalName());
-               // .add("scanner", radarAgent.getLocalName());
-               // .add("battery", batteryAgent.getLocalName());
+               .add("radar", radarAgent.getLocalName())
+                .add("scanner", scannerAgent.getLocalName());
+              
                
         if(DEBUG){
             System.out.println(ANSI_RED +"CAR_LOGIN_MESSAGE : " + command.toString());
@@ -319,6 +321,8 @@ public class AgentCar extends Agent{
         this.sendMessage(this.batteryAgent, outjson.toString());
         this.sendMessage(this.gpsAgent, outjson.toString());
         this.sendMessage(this.radarAgent, outjson.toString());
+        this.sendMessage(this.scannerAgent, outjson.toString());
+
         
         if(aux1.contains("trace")){
             try{

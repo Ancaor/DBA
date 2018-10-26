@@ -17,6 +17,7 @@ public class AgentGPS extends Agent{
     
     AgentID Car_ID;
     AgentID Explorer_ID;
+    AgentID Scanner_ID;
     
     private int x;
     private int y;
@@ -37,10 +38,11 @@ public class AgentGPS extends Agent{
     
     
     
-    public AgentGPS(AgentID aid, AgentID explorer, AgentID car) throws Exception {
+    public AgentGPS(AgentID aid, AgentID scanner, AgentID car) throws Exception {
         super(aid);
         Car_ID = car;
-        Explorer_ID = explorer;
+        //Explorer_ID = explorer;
+        Scanner_ID = scanner;
     }
     
     
@@ -86,7 +88,7 @@ public class AgentGPS extends Agent{
     */
     
     private void PROCESS_DATA(){
-                        System.out.println(ANSI_GREEN+"PROCESS DATA");
+        System.out.println(ANSI_GREEN+"PROCESS DATA");
 
         JsonObject object = Json.parse(msg).asObject();
                 
@@ -112,11 +114,11 @@ public class AgentGPS extends Agent{
     
      private void SEND_CONFIRM(){
         
-        JsonObject response = new JsonObject();
+        //JsonObject response = new JsonObject();
         
-        response.add("gps", true);
-        System.out.println(ANSI_GREEN+"CONFIRMACION GPS : " + response.toString() );
-        //this.sendMessage(Car_ID, response.toString());
+       // response.add("gps", true);
+        System.out.println(ANSI_GREEN+"CONFIRMACION GPS : " + msg );
+        this.sendMessage(Scanner_ID, msg);
         
         state = IDLE;
     }

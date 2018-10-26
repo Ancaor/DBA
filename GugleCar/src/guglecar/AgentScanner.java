@@ -17,6 +17,7 @@ import java.util.ArrayList;
  */
 public class AgentScanner extends Agent{
    private String msg;
+   private String msg2;
    private int state = 0;
    boolean end = false;
    private ArrayList<Float> array_scanner = new ArrayList<>(); 
@@ -40,13 +41,22 @@ public class AgentScanner extends Agent{
     
     private void WAKE_UP(){
         state = IDLE;
+        System.out.println("SCANNER WAKE UP");
     }
     
     private void IDLE(){
-        msg = this.receiveMessage();
-        System.out.println("LO QUE RECIVE EL ESCANER : " + msg);
         
-        if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH")){
+        msg = this.receiveMessage();
+        System.out.println("LO QUE RECIVE EL ESCANER 1: " + msg);
+        
+        if(!msg.contains("FINISH"))
+        msg2 = this.receiveMessage();
+        else msg2 = "";
+       
+        
+        System.out.println("LO QUE RECIVE EL ESCANER 2: " + msg2);
+        
+        if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH") || msg2.contains("CRASHED") || msg2.contains("BAD") || msg2.contains("FINISH")){
             state = FINISH;
         }
         else{
@@ -55,7 +65,7 @@ public class AgentScanner extends Agent{
     }
     
     private void PROCESS_DATA(){
-        
+      /*  
         JsonObject object = Json.parse(msg).asObject();
         array_scanner.clear();
                 
@@ -65,7 +75,7 @@ public class AgentScanner extends Agent{
             array_scanner.add(ja.get(i).asFloat());
             System.out.println("info scanner: " + i + " : " + ja.get(i).asFloat());
         }
-                
+                */
         state = UPDATE_MAP;
     }
     
@@ -107,7 +117,7 @@ public class AgentScanner extends Agent{
                     break;
             }
         }
-        System.out.println(ANSI_PURPLE+"------- SCANNER FINISHED -------");
+        System.out.println("------- SCANNER FINISHED -------");
 
     }
 }
