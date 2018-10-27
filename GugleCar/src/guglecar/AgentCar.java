@@ -90,8 +90,9 @@ public class AgentCar extends Agent{
         try {
             this.agentBattery = new AgentBattery(batteryAgent,this.getAid());
             this.agentGPS = new AgentGPS(gpsAgent, scannerAgent, this.getAid());
-            this.agentRadar = new AgentRadar(this.radarAgent,this.scannerAgent, this.getAid());
-            this.agentScanner = new AgentScanner(this.scannerAgent,this.getAid(),this.gpsAgent);
+            this.agentRadar = new AgentRadar(this.radarAgent,this.explorerAgent, this.getAid());
+            this.agentScanner = new AgentScanner(this.scannerAgent,this.getAid(),this.explorerAgent);
+            this.agentExplorer = new AgentExplorer(this.explorerAgent,this.gpsAgent,this.getAid(),MAPA);
         } catch (Exception ex) {
             Logger.getLogger(AgentCar.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ANSI_RED+"Error inicializando agentes");
@@ -100,6 +101,7 @@ public class AgentCar extends Agent{
         this.agentGPS.start();
         this.agentRadar.start();
         this.agentScanner.start();
+        this.agentExplorer.start();
     }
     
     
@@ -318,11 +320,8 @@ public class AgentCar extends Agent{
         
         JsonObject outjson = Json.object().add("signal", "FINISH");
         
-        this.sendMessage(this.batteryAgent, outjson.toString());
-        this.sendMessage(this.gpsAgent, outjson.toString());
-        this.sendMessage(this.radarAgent, outjson.toString());
-        this.sendMessage(this.scannerAgent, outjson.toString());
-
+        
+        BufferedImage im = null;
         
         if(aux1.contains("trace")){
             try{
@@ -339,7 +338,7 @@ public class AgentCar extends Agent{
                 fos.write(data);
                 fos.close();
                 double a  = array.size();
-                BufferedImage im = ImageIO.read(new File("mitraza.png"));
+                 im = ImageIO.read(new File("mitraza.png"));
                 
                 System.out.println(ANSI_RED+"TAMANIO MAPA: " + im.getWidth());
                 System.out.println(ANSI_RED+"Traza guardada");
@@ -361,7 +360,7 @@ public class AgentCar extends Agent{
                 fos.write(data);
                 fos.close();
                 double a  = array.size();
-                BufferedImage im = ImageIO.read(new File("mitraza.png"));
+                 im = ImageIO.read(new File("mitraza.png"));
                 
                 System.out.println(ANSI_RED+"TAMANIO MAPA: " + im.getWidth());
                 System.out.println(ANSI_RED+"Traza guardada");
@@ -372,6 +371,13 @@ public class AgentCar extends Agent{
             
             
         }
+        
+        this.sendMessage(this.batteryAgent, outjson.toString());
+        this.sendMessage(this.gpsAgent, outjson.toString());
+        this.sendMessage(this.radarAgent, outjson.toString());
+        this.sendMessage(this.scannerAgent, outjson.toString());
+        outjson.add("size", im.getWidth());
+        this.sendMessage(this.explorerAgent, outjson.toString());
         
         finish = true;
         

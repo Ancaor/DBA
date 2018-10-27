@@ -105,7 +105,7 @@ public class AgentRadar extends Agent{
             System.out.println(ANSI_PURPLE + "posicion " + i + " : " + ja.get(i).asInt());
         }
            
-        System.out.println("Vision de matriz del radar");
+        System.out.println(ANSI_PURPLE+"Vision de matriz del radar");
         for (int i = 0; i < 25; i+=1){
             if(i%5 == 0){
                 System.out.print("\n");
@@ -124,7 +124,7 @@ public class AgentRadar extends Agent{
         state = IDLE;
         
         //this.sendMessage(new AgentID(Car_ID), msg);
-        //this.sendMessage(Explorer_ID, msg);
+        this.sendMessage(Explorer_ID, msg);
         
     }
 

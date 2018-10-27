@@ -44,15 +44,18 @@ public class AgentExplorer extends Agent {
     private ArrayList<Integer> map = new ArrayList<>();
     
     
-    private static int m = 504;
-    private static int n = 504;
+    private  static int m = 504;
+    private  static int n = 504;
+    private int m_real;
+    private int n_real;
     
     private int x;
     private int y;
     private ArrayList<Integer> array_radar = new ArrayList<>(); 
-    
+    private ArrayList<Float> array_scanner = new ArrayList<>(); 
     private String msg;
     private String msg2;
+    private String msg_finish;
     private JsonObject msgJson;
     private int state = 0;
     Boolean end = false;
@@ -115,10 +118,19 @@ public class AgentExplorer extends Agent {
     private void IDLE(){
     
         msg = this.receiveMessage();
-        msg2 = this.receiveMessage();
+        System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 1: " + msg);
         
-        if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH")){
+        if(!msg.contains("FINISH")){
+        msg2 = this.receiveMessage();
+        System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 2: " + msg2);
+        }
+        else msg2 = "";
+        
+        if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH") || msg2.contains("CRASHED") || msg2.contains("BAD") || msg2.contains("FINISH")){
             state = FINISH;
+            if(msg.contains("FINISH"))
+                this.msg_finish = msg;
+            else this.msg_finish = msg2;
         }
         else{
             state = PROCESS_DATA;
@@ -142,32 +154,41 @@ public class AgentExplorer extends Agent {
             msg_radar = msg2;
             msg_gps = msg;
         }
-       /* 
-        System.out.println("Radar: " + msg_radar);
-        System.out.println("GPS: " + msg_gps);
-        */
+        
+        System.out.println(ANSI_YELLOW+"Radar: " + msg_radar);
+        System.out.println(ANSI_YELLOW+"GPS: " + msg_gps);
+        
       
-        JsonObject object = Json.parse(msg_gps).asObject();
+        JsonObject objectGPS = Json.parse(msg_gps).asObject().get("gps").asObject();
+        JsonArray arrayScanner = Json.parse(msg_gps).asObject().get("scanner").asArray();
+        JsonArray arrayRadar = Json.parse(msg_radar).asObject().get("radar").asArray();
         
         
-        x = object.get("x").asInt();
-        y = object.get("y").asInt();
         
-        msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
+        x = objectGPS.get("x").asInt();
+        y = objectGPS.get("y").asInt();
+        
+       // msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
        // this.sendMessage(new AgentID(Car_ID), msg);
         
        
-        JsonObject object2 = Json.parse(msg_radar).asObject();
+       // JsonObject object2 = Json.parse(msg_radar).asObject();
         
-        JsonArray ja = object2.get("radar").asArray();
+      //  JsonArray ja = object2.get("radar").asArray();
         
         for (int i = 0; i < 25; i+=1){
-            array_radar.add(ja.get(i).asInt());
+            array_radar.add(arrayRadar.get(i).asInt());
         }
+        
+        for (int i = 0; i < 25; i+=1){
+            array_scanner.add(arrayScanner.get(i).asFloat());
+        }
+        
+        
         
         state = UPDATE_MAP;
         
-        msg = "Explorer: Radar = " + array_radar.toString();
+       // msg = "Explorer: Radar = " + array_radar.toString();
        // this.sendMessage(new AgentID(Car_ID), msg);
         
     }
@@ -186,8 +207,9 @@ public class AgentExplorer extends Agent {
                 index+=1;
             }
         
-        map.set(x*m+y, 9);
-        state = FINISH;
+        //map.set(x*m+y, 9);
+        
+        state = IDLE;
         
         
     }
@@ -263,7 +285,12 @@ public class AgentExplorer extends Agent {
     private void FINISH(){
     
         end = true;
+        
+        this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
+        this.n_real = this.m;
+        
         PrintMap();
+        saveMap(this.mapName);
         msg = "\nEl Explorer ha finalizado su ejecución.\n";
         //this.sendMessage(new AgentID(Car_ID), msg);
     }
@@ -357,7 +384,7 @@ public class AgentExplorer extends Agent {
             m = 504;
             n= 504;
             initMap();
-            System.out.println("No existe mapa, se utilizan valores por defecto");
+            System.out.println(ANSI_YELLOW+"No existe mapa, se utilizan valores por defecto");
         }
       
     }
@@ -385,7 +412,7 @@ public class AgentExplorer extends Agent {
                     break;
             }
         }   
-        System.out.println("Fin de AgentExplorer");
+        System.out.println(ANSI_YELLOW+"Fin de AgentExplorer");
         
     }
 }
