@@ -42,12 +42,14 @@ public class AgentExplorer extends Agent {
     private AgentID Car_ID;
     
     private ArrayList<Integer> map = new ArrayList<>();
+    private ArrayList<Integer> map_real = new ArrayList<>();
     
     
     private  static int m = 504;
     private  static int n = 504;
-    private int m_real;
-    private int n_real;
+    
+    private int m_real=m;
+    private int n_real=n;
     
     private int x;
     private int y;
@@ -86,21 +88,21 @@ public class AgentExplorer extends Agent {
         
     }
     
-    public void initMap(){
-        for(int i = 0; i < m*2; i+=1)
-            map.add(1);
+    public void initMap(ArrayList<Integer> mapa){
+        for(int i = 0; i < m_real*2; i+=1)
+            mapa.add(1);
  
-        for(int i = 0; i < m-4; i+=1){
-           map.add(1);
-           map.add(1);
-           for (int j = 0; j < m-4; j+=1)
-               map.add(-1);
-           map.add(1);
-           map.add(1);
+        for(int i = 0; i < m_real-4; i+=1){
+           mapa.add(1);
+           mapa.add(1);
+           for (int j = 0; j < m_real-4; j+=1)
+               mapa.add(-1);
+           mapa.add(1);
+           mapa.add(1);
         }
         
-        for(int i = 0; i < m*2; i+=1)
-            map.add(1);
+        for(int i = 0; i < m_real*2; i+=1)
+            mapa.add(1);
     }
 
     
@@ -168,6 +170,7 @@ public class AgentExplorer extends Agent {
         x = objectGPS.get("x").asInt();
         y = objectGPS.get("y").asInt();
         
+        
        // msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
        // this.sendMessage(new AgentID(Car_ID), msg);
         
@@ -207,8 +210,8 @@ public class AgentExplorer extends Agent {
                 index+=1;
             }
         
-        //map.set(x*m+y, 9);
-        
+       // map.set(x*m+y, 9);
+        System.out.println(ANSI_YELLOW+"Pasa el parseo ");
         state = IDLE;
         
         
@@ -287,11 +290,13 @@ public class AgentExplorer extends Agent {
         end = true;
         
         this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
-        this.n_real = this.m;
+        this.n_real = this.m_real;
+        System.out.println(ANSI_YELLOW+"m_real : " + m_real);
         
-        PrintMap();
+        //PrintMap();
         saveMap(this.mapName);
-        msg = "\nEl Explorer ha finalizado su ejecución.\n";
+        
+        //msg = "\nEl Explorer ha finalizado su ejecución.\n";
         //this.sendMessage(new AgentID(Car_ID), msg);
     }
     
@@ -347,18 +352,40 @@ public class AgentExplorer extends Agent {
     }
     
     public void saveMap(String mapName){
+        
+        if(this.map_real.size() == 0){
+            System.out.println(ANSI_YELLOW + "size=0");
+            
+            this.initMap(map_real);
+            
+            for(int i=0;i<this.m_real;i++){
+                for(int j=0;j<this.m_real;j++){
+                    int casilla = this.map.get(i*m+j);
+                    if(casilla == 0 ||casilla == 1)
+                    this.map_real.set(i*m_real+j, casilla);
+                }
+            }
+            
+            
+            
+            
+        }
+        
+        System.out.println(ANSI_YELLOW + "sale bien");
+        
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(mapName+".map"));
-            bw.write(m + " " + n);
+            bw.write(m_real + " " + n_real);
             bw.newLine();
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    bw.write(map.get(i*m + j) + ((j ==m-1) ? "" : ","));
+            for (int i = 0; i < m_real; i++) {
+                for (int j = 0; j < n_real; j++) {
+                    bw.write(map_real.get(i*m_real + j) + ((j == m_real-1) ? "" : ","));
                 }
                 bw.newLine();
             }
             bw.flush();
-        } catch (IOException e) {}
+        } catch (IOException e) {System.out.println("PETA AL ESCRIBIR EL .MAP");}
+        
     }
     
     public void loadMap(String mapName){
@@ -368,22 +395,22 @@ public class AgentExplorer extends Agent {
             sc = new Scanner(new BufferedReader(new FileReader(mapName+".map")));
             String[] line = sc.nextLine().trim().split(" ");
       
-            m = Integer.valueOf(line[0]);
-            n = Integer.valueOf(line[1]);
+            m_real = Integer.valueOf(line[0]);
+            n_real = Integer.valueOf(line[1]);
             
-            int [][] myArray = new int[m][n];
+          //  int [][] myArray = new int[m][n];
             while(sc.hasNextLine()) {
-              for (int i=0; i<myArray.length; i++) {
+              for (int i=0; i<(m*n); i++) {
                   line = sc.nextLine().trim().split(",");
                  for (int j=0; j<line.length; j++) {
-                    myArray[i][j] = Integer.parseInt(line[j]);
+                   // myArray[i][j] = Integer.parseInt(line[j]);
+                    map_real.add( Integer.parseInt(line[j]));
                  }
               }
            }
         } catch (FileNotFoundException ex) {   // SI NO EXISTE EL ARCHIVO
-            m = 504;
-            n= 504;
-            initMap();
+
+            initMap(map);
             System.out.println(ANSI_YELLOW+"No existe mapa, se utilizan valores por defecto");
         }
       
