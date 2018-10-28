@@ -86,11 +86,12 @@ public class AgentExplorer extends Agent {
         this.mapName = mapName;
         
         this.loadMap(mapName);
-        
+        //initMap(map_real);
         
     }
     
     public void initMap(ArrayList<Integer> mapa){
+        System.out.println("INIT MAP");
         for(int i = 0; i < m_real*2; i+=1)
             mapa.add(1);
  
@@ -184,11 +185,13 @@ public class AgentExplorer extends Agent {
         
       //  JsonArray ja = object2.get("radar").asArray();
         
+        array_radar.clear();
         for (int i = 0; i < 25; i+=1){
             array_radar.add(arrayRadar.get(i).asInt());
             // System.out.println(ANSI_YELLOW+"Radar: " + arrayRadar.get(i).asInt());
         }
         
+        array_scanner.clear();
         for (int i = 0; i < 25; i+=1){
             array_scanner.add(arrayScanner.get(i).asFloat());
         }
@@ -232,11 +235,27 @@ public class AgentExplorer extends Agent {
     /*
         Enviar información al agente del mapa.
     */
+    
+    //Funcion debug para imprimir matriz del mapa real en la consola
+    private void DEBUG_IMPRIMIRMAPAREAL(){
+        System.out.println("PASOS: " + pasos);
+        for(int i = 0; i < m_real; i++){
+            System.out.print("\n");
+            for(int j = 0; j < n_real; j++){
+                System.out.print(map_real.get(i*m_real + j) + " ");
+                if(map_real.get(i*m_real + j) != -1){
+                    System.out.print(" ");
+                }
+            }
+        }
+    }
    
     private void UPDATE_MAP(){
         int index = 0;
         
-        if(map_real.size() == 0)
+        
+        if(map_real.size() == 0){
+            System.out.println("ENTRA EN IF");
         for(int i = y-2; i <= y+2; i+=1)
             for(int j = x-2; j <= x+2; j+=1){
                // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
@@ -246,24 +265,60 @@ public class AgentExplorer extends Agent {
                 map.set(i*m+j, array_radar.get(index));
                 index+=1;
             }
-        else
+        }
+        else{
+             System.out.println("ENTRA EN ELSE: " + index );
             for(int i = y-2; i <= y+2; i+=1)
                 for(int j = x-2; j <= x+2; j+=1){
                    // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
                    // System.out.println("i:" + i + ", j" + j);
                    // System.out.println(map_real.get(i*m_real+j));
                    // System.out.println(array_radar.get(index));
+                 //  if(map_real.get(i*m_real+j))
+                    if(map_real.get(i*m_real+j) ==0 && array_radar.get(index) ==1){
+                        System.out.println("SOBRESCRIBIENDO UN CERO CON UN UNO");
+                    }
                     map_real.set(i*m_real+j, array_radar.get(index));
+                    if(map_real.get(i*m_real+j) == 0){
+                        System.out.println("PUESTOS 0");
+                    }
                     index+=1;
                 }
+        }
         
+        
+            //DEBUG 
+            System.out.println("ESTO ES LO QUE VE EL ARRAY");
+            index = 0;
+            for(int i = y-2; i <= y+2; i+=1){
+                System.out.print("\n");
+                for(int j = x-2; j <= x+2; j+=1){
+                    System.out.print(array_radar.get(index) + " ");
+                    index++;
+                }
+            }
+            
+         System.out.println("\nESTO ES LO QUE VE EL MAPA");
+                for(int i = y-2; i <= y+2; i+=1){
+                    System.out.print("\n");
+                    for(int j = x-2; j <= x+2; j+=1){
+                        System.out.print(map_real.get(i*m_real+j) + " ");
+                    }
+                }
+                
+                System.out.print("\n");
+
        // map.set(x*m+y, 9);
         System.out.println(ANSI_YELLOW+"Pasa el parseo ");
         
         
         JsonObject movement = new JsonObject();
         
+        //Mirar a que posicion moverse
+        //Mirar donde pude moverse por el radar
+    //    System.out.println(ANSI_YELLOW+"Info radar PULGARCITO: "+ array_radar.toString());
         
+    //    DEBUG_IMPRIMIRMAPAREAL();
         if(pasos < 7){
             movement.add("command", "moveSW");
             this.sendMessage(this.Car_ID, movement.toString());
@@ -416,12 +471,11 @@ public class AgentExplorer extends Agent {
     }
     
     public void saveMap(String mapName){
-        
         if(this.map_real.size() == 0){
             System.out.println(ANSI_YELLOW + "size=0");
             
             this.initMap(map_real);
-            
+        
             for(int i=0;i<this.m_real;i++){
                 for(int j=0;j<this.m_real;j++){
                     int casilla = this.map.get(i*m+j);
@@ -429,8 +483,8 @@ public class AgentExplorer extends Agent {
                     this.map_real.set(i*m_real+j, casilla);
                 }
             }
-               
         }
+        
         
         System.out.println(ANSI_YELLOW + "sale bien");
         
@@ -440,6 +494,7 @@ public class AgentExplorer extends Agent {
             bw.newLine();
             for (int i = 0; i < m_real; i++) {
                 for (int j = 0; j < n_real; j++) {
+                //    System.out.println(map_real.get(i*m_real + j));
                     bw.write(map_real.get(i*m_real + j) + ((j == m_real-1) ? "" : ","));
                 }
                 bw.newLine();

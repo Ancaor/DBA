@@ -79,15 +79,17 @@ public class AgentScanner extends Agent{
         
         
         //Salida con formato matriz
-     //   System.out.println("Vision de matriz del escaner");
+     /*
+        System.out.println("Vision de matriz del escaner");
         for (int i = 0; i < 25; i+=1){
             if(i%5 == 0){
-       //         System.out.print("\n");
+                System.out.print("\n");
             }
-         //   System.out.print(array_scanner.get(i));
-         //   System.out.print("   ");
+            System.out.print(array_scanner.get(i));
+            System.out.print("   ");
         }
-      //  System.out.print("\n");
+        System.out.print("\n");
+        */
         
         state = UPDATE_MAP;
     }
@@ -151,7 +153,7 @@ public class AgentScanner extends Agent{
     }
     
     private void UPDATE_MAP(){
-        FindObjective();
+       // FindObjective();
         
         JsonObject object = new JsonObject();
         object.add("gps", Json.parse(msg2).asObject().get("gps").asObject())
