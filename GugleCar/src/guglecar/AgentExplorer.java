@@ -45,8 +45,8 @@ public class AgentExplorer extends Agent {
     private ArrayList<Integer> map_real = new ArrayList<>();
     
     
-    private  static int m = 20;
-    private  static int n = 20;
+    private  static int m = 504;
+    private  static int n = 504;
     
     private int m_real=m;
     private int n_real=n;
@@ -167,10 +167,12 @@ public class AgentExplorer extends Agent {
         
         
         
-       // x = objectGPS.get("x").asInt();
-       // y = objectGPS.get("y").asInt();
-        x = 17;
-        y=2;
+        x = objectGPS.get("x").asInt();
+        y = objectGPS.get("y").asInt();
+        y+=2; // el mapa es 104 pero las coordenadas solo cuentan 100;
+        x+=2;
+      //  x = 17;
+      //  y=2;
         
        // msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
        // this.sendMessage(new AgentID(Car_ID), msg);
@@ -180,14 +182,15 @@ public class AgentExplorer extends Agent {
         
       //  JsonArray ja = object2.get("radar").asArray();
         
-     /*   for (int i = 0; i < 25; i+=1){
+        for (int i = 0; i < 25; i+=1){
             array_radar.add(arrayRadar.get(i).asInt());
         }
         
         for (int i = 0; i < 25; i+=1){
             array_scanner.add(arrayScanner.get(i).asFloat());
         }
-    */
+    
+     /*
      array_radar.add(1);
      array_radar.add(1);
      array_radar.add(1);
@@ -214,7 +217,7 @@ public class AgentExplorer extends Agent {
      array_radar.add(1);
      array_radar.add(1);
         
-        
+        */
         state = UPDATE_MAP;
         
        // msg = "Explorer: Radar = " + array_radar.toString();
@@ -230,8 +233,13 @@ public class AgentExplorer extends Agent {
     private void UPDATE_MAP(){
         int index = 0;
         
+        
         for(int i = y-2; i <= y+2; i+=1)
             for(int j = x-2; j <= x+2; j+=1){
+                System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
+                System.out.println("i:" + i + ", j" + j);
+                System.out.println(map.get(i*m+j));
+                System.out.println(array_radar.get(index));
                 map.set(i*m+j, array_radar.get(index));
                 index+=1;
             }
@@ -315,13 +323,13 @@ public class AgentExplorer extends Agent {
     
         end = true;
         
-    //    this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
-    //    this.n_real = this.m_real;
+        this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
+        this.n_real = this.m_real;
         System.out.println(ANSI_YELLOW+"m_real : " + m_real);
         
-        //PrintMap();
-        saveMap(this.mapName);
         
+        saveMap(this.mapName);
+        PrintMap();
         //msg = "\nEl Explorer ha finalizado su ejecución.\n";
         //this.sendMessage(new AgentID(Car_ID), msg);
     }
@@ -347,25 +355,25 @@ public class AgentExplorer extends Agent {
         
         // Esta en sucio pero funciona
         
-        byte [][] a = new byte[m][n];
-        for(int i = 0; i < m; i++)
-            for(int j = 0; j < n; j++){
-                if(map.get(i*m+j) == 1)
+        byte [][] a = new byte[m_real][n_real];
+        for(int i = 0; i < m_real; i++)
+            for(int j = 0; j < n_real; j++){
+                if(map_real.get(i*m_real+j) == 1)
                 a[i][j] = 0;
                 else a[i][j] = 1;
             }
         
-        byte raw[] = new byte[m * n];
+        byte raw[] = new byte[m_real * n_real];
         for (int i = 0; i < a.length; i++) {
-            System.arraycopy(a[i], 0, raw, i*m, n);
+            System.arraycopy(a[i], 0, raw, i*m_real, n_real);
         }
 
         byte levels[] = new byte[]{0, -1};
-        BufferedImage image = new BufferedImage(m, n, 
+        BufferedImage image = new BufferedImage(m_real, n_real, 
                 BufferedImage.TYPE_BYTE_INDEXED,
                 new IndexColorModel(8, 2, levels, levels, levels));
         DataBuffer buffer = new DataBufferByte(raw, raw.length);
-        SampleModel sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, m, n, 1, m * 1, new int[]{0});
+        SampleModel sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, m_real, n_real, 1, m_real * 1, new int[]{0});
         Raster raster = Raster.createRaster(sampleModel, buffer, null);
         image.setData(raster);
         try {
