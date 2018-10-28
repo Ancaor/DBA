@@ -45,8 +45,8 @@ public class AgentExplorer extends Agent {
     private ArrayList<Integer> map_real = new ArrayList<>();
     
     
-    private  static int m = 504;
-    private  static int n = 504;
+    private  static int m = 20;
+    private  static int n = 20;
     
     private int m_real=m;
     private int n_real=n;
@@ -167,9 +167,10 @@ public class AgentExplorer extends Agent {
         
         
         
-        x = objectGPS.get("x").asInt();
-        y = objectGPS.get("y").asInt();
-        
+       // x = objectGPS.get("x").asInt();
+       // y = objectGPS.get("y").asInt();
+        x = 17;
+        y=2;
         
        // msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
        // this.sendMessage(new AgentID(Car_ID), msg);
@@ -179,14 +180,39 @@ public class AgentExplorer extends Agent {
         
       //  JsonArray ja = object2.get("radar").asArray();
         
-        for (int i = 0; i < 25; i+=1){
+     /*   for (int i = 0; i < 25; i+=1){
             array_radar.add(arrayRadar.get(i).asInt());
         }
         
         for (int i = 0; i < 25; i+=1){
             array_scanner.add(arrayScanner.get(i).asFloat());
         }
-        
+    */
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(0);
+     array_radar.add(0);
+     array_radar.add(0);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(0);
+     array_radar.add(0);
+     array_radar.add(0);
+     array_radar.add(1);
+     array_radar.add(1);
+     array_radar.add(0);
+     array_radar.add(0);
+     array_radar.add(0);
+     array_radar.add(1);
+     array_radar.add(1);
         
         
         state = UPDATE_MAP;
@@ -204,8 +230,8 @@ public class AgentExplorer extends Agent {
     private void UPDATE_MAP(){
         int index = 0;
         
-        for(int i = x-2; i <= x+2; i+=1)
-            for(int j = y-2; j <= y+2; j+=1){
+        for(int i = y-2; i <= y+2; i+=1)
+            for(int j = x-2; j <= x+2; j+=1){
                 map.set(i*m+j, array_radar.get(index));
                 index+=1;
             }
@@ -289,8 +315,8 @@ public class AgentExplorer extends Agent {
     
         end = true;
         
-        this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
-        this.n_real = this.m_real;
+    //    this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
+    //    this.n_real = this.m_real;
         System.out.println(ANSI_YELLOW+"m_real : " + m_real);
         
         //PrintMap();
