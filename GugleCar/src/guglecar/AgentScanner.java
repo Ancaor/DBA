@@ -47,14 +47,14 @@ public class AgentScanner extends Agent{
     private void IDLE(){
         
         msg = this.receiveMessage();
-        System.out.println("LO QUE RECIBE EL ESCANER 1: " + msg);
+       // System.out.println("LO QUE RECIBE EL ESCANER 1: " + msg);
         
         if(!msg.contains("FINISH"))
         msg2 = this.receiveMessage();
         else msg2 = "";
        
         
-        System.out.println("LO QUE RECIBE EL ESCANER 2: " + msg2);
+     //   System.out.println("LO QUE RECIBE EL ESCANER 2: " + msg2);
         
         if(msg.contains("CRASHED") || msg.contains("BAD") || msg.contains("FINISH") || msg2.contains("CRASHED") || msg2.contains("BAD") || msg2.contains("FINISH")){
             state = FINISH;
@@ -73,21 +73,21 @@ public class AgentScanner extends Agent{
         
         for (int i = 0; i < 25; i+=1){
             array_scanner.add(ja.get(i).asFloat());
-            System.out.println("info scanner: " + i + " : " + ja.get(i).asFloat());
+          //  System.out.println("info scanner: " + i + " : " + ja.get(i).asFloat());
         }
         
         
         
         //Salida con formato matriz
-        System.out.println("Vision de matriz del escaner");
+     //   System.out.println("Vision de matriz del escaner");
         for (int i = 0; i < 25; i+=1){
             if(i%5 == 0){
-                System.out.print("\n");
+       //         System.out.print("\n");
             }
-            System.out.print(array_scanner.get(i));
-            System.out.print("   ");
+         //   System.out.print(array_scanner.get(i));
+         //   System.out.print("   ");
         }
-        System.out.print("\n");
+      //  System.out.print("\n");
         
         state = UPDATE_MAP;
     }

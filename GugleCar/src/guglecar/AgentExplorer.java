@@ -69,6 +69,8 @@ public class AgentExplorer extends Agent {
     
     private String mapName;
     
+    private int pasos = 0; // para movimiento pocho
+    
     //-------------Pulgarcito START------------------
     
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
@@ -184,6 +186,7 @@ public class AgentExplorer extends Agent {
         
         for (int i = 0; i < 25; i+=1){
             array_radar.add(arrayRadar.get(i).asInt());
+            // System.out.println(ANSI_YELLOW+"Radar: " + arrayRadar.get(i).asInt());
         }
         
         for (int i = 0; i < 25; i+=1){
@@ -233,19 +236,46 @@ public class AgentExplorer extends Agent {
     private void UPDATE_MAP(){
         int index = 0;
         
-        
+        if(map_real.size() == 0)
         for(int i = y-2; i <= y+2; i+=1)
             for(int j = x-2; j <= x+2; j+=1){
-                System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
-                System.out.println("i:" + i + ", j" + j);
-                System.out.println(map.get(i*m+j));
-                System.out.println(array_radar.get(index));
+               // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
+               // System.out.println("i:" + i + ", j" + j);
+                System.out.println("pos mapa: " + j +" " + i +" contiene " +map.get(i*m+j));
+                System.out.println("radar en esa pos contiene " +array_radar.get(index));
                 map.set(i*m+j, array_radar.get(index));
                 index+=1;
             }
+        else
+            for(int i = y-2; i <= y+2; i+=1)
+                for(int j = x-2; j <= x+2; j+=1){
+                   // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
+                   // System.out.println("i:" + i + ", j" + j);
+                   // System.out.println(map_real.get(i*m_real+j));
+                   // System.out.println(array_radar.get(index));
+                    map_real.set(i*m_real+j, array_radar.get(index));
+                    index+=1;
+                }
         
        // map.set(x*m+y, 9);
         System.out.println(ANSI_YELLOW+"Pasa el parseo ");
+        
+        
+        JsonObject movement = new JsonObject();
+        
+        
+        if(pasos < 7){
+            movement.add("command", "moveSW");
+            this.sendMessage(this.Car_ID, movement.toString());
+            pasos++;
+        }
+        else{
+            movement.add("signal","NO_MOVE");
+            this.sendMessage(this.Car_ID, movement.toString());
+        }
+            
+        
+        
         state = IDLE;
         
         
@@ -358,7 +388,7 @@ public class AgentExplorer extends Agent {
         byte [][] a = new byte[m_real][n_real];
         for(int i = 0; i < m_real; i++)
             for(int j = 0; j < n_real; j++){
-                if(map_real.get(i*m_real+j) == 1)
+                if((map_real.get(i*m_real+j) == 1) || ((map_real.get(i*m_real+j) == -1)))
                 a[i][j] = 0;
                 else a[i][j] = 1;
             }
@@ -395,14 +425,11 @@ public class AgentExplorer extends Agent {
             for(int i=0;i<this.m_real;i++){
                 for(int j=0;j<this.m_real;j++){
                     int casilla = this.map.get(i*m+j);
-                    if(casilla == 0 ||casilla == 1)
+                    if(casilla == 0)
                     this.map_real.set(i*m_real+j, casilla);
                 }
             }
-            
-            
-            
-            
+               
         }
         
         System.out.println(ANSI_YELLOW + "sale bien");
@@ -434,7 +461,7 @@ public class AgentExplorer extends Agent {
             
           //  int [][] myArray = new int[m][n];
             while(sc.hasNextLine()) {
-              for (int i=0; i<(m*n); i++) {
+              for (int i=0; i<(m_real); i++) {
                   line = sc.nextLine().trim().split(",");
                  for (int j=0; j<line.length; j++) {
                    // myArray[i][j] = Integer.parseInt(line[j]);

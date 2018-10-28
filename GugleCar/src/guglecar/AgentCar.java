@@ -49,6 +49,8 @@ public class AgentCar extends Agent{
     private String clave;
     private int agentsNum;
     private boolean refuel;
+    private String movement;
+    private String signal;
     private JsonObject command = new JsonObject();
     
     AgentBattery agentBattery;
@@ -58,11 +60,11 @@ public class AgentCar extends Agent{
     AgentScanner agentScanner;
     
     AgentID serverAgent;
-    AgentID radarAgent = new AgentID("Radar7");
-    AgentID scannerAgent = new AgentID("scanner1");
-    AgentID gpsAgent = new AgentID("gps6");
-    AgentID batteryAgent = new AgentID("bateriCoche");
-    AgentID explorerAgent = new AgentID("Explorador7");
+    AgentID radarAgent = new AgentID("Radar17");
+    AgentID scannerAgent = new AgentID("scanner11");
+    AgentID gpsAgent = new AgentID("gps61");
+    AgentID batteryAgent = new AgentID("bateriCoche1");
+    AgentID explorerAgent = new AgentID("Explorador711");
     
     /**
     *
@@ -75,7 +77,7 @@ public class AgentCar extends Agent{
     public AgentCar(AgentID aid, AgentID server_id) throws Exception {
         super(aid);
         this.serverAgent = server_id;
-        this.agentsNum = 1;
+        this.agentsNum = 2;
         this.refuel = false;
     }
     
@@ -176,7 +178,7 @@ public class AgentCar extends Agent{
                 System.out.println(ANSI_RED +"ERROR_SERVER : " + server_response);
             }else if(injson.get("result").toString().contains("CRASHED")){
                 //this.state = FINISH;
-                this.state = WAIT_AGENTS;
+                this.state = FINISH;
                 System.out.println(ANSI_RED +"ERROR_SERVER : " + server_response);
             }else{
                 if(this.clave.equals("")){
@@ -246,10 +248,17 @@ public class AgentCar extends Agent{
         
         for(int i = 0; i < this.agentsNum; i++){
             messages.add(this.receiveMessage());
+            System.out.println(ANSI_RED+"Contenido mensage " + i + messages.get(messages.size()-1));
         }
         for(int i = 0; i < messages.size(); i++){
             if(messages.get(i).contains("battery")){
                 this.refuel = Json.parse(messages.get(i)).asObject().get("battery").asBoolean();
+            }else if(messages.get(i).contains("command")){//recibe desde el explorer
+                this.movement = Json.parse(messages.get(i)).asObject().get("command").asString();
+                this.signal = "";
+            }else if(messages.get(i).contains("signal")){//recibe desde el explorer
+                this.signal = Json.parse(messages.get(i)).asObject().get("signal").asString();
+                this.movement = "";
             }
         }
         
@@ -277,16 +286,25 @@ public class AgentCar extends Agent{
     
     public void sendCommand(){
         
+        System.out.println(ANSI_RED+"Esta en send command");
         
+        if(this.movement.contains("move")){
+            System.out.println(ANSI_RED+"tiene move");
+            command = Json.object().add("command", this.movement)
+                    .add("key", this.clave);
+            this.state = WAIT_SERVER_RESPONSE;
+        }
         
         //LOGOUT
-        
-         command = Json.object().add("command", "logout")
-                .add("key", this.clave);
-        
+        if(this.signal.contains("NO_MOVE")){
+            System.out.println(ANSI_RED+"no tiene move");
+            command = Json.object().add("command", "logout")
+                    .add("key", this.clave);
+            this.state = FINISH;
+        }
         this.sendMessage(this.serverAgent, command.toString());
         
-        this.state = WAIT_AGENTS;
+        
         
         //
     }

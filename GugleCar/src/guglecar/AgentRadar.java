@@ -102,18 +102,18 @@ public class AgentRadar extends Agent{
         
         for (int i = 0; i < 25; i+=1){
             array_radar.add(ja.get(i).asInt());
-            System.out.println(ANSI_PURPLE + "posicion " + i + " : " + ja.get(i).asInt());
+           // System.out.println(ANSI_PURPLE + "posicion " + i + " : " + ja.get(i).asInt());
         }
            
-        System.out.println(ANSI_PURPLE+"Vision de matriz del radar");
+      //  System.out.println(ANSI_PURPLE+"Vision de matriz del radar");
         for (int i = 0; i < 25; i+=1){
             if(i%5 == 0){
-                System.out.print("\n");
+        //        System.out.print("\n");
             }
-            System.out.print(ANSI_PURPLE + array_radar.get(i));
-            System.out.print("   ");
+          //  System.out.print(ANSI_PURPLE + array_radar.get(i));
+          //  System.out.print("   ");
         }
-        System.out.print("\n");        
+       // System.out.print("\n");        
         
         state = UPDATE_MAP;
     }
