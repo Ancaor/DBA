@@ -77,6 +77,10 @@ public class AgentExplorer extends Agent {
     private boolean MPCreado = false;
     private int MPtam = 500;
     private boolean MapCompleted = false;
+    private int proxPos;
+    private JsonObject command = new JsonObject();
+    private String movement;
+    private String clave = "";
     
     
     public AgentExplorer(AgentID aid, AgentID gps, AgentID car, String mapName) throws Exception {
@@ -351,18 +355,19 @@ public class AgentExplorer extends Agent {
         int index = 0;
         for(int i = x-2; i <= x+2; i+=1){
             for(int j = y-2; j <= y+2; j+=1){
-                if(mapPulgarcito.get(i*m+j)>=10 && mapPulgarcito.get(i*m+j)<=999990){
-                    mapPulgarcito.set(i*m+j, mapPulgarcito.get(i*m+j)+1);
+
+                if(mapPulgarcito.get(i*MPtam+j)>=10 && mapPulgarcito.get(i*MPtam+j)<=999990){
+                    mapPulgarcito.set(i*MPtam+j, mapPulgarcito.get(i*MPtam+j)+1);
                 }
                 else{
                     if(array_radar.get(index) == 1){
-                        mapPulgarcito.set(i*m+j, 999999);
+                        mapPulgarcito.set(i*MPtam+j, 999999);
                     }
                     if(array_radar.get(index) == 2){
-                        mapPulgarcito.set(i*m+j, 999998);
+                        mapPulgarcito.set(i*MPtam+j, 999998);
                     }
                     if(array_radar.get(index) == 0){
-                        mapPulgarcito.set(i*m+j, 10);
+                        mapPulgarcito.set(i*MPtam+j, 10);
                     }
                 }
                 index+=1;
@@ -384,7 +389,7 @@ public class AgentExplorer extends Agent {
             if(aux >= 10 && aux <= 999990 ){
                 for(int j = x-1; i <= x+1 && cAux ==  true; i+=2){
                     for(int k = y-1; j <= y+1 && cAux ==  true; j+=2){
-                        if(mapPulgarcito.get(j*m+k)==-1){
+                        if(mapPulgarcito.get(j*MPtam+k)==-1){
                             cAux = false;
                         }
                     }
@@ -395,7 +400,55 @@ public class AgentExplorer extends Agent {
         MapCompleted = cAux;
     }
     
+    private int NextPosition(){
+        boolean aux = false;
+        int menor = 10000, iAux = -1;
+
+
+        for(int i = x-1; i <= x+1; i++){
+            for(int j = y-1; j <= y+1; i++){
+                if(i == x && j == y){
+                    j++;
+                }
+                if(menor > mapPulgarcito.get(i*MPtam+j)){
+                    menor = mapPulgarcito.get(i*MPtam+j);
+                    iAux = i*MPtam+j;
+                }
+            }
+        }
+            
+        return iAux;
+    }
+    
+    private void chooseMove(int a, int b){
+        if( x > a){
+            if(y > b){
+                this.movement = "moveNW";
+            }else if(y==b){
+                this.movement = "moveW";
+            }else{
+                this.movement = "moveSW";
+            }
+        }else if( x == a){
+            if(y > b){
+                this.movement = "moveN";
+            }else{
+                this.movement = "moveS";
+            }
+        }else if( x < a){
+            if(y > b){
+                this.movement = "moveNE";
+            }else if(y==b){
+                this.movement = "moveE";
+            }else{
+                this.movement = "moveSE";
+            }
+        }
+        
+    }
+    
     private void pulgarcito(){
+        int nextX = 0, nextY = 0;
         if(!MPCreado){
             for(int i = 0; i < MPtam*MPtam; i++){
                 mapPulgarcito.set(i, -1);
@@ -407,7 +460,14 @@ public class AgentExplorer extends Agent {
         testEnd();
         
         if(!MapCompleted){
-            
+            proxPos = NextPosition();
+            nextY = proxPos%500;
+            nextX = proxPos/500;
+            chooseMove(nextX, nextY);
+
+            JsonObject move = new JsonObject();
+            move.add("command", this.movement);
+            this.sendMessage(this.Car_ID, move.toString());
         }
         
         
