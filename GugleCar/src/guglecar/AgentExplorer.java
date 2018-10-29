@@ -74,9 +74,10 @@ public class AgentExplorer extends Agent {
     //-------------Pulgarcito START------------------
     
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
-    private boolean MPCreado = false;
-    private int MPtam = 500;
-    private boolean MapCompleted = false;
+    
+    
+    
+    ///////////////////////////////////////////////////
     
     
     public AgentExplorer(AgentID aid, AgentID gps, AgentID car, String mapName) throws Exception {
@@ -346,69 +347,10 @@ public class AgentExplorer extends Agent {
         
         
     }
-    
-    private void actualizarMapa(){
-        int index = 0;
-        for(int i = x-2; i <= x+2; i+=1){
-            for(int j = y-2; j <= y+2; j+=1){
-                if(mapPulgarcito.get(i*m+j)>=10 && mapPulgarcito.get(i*m+j)<=999990){
-                    mapPulgarcito.set(i*m+j, mapPulgarcito.get(i*m+j)+1);
-                }
-                else{
-                    if(array_radar.get(index) == 1){
-                        mapPulgarcito.set(i*m+j, 999999);
-                    }
-                    if(array_radar.get(index) == 2){
-                        mapPulgarcito.set(i*m+j, 999998);
-                    }
-                    if(array_radar.get(index) == 0){
-                        mapPulgarcito.set(i*m+j, 10);
-                    }
-                }
-                index+=1;
-            }
-        }
-    }
-    
-    private void testEnd(){
-        
-        boolean cAux = true;
-        int aux;
-        
-        for(int i = 501; i < MPtam*MPtam - 500 && cAux == true; i++){
-            
-            if(i%MPtam == 499){
-                i+=2;
-            }
-            aux = mapPulgarcito.get(i);
-            if(aux >= 10 && aux <= 999990 ){
-                for(int j = x-1; i <= x+1 && cAux ==  true; i+=2){
-                    for(int k = y-1; j <= y+1 && cAux ==  true; j+=2){
-                        if(mapPulgarcito.get(j*m+k)==-1){
-                            cAux = false;
-                        }
-                    }
-                }
-            }
-        }
-        
-        MapCompleted = cAux;
-    }
+  
     
     private void pulgarcito(){
-        if(!MPCreado){
-            for(int i = 0; i < MPtam*MPtam; i++){
-                mapPulgarcito.set(i, -1);
-            }
-            MPCreado = true;
-        }
         
-        actualizarMapa();
-        testEnd();
-        
-        if(!MapCompleted){
-            
-        }
         
         
         
