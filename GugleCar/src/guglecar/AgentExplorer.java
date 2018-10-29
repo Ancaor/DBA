@@ -48,6 +48,7 @@ public class AgentExplorer extends Agent {
     private  static int m = 504;
     private  static int n = 504;
     
+    
     private int m_real=m;
     private int n_real=n;
     
@@ -74,7 +75,11 @@ public class AgentExplorer extends Agent {
     //-------------Pulgarcito START------------------
     
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
+    private boolean mapExist;
+    private int steps;
     
+    private static final int WALL = 999999999;
+    private static final int ROAD = 0;
     
     
     ///////////////////////////////////////////////////
@@ -85,6 +90,8 @@ public class AgentExplorer extends Agent {
         GPS_ID = gps;
         Car_ID = car;
         this.mapName = mapName;
+        mapExist = false;
+        steps = 1;
         
         this.loadMap(mapName);
         //initMap(map_real);
@@ -107,6 +114,25 @@ public class AgentExplorer extends Agent {
         
         for(int i = 0; i < m_real*2; i+=1)
             mapa.add(1);
+    }
+    
+    public void initMapPulgarcito(ArrayList<Integer> mapa){
+        
+        System.out.println("INIT MAP PULGARCITO");
+        for(int i = 0; i < m*2; i+=1)
+            mapa.add(WALL);
+ 
+        for(int i = 0; i < m-4; i+=1){
+           mapa.add(WALL);
+           mapa.add(WALL);
+           for (int j = 0; j < m-4; j+=1)
+               mapa.add(-1);
+           mapa.add(WALL);
+           mapa.add(WALL);
+        }
+        
+        for(int i = 0; i < m*2; i+=1)
+            mapa.add(WALL);
     }
 
     
@@ -311,16 +337,16 @@ public class AgentExplorer extends Agent {
 
        // map.set(x*m+y, 9);
         System.out.println(ANSI_YELLOW+"Pasa el parseo ");
-        
+        /*
         
         JsonObject movement = new JsonObject();
-        
+        */
         //Mirar a que posicion moverse
         //Mirar donde pude moverse por el radar
     //    System.out.println(ANSI_YELLOW+"Info radar PULGARCITO: "+ array_radar.toString());
         
     //    DEBUG_IMPRIMIRMAPAREAL();
-    
+    /*
         if(this.array_radar.get(11) == 0 || this.array_radar.get(11) == 2){
             movement.add("command", "moveW");
             this.sendMessage(this.Car_ID, movement.toString());
@@ -330,17 +356,19 @@ public class AgentExplorer extends Agent {
             this.sendMessage(this.Car_ID, movement.toString());
             pasos++;
         }
+    */
         /*if(this.array_radar.get(12) != 2){
             movement.add("command", "moveSW");
             this.sendMessage(this.Car_ID, movement.toString());
             pasos++;
         }
-        */else{
+        *//*else{
             System.out.println("--------PASOS HASTA LLEGAR A OBJETIVO : "+ pasos + " -------------");
             movement.add("signal","NO_MOVE");
             this.sendMessage(this.Car_ID, movement.toString());
         }
-            
+            */
+        pulgarcito();
         
         
         state = IDLE;
@@ -349,13 +377,156 @@ public class AgentExplorer extends Agent {
     }
   
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private void pulgarcito(){
         
+        if(!this.mapExist){
+            this.initMapPulgarcito(this.mapPulgarcito);
+            this.mapExist = true;
+        }
+        
+        updatePulgarcitoMap();
+        
+        String movement = selectMovement();
         
         
         
+        if(steps < 10000){
+            JsonObject message = new JsonObject();
+             message.add("command", movement);
+            this.sendMessage(this.Car_ID, message.toString());
+        }else{
+            JsonObject message = new JsonObject();
+            message.add("signal","NO_MOVE");
+            this.sendMessage(this.Car_ID, message.toString());
+        }
+        
+       
     }
 
+    
+    
+    private void updatePulgarcitoMap(){
+        int index = 0;
+        
+        for(int i = y-2; i <= y+2; i+=1)
+            for(int j = x-2; j <= x+2; j+=1){
+                
+                if(mapPulgarcito.get(i*m+j) == -1 && (array_radar.get(index) == 0 || array_radar.get(index) == 2 )){
+                    mapPulgarcito.set(i*m+j, ROAD);
+                }else if(mapPulgarcito.get(i*m+j) == -1 && array_radar.get(index) == 1 ){
+                    mapPulgarcito.set(i*m+j, WALL);
+                }
+                index+=1;
+            }
+
+        mapPulgarcito.set(y*m+x, steps);
+        steps++;
+        
+    }
+    
+    
+    private String selectMovement(){
+        String movement = "";
+        int box_selected = 0;
+        int min = 999999;
+        ArrayList<Integer> box_values = new ArrayList<>();
+        
+        for(int i = y-1; i <= y+1; i+=1)
+            for(int j = x-1; j <= x+1; j+=1)
+                box_values.add(this.mapPulgarcito.get(i*m+j));
+            
+        
+        for(int i=0; i < box_values.size(); i++){
+            if(box_values.get(i) < min){
+                box_selected = i;
+                min = box_values.get(i);
+            }
+        }
+        
+        switch(box_selected){
+            case 0:
+                movement = "moveNW";
+                break;
+            case 1:
+                movement = "moveN";
+                break;
+            case 2:
+                movement = "moveNE";
+                break;
+            case 3:
+                movement = "moveW";
+                break;
+            case 4:
+                movement = "";
+                break;
+            case 5:
+                movement = "moveE";
+                break;
+            case 6:
+                movement = "moveSW";
+                break;
+            case 7:
+                movement = "moveS";
+                break;
+            case 8:
+                movement = "moveSE";
+                break;
+            
+        }
+        
+        return movement;
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private void printPulgarcito(){
+        for(int i = 0; i < m; i+=1){
+            System.out.print("\n");
+            for(int j = 0; j < n; j+=1){
+                if(mapPulgarcito.get(i*m+j) == WALL)
+                    System.out.print((char)1);
+                else{
+                    System.out.print(mapPulgarcito.get(i*m+j));
+                }
+                System.out.print("  ");
+            }
+        }
+        System.out.println();
+    }
+    
+    
     
     private void FINISH(){
         
@@ -370,8 +541,40 @@ public class AgentExplorer extends Agent {
         
         saveMap(this.mapName);
         PrintMap();
+        savePulgarcito();
         //msg = "\nEl Explorer ha finalizado su ejecución.\n";
         //this.sendMessage(new AgentID(Car_ID), msg);
+    }
+    
+    
+    private void PrintPulgarcito(){
+        byte [][] a = new byte[m][m];
+        for(int i = 0; i < m; i++)
+            for(int j = 0; j < m; j++){
+                if((this.mapPulgarcito.get(i*m+j) == 1) || ((mapPulgarcito.get(i*m+j) == -1)))
+                a[i][j] = 0;
+                else a[i][j] = 1;
+            }
+        
+        byte raw[] = new byte[m * m];
+        for (int i = 0; i < a.length; i++) {
+            System.arraycopy(a[i], 0, raw, i*m, m);
+        }
+
+        byte levels[] = new byte[]{0, -1};
+        BufferedImage image = new BufferedImage(m, m, 
+                BufferedImage.TYPE_BYTE_INDEXED,
+                new IndexColorModel(8, 2, levels, levels, levels));
+        DataBuffer buffer = new DataBufferByte(raw, raw.length);
+        SampleModel sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, m, m, 1, m * 1, new int[]{0});
+        Raster raster = Raster.createRaster(sampleModel, buffer, null);
+        image.setData(raster);
+        try {
+            ImageIO.write(image, "png", new File("testpulg.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(AgentExplorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
     
     private void PrintMap(){
@@ -423,6 +626,22 @@ public class AgentExplorer extends Agent {
         }
        
         
+    }
+    
+    public void savePulgarcito(){
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("pulg"+".map"));
+            bw.write(m + " " + m);
+            bw.newLine();
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                //    System.out.println(map_real.get(i*m_real + j));
+                    bw.write(this.mapPulgarcito.get(i*m + j) + ((j == m-1) ? "" : ","));
+                }
+                bw.newLine();
+            }
+            bw.flush();
+        } catch (IOException e) {System.out.println("PETA AL ESCRIBIR EL .MAP");}
     }
     
     public void saveMap(String mapName){
