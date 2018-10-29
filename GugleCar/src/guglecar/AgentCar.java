@@ -288,20 +288,32 @@ public class AgentCar extends Agent{
         
         System.out.println(ANSI_RED+"Esta en send command");
         
-        if(this.movement.contains("move")){
+        if(this.refuel){
+            System.out.println(ANSI_RED+"-------HAGO REFUEL ---------------------->");
+            command = Json.object().add("command", "refuel")
+                    .add("key", this.clave);
+            this.state = WAIT_SERVER_RESPONSE;
+        }else if(this.movement.contains("move")){
             System.out.println(ANSI_RED+"tiene move");
             command = Json.object().add("command", this.movement)
                     .add("key", this.clave);
             this.state = WAIT_SERVER_RESPONSE;
-        }
-        
-        //LOGOUT
-        if(this.signal.contains("NO_MOVE")){
+        }else if(this.signal.contains("NO_MOVE")){ //LOGOUT porque no hay movmiento
             System.out.println(ANSI_RED+"no tiene move");
             command = Json.object().add("command", "logout")
                     .add("key", this.clave);
             this.state = FINISH;
+           //mando a finish los agentes antes de recibir el OK
+            JsonObject outjson = Json.object().add("signal", "FINISH");
+        
+        this.sendMessage(this.batteryAgent, outjson.toString());
+        this.sendMessage(this.gpsAgent, outjson.toString());
+        this.sendMessage(this.radarAgent, outjson.toString());
+        this.sendMessage(this.scannerAgent, outjson.toString());
+        this.sendMessage(this.explorerAgent, outjson.toString());
         }
+        
+        
         this.sendMessage(this.serverAgent, command.toString());
         
         
@@ -325,6 +337,8 @@ public class AgentCar extends Agent{
         if(DEBUG)
         System.out.println(ANSI_RED+"ENVIO LOGOUT : " + command.toString());
         
+        
+        
         String aux1 = this.receiveMessage(); // OK
         
         String aux2 = this.receiveMessage(); // traza
@@ -337,7 +351,6 @@ public class AgentCar extends Agent{
         System.out.println(ANSI_RED+"aux2 : " + aux2);
         
         JsonObject outjson = Json.object().add("signal", "FINISH");
-        
         
         BufferedImage im = null;
         
@@ -390,10 +403,7 @@ public class AgentCar extends Agent{
             
         }
         
-        this.sendMessage(this.batteryAgent, outjson.toString());
-        this.sendMessage(this.gpsAgent, outjson.toString());
-        this.sendMessage(this.radarAgent, outjson.toString());
-        this.sendMessage(this.scannerAgent, outjson.toString());
+        
         outjson.add("size", im.getWidth());
         this.sendMessage(this.explorerAgent, outjson.toString());
         

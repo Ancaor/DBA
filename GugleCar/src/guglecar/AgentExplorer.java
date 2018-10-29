@@ -319,12 +319,23 @@ public class AgentExplorer extends Agent {
     //    System.out.println(ANSI_YELLOW+"Info radar PULGARCITO: "+ array_radar.toString());
         
     //    DEBUG_IMPRIMIRMAPAREAL();
-        if(pasos < 7){
+    
+        if(this.array_radar.get(11) == 0 || this.array_radar.get(11) == 2){
+            movement.add("command", "moveW");
+            this.sendMessage(this.Car_ID, movement.toString());
+            pasos++;
+        }else if(this.array_radar.get(17) == 0 || this.array_radar.get(17) == 2){
+            movement.add("command", "moveS");  
+            this.sendMessage(this.Car_ID, movement.toString());
+            pasos++;
+        }
+        /*if(this.array_radar.get(12) != 2){
             movement.add("command", "moveSW");
             this.sendMessage(this.Car_ID, movement.toString());
             pasos++;
         }
-        else{
+        */else{
+            System.out.println("--------PASOS HASTA LLEGAR A OBJETIVO : "+ pasos + " -------------");
             movement.add("signal","NO_MOVE");
             this.sendMessage(this.Car_ID, movement.toString());
         }
@@ -405,7 +416,9 @@ public class AgentExplorer extends Agent {
 
     
     private void FINISH(){
-    
+        
+        msg_finish = this.receiveMessage();
+        System.out.println("MENSAGE DE FINISH " + msg_finish);
         end = true;
         
         this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
