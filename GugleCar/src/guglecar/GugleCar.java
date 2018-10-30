@@ -38,7 +38,7 @@ public class GugleCar {
         System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
 
         
-        Car.start();
+        //Car.start();
       //Agent1 a = new Agent1(new AgentID("aa"));
       //a.start();
     }

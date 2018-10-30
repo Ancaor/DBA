@@ -14,7 +14,8 @@ public class MapPoint {
     public int y;
 
     MapPoint(int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.x = x;
+        this.y = y;
     }
 
 }
