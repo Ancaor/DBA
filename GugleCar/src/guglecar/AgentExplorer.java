@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -47,6 +48,8 @@ public class AgentExplorer extends Agent {
     
     private  static int m = 504;
     private  static int n = 504;
+    
+    private static final boolean DEBUG = false;
     
     
     private int m_real=m;
@@ -77,6 +80,11 @@ public class AgentExplorer extends Agent {
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
     private boolean mapExist;
     private int steps;
+    private int iter;
+    
+    private final int STEPS_PER_ITER = 5000;
+    private int MAX_STEPS = 5000;
+    private final int MAX_ITERS = 5;
     
     private static final int WALL = 999999999;
     private static final int ROAD = 0;
@@ -92,8 +100,10 @@ public class AgentExplorer extends Agent {
         this.mapName = mapName;
         mapExist = false;
         steps = 1;
+        iter = 0;
         
         this.loadMap(mapName);
+        System.out.println("MAPA CARGADO / CREADO");
         //initMap(map_real);
         
     }
@@ -282,18 +292,22 @@ public class AgentExplorer extends Agent {
         
         
         if(map_real.size() == 0){
+            if(DEBUG)
             System.out.println("ENTRA EN IF");
         for(int i = y-2; i <= y+2; i+=1)
             for(int j = x-2; j <= x+2; j+=1){
                // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
                // System.out.println("i:" + i + ", j" + j);
+               if(DEBUG)
                 System.out.println("pos mapa: " + j +" " + i +" contiene " +map.get(i*m+j));
-                System.out.println("radar en esa pos contiene " +array_radar.get(index));
+               if(DEBUG) 
+               System.out.println("radar en esa pos contiene " +array_radar.get(index));
                 map.set(i*m+j, array_radar.get(index));
                 index+=1;
             }
         }
         else{
+            if(DEBUG)
              System.out.println("ENTRA EN ELSE: " + index );
             for(int i = y-2; i <= y+2; i+=1)
                 for(int j = x-2; j <= x+2; j+=1){
@@ -303,17 +317,19 @@ public class AgentExplorer extends Agent {
                    // System.out.println(array_radar.get(index));
                  //  if(map_real.get(i*m_real+j))
                     if(map_real.get(i*m_real+j) ==0 && array_radar.get(index) ==1){
+                        if(DEBUG)
                         System.out.println("SOBRESCRIBIENDO UN CERO CON UN UNO");
                     }
                     map_real.set(i*m_real+j, array_radar.get(index));
                     if(map_real.get(i*m_real+j) == 0){
+                        if(DEBUG)
                         System.out.println("PUESTOS 0");
                     }
                     index+=1;
                 }
         }
         
-        
+        /*
             //DEBUG 
             System.out.println("ESTO ES LO QUE VE EL ARRAY");
             index = 0;
@@ -324,7 +340,8 @@ public class AgentExplorer extends Agent {
                     index++;
                 }
             }
-            
+        */
+       /*     
          System.out.println("\nESTO ES LO QUE VE EL MAPA");
                 for(int i = y-2; i <= y+2; i+=1){
                     System.out.print("\n");
@@ -334,7 +351,7 @@ public class AgentExplorer extends Agent {
                 }
                 
                 System.out.print("\n");
-
+*/
        // map.set(x*m+y, 9);
         System.out.println(ANSI_YELLOW+"Pasa el parseo ");
         /*
@@ -404,17 +421,37 @@ public class AgentExplorer extends Agent {
         
         String movement = selectMovement();
         
+        System.out.println("step: " + steps + " ,iter : " + iter);
         
+        if(steps < MAX_STEPS){
+            JsonObject message = new JsonObject();
+            message.add("command", movement);
+            this.sendMessage(this.Car_ID, message.toString());
+            if(steps == MAX_STEPS-1){
+                iter++;
+            }
+        }else if(iter < MAX_ITERS){
+            try {
+                System.out.println("SE VA A DORMIR ");
+                sleep(6000);
+                System.out.println("SE DESPIERTA ");
+                MAX_STEPS = MAX_STEPS + STEPS_PER_ITER;
+                JsonObject message = new JsonObject();
+                message.add("command", movement);
+                System.out.println(message.toString());
+                this.sendMessage(this.Car_ID, message.toString());
+                
+            } catch (InterruptedException ex) {
+               // Logger.getLogger(AgentExplorer.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Peta en el sleep de pulgarcito");
+            }
+            
+            }else{
+                JsonObject message = new JsonObject();
+                message.add("signal","NO_MOVE");
+                this.sendMessage(this.Car_ID, message.toString());
+            }
         
-        if(steps < 10000){
-            JsonObject message = new JsonObject();
-             message.add("command", movement);
-            this.sendMessage(this.Car_ID, message.toString());
-        }else{
-            JsonObject message = new JsonObject();
-            message.add("signal","NO_MOVE");
-            this.sendMessage(this.Car_ID, message.toString());
-        }
         
        
     }
@@ -448,9 +485,10 @@ public class AgentExplorer extends Agent {
         ArrayList<Integer> box_values = new ArrayList<>();
         
         for(int i = y-1; i <= y+1; i+=1)
-            for(int j = x-1; j <= x+1; j+=1)
+            for(int j = x-1; j <= x+1; j+=1){
+                if(i != y || j != x)
                 box_values.add(this.mapPulgarcito.get(i*m+j));
-            
+            }
         
         for(int i=0; i < box_values.size(); i++){
             if(box_values.get(i) < min){
@@ -473,18 +511,15 @@ public class AgentExplorer extends Agent {
                 movement = "moveW";
                 break;
             case 4:
-                movement = "";
-                break;
-            case 5:
                 movement = "moveE";
                 break;
-            case 6:
+            case 5:
                 movement = "moveSW";
                 break;
-            case 7:
+            case 6:
                 movement = "moveS";
                 break;
-            case 8:
+            case 7:
                 movement = "moveSE";
                 break;
             
