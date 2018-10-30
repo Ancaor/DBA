@@ -82,8 +82,8 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 65;
-    private int MAX_STEPS = 65;
+    private final int STEPS_PER_ITER = 110;
+    private int MAX_STEPS = 110;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -320,6 +320,9 @@ public class AgentExplorer extends Agent {
                         if(DEBUG)
                         System.out.println("SOBRESCRIBIENDO UN CERO CON UN UNO");
                     }
+                    if(DEBUG)
+                    System.out.println(array_radar.get(index));
+                    
                     map_real.set(i*m_real+j, array_radar.get(index));
                     if(map_real.get(i*m_real+j) == 0){
                         if(DEBUG)
@@ -484,6 +487,8 @@ public class AgentExplorer extends Agent {
         float box_selected_scanner = 0;
         int min = 999999;
         ArrayList<Integer> box_values = new ArrayList<>();
+        ArrayList<Float> scanner_near = new ArrayList<>();
+        ArrayList<Integer> radar_near = new ArrayList<>();
         
         for(int i = y-1; i <= y+1; i+=1)
             for(int j = x-1; j <= x+1; j+=1){
@@ -491,19 +496,26 @@ public class AgentExplorer extends Agent {
                 box_values.add(this.mapPulgarcito.get(i*m+j));
             }
         
+        for(int i=6; i < array_scanner.size()-6; i++){
+            if(i != 9 && i != 10 && i != 12 && i != 14 && i != 15){
+                scanner_near.add(array_scanner.get(i));
+                radar_near.add(array_radar.get(i));
+            }
+        }
+        
         for(int i=0; i < box_values.size(); i++){
             if(DEBUG)
-                System.out.println("Box " + i + ": pulg = "+box_values.get(i) + " scanner = " + array_scanner.get(i) + " radar = " + array_radar.get(i));
+                System.out.println("Box " + i + ": pulg = "+box_values.get(i) + " scanner = " + scanner_near.get(i) + " radar = " + radar_near.get(i));
             if(box_values.get(i) < min){
                 box_selected = i;
                 min = box_values.get(i);
-                box_selected_scanner = array_scanner.get(i);
+                box_selected_scanner = scanner_near.get(i);
             }
             else if(box_values.get(i) == min){
-                if(array_scanner.get(i) < box_selected_scanner){
+                if(scanner_near.get(i) < box_selected_scanner){
                     box_selected = i;
                     min = box_values.get(i);
-                    box_selected_scanner = array_scanner.get(i);
+                    box_selected_scanner = scanner_near.get(i);
                 }
             }
             
@@ -702,7 +714,7 @@ public class AgentExplorer extends Agent {
             for(int i=0;i<this.m_real;i++){
                 for(int j=0;j<this.m_real;j++){
                     int casilla = this.map.get(i*m+j);
-                    if(casilla == 0)
+                   // if(casilla == 0)
                     this.map_real.set(i*m_real+j, casilla);
                 }
             }
