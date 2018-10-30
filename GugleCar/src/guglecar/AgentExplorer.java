@@ -49,7 +49,7 @@ public class AgentExplorer extends Agent {
     private  static int m = 504;
     private  static int n = 504;
     
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     
     private int m_real=m;
@@ -82,9 +82,9 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 5000;
-    private int MAX_STEPS = 5000;
-    private final int MAX_ITERS = 5;
+    private final int STEPS_PER_ITER = 65;
+    private int MAX_STEPS = 65;
+    private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
     private static final int ROAD = 0;
@@ -481,6 +481,7 @@ public class AgentExplorer extends Agent {
     private String selectMovement(){
         String movement = "";
         int box_selected = 0;
+        float box_selected_scanner = 0;
         int min = 999999;
         ArrayList<Integer> box_values = new ArrayList<>();
         
@@ -491,10 +492,21 @@ public class AgentExplorer extends Agent {
             }
         
         for(int i=0; i < box_values.size(); i++){
+            if(DEBUG)
+                System.out.println("Box " + i + ": pulg = "+box_values.get(i) + " scanner = " + array_scanner.get(i) + " radar = " + array_radar.get(i));
             if(box_values.get(i) < min){
                 box_selected = i;
                 min = box_values.get(i);
+                box_selected_scanner = array_scanner.get(i);
             }
+            else if(box_values.get(i) == min){
+                if(array_scanner.get(i) < box_selected_scanner){
+                    box_selected = i;
+                    min = box_values.get(i);
+                    box_selected_scanner = array_scanner.get(i);
+                }
+            }
+            
         }
         
         switch(box_selected){
@@ -525,6 +537,8 @@ public class AgentExplorer extends Agent {
             
         }
         
+        if(DEBUG)
+           System.out.println("Elije Box "+ box_selected + ": "+ movement);
         return movement;
         
     }
