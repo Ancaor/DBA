@@ -18,4 +18,39 @@ public class MapPoint {
         this.y = y;
     }
 
+    @Override
+    public String toString() {
+        return "MapPoint{" + "x=" + x + ", y=" + y + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + this.x;
+        hash = 17 * hash + this.y;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MapPoint other = (MapPoint) obj;
+        if (this.x != other.x) {
+            return false;
+        }
+        if (this.y != other.y) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

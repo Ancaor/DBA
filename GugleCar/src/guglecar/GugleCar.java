@@ -7,6 +7,7 @@ package guglecar;
 
 import es.upv.dsic.gti_ia.core.AgentID;
 import es.upv.dsic.gti_ia.core.AgentsConnection;
+import java.util.ArrayList;
 
 /**
  *
@@ -28,15 +29,29 @@ public class GugleCar {
      */
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
-        AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
+   //     AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
         
       //  System.out.println("\033[31mEste texto es Rojo");
 
         
-        Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
+    //    Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
         
         System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
-
+        AStar ejemplo = new AStar(0,0,null);
+        
+        ArrayList<MapPoint> points = ejemplo.calculateAStar(new MapPoint(100,4), new MapPoint(52,52));
+        if(points == null){
+            System.out.println("Da null el camino");
+        }
+        System.out.println("Size array: " + points.size());
+        
+        for(int i = 0; i < points.size(); i++){
+            System.out.println(points.get(i));
+        }
+        //Pruebas sin conexion (borrar luego)
+        
+        
+        //Fin de pruebas sin conexion (borrar luego)
         
         //Car.start();
       //Agent1 a = new Agent1(new AgentID("aa"));

@@ -99,11 +99,11 @@ public class AgentCar extends Agent{
             Logger.getLogger(AgentCar.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ANSI_RED+"Error inicializando agentes");
         }
-        this.agentBattery.start();
-        this.agentGPS.start();
-        this.agentRadar.start();
-        this.agentScanner.start();
-        this.agentExplorer.start();
+ //       this.agentBattery.start();
+ //       this.agentGPS.start();
+ //       this.agentRadar.start();
+ //       this.agentScanner.start();
+ //       this.agentExplorer.start();
     }
     
     

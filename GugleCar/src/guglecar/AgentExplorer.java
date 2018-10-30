@@ -90,6 +90,8 @@ public class AgentExplorer extends Agent {
         this.mapName = mapName;
         
         this.loadMap(mapName);
+        
+        System.out.println("llega");
         //initMap(map_real);
         
     }

@@ -36,6 +36,11 @@ public class AStarNode {
         this.hValue = (Math.abs(point.x - destPoint.point.x) + Math.abs(point.y - destPoint.point.y)) * this.MOVEMENT_COST;
     }
 
+    @Override
+    public String toString() {
+        return "AStarNode{" + "point=" + point + ", parent=" + parent + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall + ", MOVEMENT_COST=" + MOVEMENT_COST + '}';
+    }
+
     public void calculateGValue(AStarNode point) {
         this.gValue = point.gValue + this.MOVEMENT_COST;
     }
