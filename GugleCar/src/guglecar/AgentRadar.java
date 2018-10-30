@@ -64,7 +64,7 @@ public class AgentRadar extends Agent{
         
         msg = this.receiveMessage();
        
-        System.out.println(ANSI_PURPLE+"LO QUE RECIBE EL RADAR : " + msg);
+       // System.out.println(ANSI_PURPLE+"LO QUE RECIBE EL RADAR : " + msg);
 /*
         for (int i = 0; i < 25; i+=1)
             array_radar.add((int) (Math.random() * 3) + 0);

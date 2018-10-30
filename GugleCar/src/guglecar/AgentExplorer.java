@@ -49,7 +49,7 @@ public class AgentExplorer extends Agent {
     private  static int m = 504;
     private  static int n = 504;
     
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     
     private int m_real=m;
@@ -82,8 +82,8 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 110;
-    private int MAX_STEPS = 110;
+    private final int STEPS_PER_ITER = 10000;
+    private int MAX_STEPS = 10000;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;

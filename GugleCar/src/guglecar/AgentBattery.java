@@ -75,7 +75,7 @@ public class AgentBattery extends Agent{
         JsonObject object = Json.parse(msg).asObject();
         battery = object.get("battery").asFloat();
         
-        System.out.println(ANSI_BLUE+"AgentBattery Battery level : " + battery);
+    //    System.out.println(ANSI_BLUE+"AgentBattery Battery level : " + battery);
         
         state = SEND_CONF;
     }
