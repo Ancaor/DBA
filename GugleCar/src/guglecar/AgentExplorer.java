@@ -290,27 +290,6 @@ public class AgentExplorer extends Agent {
                 }
         }
         
-        
-            //DEBUG 
-            System.out.println("ESTO ES LO QUE VE EL ARRAY");
-            index = 0;
-            for(int i = y-2; i <= y+2; i+=1){
-                System.out.print("\n");
-                for(int j = x-2; j <= x+2; j+=1){
-                    System.out.print(array_radar.get(index) + " ");
-                    index++;
-                }
-            }
-            
-         System.out.println("\nESTO ES LO QUE VE EL MAPA");
-                for(int i = y-2; i <= y+2; i+=1){
-                    System.out.print("\n");
-                    for(int j = x-2; j <= x+2; j+=1){
-                        System.out.print(map_real.get(i*m_real+j) + " ");
-                    }
-                }
-                
-                System.out.print("\n");
 
        // map.set(x*m+y, 9);
         System.out.println(ANSI_YELLOW+"Pasa el parseo ");

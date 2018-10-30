@@ -9,6 +9,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import es.upv.dsic.gti_ia.core.AgentID;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 
 /**
@@ -94,6 +95,19 @@ public class AgentScanner extends Agent{
         state = UPDATE_MAP;
     }
     
+    
+    private void triangular(float a, float b, float  c){
+        float xr = 0;
+        float yr;
+
+        if(a > 0){
+          xr = (c*c - b*b + a*a) / (2*a);
+        }
+
+        yr =(float) sqrt(c*c - xr*xr);
+        System.out.println("X result triang: " + xr + " Y result triang: " + yr);
+    }
+    
     private void FindObjective(){
         /*
         IDEA:
@@ -114,6 +128,7 @@ public class AgentScanner extends Agent{
         
         float AC = array_scanner.get(12);    //Posicion central, donde está el coche
         float BC = array_scanner.get(13);    //Posición justo a la derecha del coche (podría ser cualquiera en teoría)
+        float AB = 1;       //El de al lado
         
         JsonObject object = Json.parse(msg2).asObject();
 
@@ -127,6 +142,19 @@ public class AgentScanner extends Agent{
         System.out.println("AC: " + AC + " BC: " + BC + "\nXa: " + Xa + " Ya: " + Ya
                 + "\nXb: " + Xb + " Yb: " + Yb);
         
+        
+         //      Yc = (AB^2+AC^2-BC^2)/2AB
+        //51 : 47 q
+         float Yc = (AB*AB+AC*AC-BC*BC)/(2*AB);
+         float Xc = (float)sqrt(AC*AC-Yc*Yc);
+         
+         Yc += Ya;
+         Xc += Xa;
+       
+         
+        triangular(AB, BC , AC);
+     //    System.out.println("X objetivo: " + Xc + " Y objetivo: " + Yc);
+         
         //Ecuaciones (Intento despejar(sale mal))
         /*
         AC=sqrt((Xa-Xc)^2+(Ya-Yc)^2)
@@ -144,16 +172,24 @@ public class AgentScanner extends Agent{
         */
         
         
+        //INTENTO 2
+       /*
+        //AC
+        AC=sqrt((Xa-Xc)^2+(Ya-Yc)^2)    BC=sqrt((Xb-Xc)^2+(Yb-Yc)^2)
+        AC^2=(Xa-Xc)^2+(Ya-Yc)^2        BC^2=(Xb-Xc)^2+(Yb-Yc)^2
+        AC^2
         
-        /*
+        *//*
         IDEA 2:
         Obtener los angulos de AC y BC para poder sacar las coordenadas (triangulacion geodesica?)
         
+       
+       Yc = (AB^2+AC^2-BC^2)/2AB
         */
     }
     
     private void UPDATE_MAP(){
-       // FindObjective();
+        FindObjective();
         
         JsonObject object = new JsonObject();
         object.add("gps", Json.parse(msg2).asObject().get("gps").asObject())
