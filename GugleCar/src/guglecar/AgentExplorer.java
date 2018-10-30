@@ -81,6 +81,8 @@ public class AgentExplorer extends Agent {
     private boolean mapExist;
     private int steps;
     private int iter;
+    private boolean inRadio = false;
+    private double radio = 30.0;
     
     private final int STEPS_PER_ITER = 5000;
     private int MAX_STEPS = 5000;
@@ -419,10 +421,27 @@ public class AgentExplorer extends Agent {
         
         updatePulgarcitoMap();
         
+        if(this.array_scanner.get(12) < this.radio)
+            this.inRadio=true;
+        
         String movement = selectMovement();
+        System.out.println(movement);
         
-        System.out.println("step: " + steps + " ,iter : " + iter);
+        if(movement.equals("")){
+            JsonObject message = new JsonObject();
+            message.add("signal","NO_MOVE");
+            this.sendMessage(this.Car_ID, message.toString());
+            
+        }else{
+            JsonObject message = new JsonObject();
+            message.add("command", movement);
+            this.sendMessage(this.Car_ID, message.toString());
+            
+        }
         
+        //System.out.println("step: " + steps + " ,iter : " + iter);
+        
+        /*
         if(steps < MAX_STEPS){
             JsonObject message = new JsonObject();
             message.add("command", movement);
@@ -433,7 +452,7 @@ public class AgentExplorer extends Agent {
         }else if(iter < MAX_ITERS){
             try {
                 System.out.println("SE VA A DORMIR ");
-                sleep(6000);
+                sleep(8000);
                 System.out.println("SE DESPIERTA ");
                 MAX_STEPS = MAX_STEPS + STEPS_PER_ITER;
                 JsonObject message = new JsonObject();
@@ -451,6 +470,7 @@ public class AgentExplorer extends Agent {
                 message.add("signal","NO_MOVE");
                 this.sendMessage(this.Car_ID, message.toString());
             }
+        */
         
         
        
@@ -482,7 +502,64 @@ public class AgentExplorer extends Agent {
         String movement = "";
         int box_selected = 0;
         int min = 999999;
+        float min_distance = (float) 10000.00;
+        int box_selected_distance = 0;
         ArrayList<Integer> box_values = new ArrayList<>();
+        ArrayList<Float> box_distance = new ArrayList<>();
+        
+        if(!this.inRadio){
+            
+            for(int i = y-1; i <= y+1; i+=1)
+            for(int j = x-1; j <= x+1; j+=1){
+                if(i != y || j != x)
+                box_values.add(this.mapPulgarcito.get(i*m+j));
+            }
+            
+            for(int i=6; i < 19; i++){
+                if(i != 9 && i != 10 && i != 12 && i != 14 && i != 15)
+                    box_distance.add(this.array_scanner.get(i));
+            }
+            
+            for(int i=0; i < box_distance.size(); i++){
+                if(box_distance.get(i) < min_distance && box_values.get(i) < 99999){
+                    min_distance = box_distance.get(i);
+                    box_selected_distance = i;
+                }
+            }
+            
+            switch(box_selected_distance){
+                case 0:
+                    movement = "moveNW";
+                    break;
+                case 1:
+                    movement = "moveN";
+                    break;
+                case 2:
+                    movement = "moveNE";
+                    break;
+                case 3:
+                    movement = "moveW";
+                    break;
+                case 4:
+                    movement = "moveE";
+                    break;
+                case 5:
+                    movement = "moveSW";
+                    break;
+                case 6:
+                    movement = "moveS";
+                    break;
+                case 7:
+                    movement = "moveSE";
+                    break;
+            
+            }
+            
+            
+            
+        }
+        
+        /*
         
         for(int i = y-1; i <= y+1; i+=1)
             for(int j = x-1; j <= x+1; j+=1){
@@ -524,7 +601,7 @@ public class AgentExplorer extends Agent {
                 break;
             
         }
-        
+        */
         return movement;
         
     }
