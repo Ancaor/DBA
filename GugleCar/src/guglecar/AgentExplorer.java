@@ -86,8 +86,8 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 500;
-    private int MAX_STEPS = 500;
+    private final int STEPS_PER_ITER = 1500;
+    private int MAX_STEPS = 1500;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -107,6 +107,7 @@ public class AgentExplorer extends Agent {
     private boolean aStarFinished = true;
     private int actual_x = 9999999;
     private int actual_y = 9999999;
+   
     
     
     public AgentExplorer(AgentID aid, AgentID gps, AgentID car, String mapName) throws Exception {
@@ -119,7 +120,6 @@ public class AgentExplorer extends Agent {
         iter = 0;
         
         this.loadMap(mapName);
-        
         /*/Imprimir mapa
         for(int i = 0; i < m_real; i++){
             System.out.print("\n");
@@ -493,10 +493,11 @@ public class AgentExplorer extends Agent {
     private void pulgarcito(){
         
         if(!this.mapExist){
-            this.initMapPulgarcito(this.mapPulgarcito);
+           // this.initMapPulgarcito(this.mapPulgarcito);
+           loadPulgarcito();
             this.mapExist = true;
         }
-        
+ 
         updatePulgarcitoMap();
         
         String movement = selectMovement();
@@ -758,7 +759,7 @@ public class AgentExplorer extends Agent {
         Raster raster = Raster.createRaster(sampleModel, buffer, null);
         image.setData(raster);
         try {
-            ImageIO.write(image, "png", new File("test.png"));
+            ImageIO.write(image, "png", new File("test_"+this.mapName+".png"));
         } catch (IOException ex) {
             Logger.getLogger(AgentExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -768,7 +769,7 @@ public class AgentExplorer extends Agent {
     
     public void savePulgarcito(){
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("pulg"+".map"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("pulg_"+this.mapName+".map"));
             bw.write(m + " " + m);
             bw.newLine();
             for (int i = 0; i < m; i++) {
@@ -842,6 +843,34 @@ public class AgentExplorer extends Agent {
 
             initMap(map);
             System.out.println(ANSI_YELLOW+"No existe mapa, se utilizan valores por defecto");
+        }
+      
+    }
+    
+    public void loadPulgarcito(){
+        Scanner sc;
+        
+        try {
+            sc = new Scanner(new BufferedReader(new FileReader("pulg_"+this.mapName+".map")));
+            String[] line = sc.nextLine().trim().split(" ");
+      
+            m = Integer.valueOf(line[0]);
+            n = Integer.valueOf(line[1]);
+            
+          //  int [][] myArray = new int[m][n];
+            while(sc.hasNextLine()) {
+              for (int i=0; i<(m); i++) {
+                  line = sc.nextLine().trim().split(",");
+                 for (int j=0; j<line.length; j++) {
+                   // myArray[i][j] = Integer.parseInt(line[j]);
+                    mapPulgarcito.add( Integer.parseInt(line[j]));
+                 }
+              }
+           }
+        } catch (FileNotFoundException ex) {   // SI NO EXISTE EL ARCHIVO
+
+            initMapPulgarcito(mapPulgarcito);
+            System.out.println(ANSI_YELLOW+"ERROR");
         }
       
     }

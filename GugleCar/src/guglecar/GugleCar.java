@@ -15,7 +15,7 @@ import es.upv.dsic.gti_ia.core.AgentsConnection;
 public class GugleCar {
     
     private static final AgentID SERVER_AGENT = new AgentID("Keid");
-    private static final AgentID CAR_AGENT = new AgentID("JUANETE17177777777777777777777776");
+    private static final AgentID CAR_AGENT = new AgentID("JUANETE171777777777777777777777776");
     
     public static final String ANSI_RESET = "\033[30m";
     public static final String ANSI_RED = "\033[31m";
@@ -38,9 +38,9 @@ public class GugleCar {
         System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
 
         
-        //Car.start();
-        Agent1 a = new Agent1(new AgentID("aa"));
-        a.start();
+        Car.start();
+       // Agent1 a = new Agent1(new AgentID("aa"));
+       // a.start();
     }
     
 }
