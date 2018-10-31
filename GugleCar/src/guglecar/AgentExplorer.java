@@ -8,6 +8,7 @@ package guglecar;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import edu.emory.mathcs.backport.java.util.Collections;
 import es.upv.dsic.gti_ia.core.AgentID;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -85,8 +86,8 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 20000;
-    private int MAX_STEPS = 20000;
+    private final int STEPS_PER_ITER = 20;
+    private int MAX_STEPS = 20;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -94,6 +95,18 @@ public class AgentExplorer extends Agent {
     
     
     ///////////////////////////////////////////////////
+    
+    //PULGARCITO
+    
+    private boolean isPulgarcito = true;
+    private boolean map_loaded = false;
+    private AStar aStar;
+    private boolean aStarExecuted = false;
+    private ArrayList<String> instructions = new ArrayList<>();
+    private int instructionIndex = 0;
+    private boolean aStarFinished = true;
+    private int actual_x = 9999999;
+    private int actual_y = 9999999;
     
     
     public AgentExplorer(AgentID aid, AgentID gps, AgentID car, String mapName) throws Exception {
@@ -108,6 +121,17 @@ public class AgentExplorer extends Agent {
         this.loadMap(mapName);
         System.out.println("MAPA CARGADO / CREADO");
         //initMap(map_real);
+        
+        if(this.map_real.size() != 0){
+            this.map_loaded = true;
+            System.out.println("Map loaded");
+        }
+        
+        if(this.map_loaded){
+            this.aStar= new AStar(m_real,m_real,this.map_real);
+            this.aStarFinished=false;
+            System.out.println("aStar inicializado");
+        }
         
     }
     
@@ -214,6 +238,29 @@ public class AgentExplorer extends Agent {
         y = objectGPS.get("y").asInt();
         y+=2; // el mapa es 104 pero las coordenadas solo cuentan 100;
         x+=2;
+        
+        if(!this.aStarExecuted && !this.aStarFinished){
+            
+            MapPoint start = new MapPoint(x,y);
+            MapPoint goal = new MapPoint(this.x_objetivo,this.y_objetivo);
+            
+            System.out.println("Crea puntos inicio y final");
+            
+            ArrayList<MapPoint> points = aStar.calculateAStar(start, goal);
+            
+            System.out.println("Calcula points");
+            
+                System.out.println(points.get(0).x + " "+ points.get(0).y);
+            instructions = aStar.convertToInstructions(points, start);
+            System.out.println("Calcula a*");
+            Collections.reverse(instructions);
+            System.out.println("tenemos instrucciones");
+            
+            for(int i=0; i < instructions.size(); i++){
+                System.out.println(instructions.get(i));
+            }
+            this.aStarExecuted = true;
+        }
       //  x = 17;
       //  y=2;
         
@@ -236,38 +283,8 @@ public class AgentExplorer extends Agent {
             array_scanner.add(arrayScanner.get(i).asFloat());
         }
     
-     /*
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(0);
-     array_radar.add(0);
-     array_radar.add(0);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(0);
-     array_radar.add(0);
-     array_radar.add(0);
-     array_radar.add(1);
-     array_radar.add(1);
-     array_radar.add(0);
-     array_radar.add(0);
-     array_radar.add(0);
-     array_radar.add(1);
-     array_radar.add(1);
-        
-        */
         state = UPDATE_MAP;
         
-       // msg = "Explorer: Radar = " + array_radar.toString();
-       // this.sendMessage(new AgentID(Car_ID), msg);
         
     }
     
@@ -391,10 +408,40 @@ public class AgentExplorer extends Agent {
             this.sendMessage(this.Car_ID, movement.toString());
         }
             */
-        pulgarcito();
+        if(this.aStarExecuted)
+            aStar();
+        else
+            pulgarcito();
         
         
         state = IDLE;
+        
+        
+    }
+    
+    private void aStar() {
+       
+        JsonObject message = new JsonObject();
+        
+        if(this.instructionIndex < this.instructions.size()){
+            
+            if(this.actual_x == this.x && this.actual_y == this.y){
+                this.instructionIndex--;
+            }
+            
+                message.add("command", this.instructions.get(this.instructionIndex));
+                System.out.println(message.toString());
+                this.sendMessage(this.Car_ID, message.toString());
+            
+            this.actual_x = x;
+            this.actual_y=y;
+            this.instructionIndex++;
+        }else{
+            this.aStarExecuted = false;
+            this.aStarFinished = true;
+            System.out.println("AStar acaba en : " + x + " " + y);
+        }
+        
         
         
     }
@@ -798,4 +845,6 @@ public class AgentExplorer extends Agent {
         System.out.println(ANSI_YELLOW+"Fin de AgentExplorer");
         
     }
+
+    
 }
