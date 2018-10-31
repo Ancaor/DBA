@@ -43,25 +43,30 @@ public class AStar {
       //  this.width = 104;
     //    this.height = 104;
         map_real = map;
-        MapPoint aux = new MapPoint(0,0);
+                //Imprimir mapa
+        for(int i = 0; i < this.width; i++){
+            System.out.print("\n");
+            for (int j = 0; j < this.height; j++)
+                System.out.print(map_real.get(i*width+j) + " ");
+        }
+        
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
 
                 MapPoint point = new MapPoint(x, y);
                 points.add(point);
                 this.nodes.put(point, new AStarNode(point));
-                if(x == 100 && y == 4){
-                    aux = point;
-                    System.out.println("metido 0 99: " + map_real.get(x*this.width+y));
+                
+                if(map_real.get(y*this.width+x) == 0){
+                    System.out.println("punto que no es muro: " + x + ":" + y);
                 }
                 
-                
                // System.out.println("Mapa real tiene: " + map_real.get(x*this.width+y));
-               if(map_real.get(x*this.width+y) == 2){
+               if(map_real.get(y*this.width+x) == 2){
                    destinoDebug = point;
                }
                
-                if(map_real.get(x*this.width+y) != 0 && map_real.get(x*this.width+y) != 2 ){
+                if(map_real.get(y*this.width+x) != 0 && map_real.get(y*this.width+x) != 2 ){
                     AStarNode node = this.nodes.get(point);
                     node.isWall = true;
                  //   System.out.println("Muro en: "+  x + ":" + y );
@@ -89,10 +94,11 @@ public class AStar {
         ArrayList<AStarNode> closedList = new ArrayList<AStarNode>();
 
         AStarNode destNode = this.nodes.get(destino);
+        System.out.println("A* dest: " +  destNode.isWall);
      //   AStarNode destNode = this.nodes.get(destinoDebug);
      //   System.out.println("Punto destino: " + destNode.point);
         AStarNode currentNode = this.nodes.get(inicio);
- 
+         System.out.println("A* ini: " +  currentNode.isWall);
         
         currentNode.parent = null;
         

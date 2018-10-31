@@ -119,6 +119,15 @@ public class AgentExplorer extends Agent {
         iter = 0;
         
         this.loadMap(mapName);
+        
+        /*/Imprimir mapa
+        for(int i = 0; i < m_real; i++){
+            System.out.print("\n");
+            for (int j = 0; j < m_real; j++)
+                System.out.print(map_real.get(i*m_real+j) + " ");
+        }
+        */
+        
         System.out.println("MAPA CARGADO / CREADO");
         //initMap(map_real);
         
@@ -245,11 +254,13 @@ public class AgentExplorer extends Agent {
             MapPoint goal = new MapPoint(this.x_objetivo,this.y_objetivo);
             
             System.out.println("Crea puntos inicio y final");
-            
+            System.out.println("Punto start: " + start + " Punto goal: " + goal);
             ArrayList<MapPoint> points = aStar.calculateAStar(start, goal);
             
             System.out.println("Calcula points");
-            
+            if(points == null){
+                System.out.println("Puntos nulos");
+            }
                 System.out.println(points.get(0).x + " "+ points.get(0).y);
             instructions = aStar.convertToInstructions(points, start);
             System.out.println("Calcula a*");
@@ -799,7 +810,7 @@ public class AgentExplorer extends Agent {
             m_real = Integer.valueOf(line[0]);
             n_real = Integer.valueOf(line[1]);
             x_objetivo = Integer.valueOf(line[2]);
-            y_objetivo = Integer.valueOf(line[2]);
+            y_objetivo = Integer.valueOf(line[3]);
             
           //  int [][] myArray = new int[m][n];
             while(sc.hasNextLine()) {
