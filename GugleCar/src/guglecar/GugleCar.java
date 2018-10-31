@@ -39,8 +39,6 @@ public class GugleCar {
 
         
         Car.start();
-       // Agent1 a = new Agent1(new AgentID("aa"));
-       // a.start();
     }
     
 }
