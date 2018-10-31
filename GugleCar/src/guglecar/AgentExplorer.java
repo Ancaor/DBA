@@ -71,6 +71,9 @@ public class AgentExplorer extends Agent {
     private final static int UPDATE_MAP = 3;
     private final static int FINISH = 4;
     
+    private int x_objetivo;
+    private int y_objetivo;
+    
     private String mapName;
     
     private int pasos = 0; // para movimiento pocho
@@ -82,8 +85,8 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 10000;
-    private int MAX_STEPS = 10000;
+    private final int STEPS_PER_ITER = 20000;
+    private int MAX_STEPS = 20000;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -725,7 +728,7 @@ public class AgentExplorer extends Agent {
         
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(mapName+".map"));
-            bw.write(m_real + " " + n_real);
+            bw.write(m_real + " " + n_real + " " +x + " "+ y);
             bw.newLine();
             for (int i = 0; i < m_real; i++) {
                 for (int j = 0; j < n_real; j++) {
@@ -748,6 +751,8 @@ public class AgentExplorer extends Agent {
       
             m_real = Integer.valueOf(line[0]);
             n_real = Integer.valueOf(line[1]);
+            x_objetivo = Integer.valueOf(line[2]);
+            y_objetivo = Integer.valueOf(line[2]);
             
           //  int [][] myArray = new int[m][n];
             while(sc.hasNextLine()) {
