@@ -86,8 +86,8 @@ public class AgentExplorer extends Agent {
     private int steps;
     private int iter;
     
-    private final int STEPS_PER_ITER = 20;
-    private int MAX_STEPS = 20;
+    private final int STEPS_PER_ITER = 500;
+    private int MAX_STEPS = 500;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -102,7 +102,7 @@ public class AgentExplorer extends Agent {
     private boolean map_loaded = false;
     private AStar aStar;
     private boolean aStarExecuted = false;
-    private ArrayList<String> instructions = new ArrayList<>();
+    private ArrayList<String> instructions = new ArrayList<String>();
     private int instructionIndex = 0;
     private boolean aStarFinished = true;
     private int actual_x = 9999999;
@@ -142,6 +142,8 @@ public class AgentExplorer extends Agent {
             System.out.println("aStar inicializado");
         }
         
+        
+
     }
     
     public void initMap(ArrayList<Integer> mapa){
@@ -186,7 +188,7 @@ public class AgentExplorer extends Agent {
     
         state = IDLE;
         msg = "\nExplorer: Wake_up\n";
-        
+                
        // this.sendMessage(new AgentID(Car_ID), msg);
     }
     
@@ -194,8 +196,8 @@ public class AgentExplorer extends Agent {
         Esperar mensaje 
     */
     private void IDLE(){
-    
         msg = this.receiveMessage();
+                System.out.println("IDLE");
         System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 1: " + msg);
         
         if(!msg.contains("FINISH")){
@@ -256,6 +258,11 @@ public class AgentExplorer extends Agent {
             System.out.println("Crea puntos inicio y final");
             System.out.println("Punto start: " + start + " Punto goal: " + goal);
             ArrayList<MapPoint> points = aStar.calculateAStar(start, goal);
+            Collections.reverse(points);
+            System.out.println("Mostrando puntos");
+            for(int i = 0; i < points.size(); i++){
+                System.out.println(points.get(i));
+            }
             
             System.out.println("Calcula points");
             if(points == null){
@@ -263,8 +270,10 @@ public class AgentExplorer extends Agent {
             }
                 System.out.println(points.get(0).x + " "+ points.get(0).y);
             instructions = aStar.convertToInstructions(points, start);
+            System.out.println("Size de return de instructions: " + instructions.size());
             System.out.println("Calcula a*");
-            Collections.reverse(instructions);
+ 
+      //      Collections.reverse(instructions);
             System.out.println("tenemos instrucciones");
             
             for(int i=0; i < instructions.size(); i++){
@@ -419,10 +428,14 @@ public class AgentExplorer extends Agent {
             this.sendMessage(this.Car_ID, movement.toString());
         }
             */
+        System.out.println("Antes del if aStarExecuted es: " + this.aStarExecuted);
         if(this.aStarExecuted)
             aStar();
-        else
+        else{
+            System.out.println("Entra en else de pulgarcito");
+              
             pulgarcito();
+        }
         
         
         state = IDLE;
@@ -438,6 +451,7 @@ public class AgentExplorer extends Agent {
             
             if(this.actual_x == this.x && this.actual_y == this.y){
                 this.instructionIndex--;
+                
             }
             
                 message.add("command", this.instructions.get(this.instructionIndex));
@@ -447,10 +461,12 @@ public class AgentExplorer extends Agent {
             this.actual_x = x;
             this.actual_y=y;
             this.instructionIndex++;
+            this.steps++;
         }else{
             this.aStarExecuted = false;
             this.aStarFinished = true;
             System.out.println("AStar acaba en : " + x + " " + y);
+            pulgarcito();
         }
         
         

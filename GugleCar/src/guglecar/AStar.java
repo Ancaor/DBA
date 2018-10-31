@@ -43,13 +43,7 @@ public class AStar {
       //  this.width = 104;
     //    this.height = 104;
         map_real = map;
-                //Imprimir mapa
-        for(int i = 0; i < this.width; i++){
-            System.out.print("\n");
-            for (int j = 0; j < this.height; j++)
-                System.out.print(map_real.get(i*width+j) + " ");
-        }
-        
+
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
 
@@ -57,9 +51,7 @@ public class AStar {
                 points.add(point);
                 this.nodes.put(point, new AStarNode(point));
                 
-                if(map_real.get(y*this.width+x) == 0){
-                    System.out.println("punto que no es muro: " + x + ":" + y);
-                }
+
                 
                // System.out.println("Mapa real tiene: " + map_real.get(x*this.width+y));
                if(map_real.get(y*this.width+x) == 2){
@@ -71,10 +63,7 @@ public class AStar {
                     node.isWall = true;
                  //   System.out.println("Muro en: "+  x + ":" + y );
                 }
-                 
-                else{
-               //     System.out.println("ENTRA¿?");
-                }
+
             }
 
         }
@@ -197,88 +186,94 @@ public class AStar {
         }
         
         ArrayList<String> result = new ArrayList<String>();
+
         
         //Norte
         if(startingPosition.x == points.get(0).x && startingPosition.y < points.get(0).y){
-            result.add("moveN");
+            result.add("moveS");
         }
 
         //Norteste
         else if(startingPosition.x > points.get(0).x && startingPosition.y < points.get(0).y){
-            result.add("moveNE");
+            result.add("moveSW");
         }
         
         //Este
         else if(startingPosition.x > points.get(0).x && startingPosition.y == points.get(0).y){
-            result.add("moveE");
+            result.add("moveW");
         }
         
         //Sureste
         else if(startingPosition.x > points.get(0).x && startingPosition.y > points.get(0).y){
-            result.add("moveSE");
+            result.add("moveNW");
         }
         
         //Sur
         else if(startingPosition.x == points.get(0).x && startingPosition.y > points.get(0).y){
-            result.add("moveS");
+            result.add("moveN");
         }
         
         //Suroeste
         else if(startingPosition.x < points.get(0).x && startingPosition.y > points.get(0).y){
-            result.add("moveSW");
+            result.add("moveNE");
         }
         
         //Oeste
         else if(startingPosition.x < points.get(0).x && startingPosition.y == points.get(0).y){
-            result.add("moveW");
+            result.add("moveE");
         }
         
         //Oeste
         else {
-            result.add("moveNW");
-        }        
+            result.add("moveSE");
+        }   
         
+        System.out.println("Tamanio before bucle: " + result.size());
+       
         for(int i = 0; i < ordenado.size()-1; i++){
             //Norte
             if(points.get(i).x == points.get(i+1).x && points.get(i).y < points.get(i+1).y){
-                result.add("moveN");
+                result.add("moveS");
             }
 
             //Norteste
             else if(points.get(i).x > points.get(i+1).x && points.get(i).y < points.get(i+1).y){
-                result.add("moveNE");
+                result.add("moveSW");
             }
 
             //Este
             else if(points.get(i).x > points.get(i+1).x && points.get(i).y == points.get(i+1).y){
-                result.add("moveE");
+                result.add("moveW");
             }
 
             //Sureste
             else if(points.get(i).x > points.get(i+1).x && points.get(i).y > points.get(i+1).y){
-                result.add("moveSE");
+                result.add("moveNW");
             }
 
             //Sur
             else if(points.get(i).x == points.get(i+1).x && points.get(i).y > points.get(i+1).y){
-                result.add("moveS");
+                result.add("moveN");
             }
 
             //Suroeste
             else if(points.get(i).x < points.get(i+1).x && points.get(i).y > points.get(i+1).y){
-                result.add("moveSW");
+                result.add("moveNE");
             }
 
             //Oeste
             else if(points.get(i).x < points.get(i+1).x && points.get(i).y == points.get(i+1).y){
-                result.add("moveW");
+                result.add("moveE");
             }
 
             //Oeste
             else {
-                result.add("moveNW");
+                result.add("moveSE");
             }
         }
+        
+        int aux = 9 + ordenado.size()-1;
+        System.out.println("Tamanio real result: " + result.size() + " Tamanio calculado: " + aux);
         
         return result;
     }
