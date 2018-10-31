@@ -588,14 +588,14 @@ public class AgentExplorer extends Agent {
                 box_selected = i;
                 min = box_values.get(i);
                 box_selected_scanner = scanner_near.get(i);
-            }
+            }/*
             else if(box_values.get(i) == min){
                 if(scanner_near.get(i) < box_selected_scanner){
                     box_selected = i;
                     min = box_values.get(i);
                     box_selected_scanner = scanner_near.get(i);
                 }
-            }
+            }*/
             
         }
         
