@@ -37,9 +37,9 @@ public class GugleCar {
     //    Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
         
         System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
-        AStar ejemplo = new AStar(0,0,null);
-        
-        ArrayList<MapPoint> points = ejemplo.calculateAStar(new MapPoint(100,4), new MapPoint(52,52));
+        //AStar ejemplo = new AStar(0,0);
+      /*  
+        //ArrayList<MapPoint> points = ejemplo.calculateAStar(new MapPoint(2,102), new MapPoint(52,52));
         if(points == null){
             System.out.println("Da null el camino");
         }
@@ -48,9 +48,12 @@ public class GugleCar {
         for(int i = 0; i < points.size(); i++){
             System.out.println(points.get(i));
         }
-        //Pruebas sin conexion (borrar luego)
         
-        
+      //  ArrayList<String> camino =  ejemplo.convertToInstructions(points, new MapPoint(2,102));
+      //  for(int i = 0; i < camino.size(); i++){
+      //      System.out.println(camino.get(camino.size()-i-1));
+      //  }
+        */
         //Fin de pruebas sin conexion (borrar luego)
         
         //Car.start();

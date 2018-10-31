@@ -28,6 +28,8 @@ public class AStar {
     private HashMap<MapPoint, AStarNode> nodes = new HashMap<MapPoint, AStarNode>();
     private ArrayList<MapPoint> points = new ArrayList<MapPoint>();
 
+    private MapPoint destinoDebug;
+    
     @SuppressWarnings("rawtypes")
     private final Comparator fComparator = new Comparator<AStarNode>() {
         public int compare(AStarNode a, AStarNode b) {
@@ -35,12 +37,12 @@ public class AStar {
         }
     };
 
-    public AStar(int width, int height, List<MapPoint> wallPositions) {
-    //    this.width = width;
-    //    this.height = height;
-        this.width = 104;
-        this.height = 104;
-        loadMap("map1");
+    public AStar(int width, int height, ArrayList<Integer> map) {
+        this.width = width;
+        this.height = height;
+      //  this.width = 104;
+    //    this.height = 104;
+        map_real = map;
         MapPoint aux = new MapPoint(0,0);
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
@@ -55,6 +57,10 @@ public class AStar {
                 
                 
                // System.out.println("Mapa real tiene: " + map_real.get(x*this.width+y));
+               if(map_real.get(x*this.width+y) == 2){
+                   destinoDebug = point;
+               }
+               
                 if(map_real.get(x*this.width+y) != 0 && map_real.get(x*this.width+y) != 2 ){
                     AStarNode node = this.nodes.get(point);
                     node.isWall = true;
@@ -77,14 +83,15 @@ public class AStar {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<MapPoint> calculateAStar(MapPoint p1, MapPoint p2) {
+    public ArrayList<MapPoint> calculateAStar(MapPoint inicio, MapPoint destino) {
                     
         List<AStarNode> openList = new ArrayList<AStarNode>();
-        HashSet<AStarNode> closedList = new HashSet<AStarNode>();
+        ArrayList<AStarNode> closedList = new ArrayList<AStarNode>();
 
-        AStarNode destNode = this.nodes.get(p2);
-
-        AStarNode currentNode = this.nodes.get(p1);
+        AStarNode destNode = this.nodes.get(destino);
+     //   AStarNode destNode = this.nodes.get(destinoDebug);
+     //   System.out.println("Punto destino: " + destNode.point);
+        AStarNode currentNode = this.nodes.get(inicio);
  
         
         currentNode.parent = null;
@@ -93,10 +100,12 @@ public class AStar {
 
         currentNode.setGValue(0);
         openList.add(currentNode);
-
+        ArrayList<String> instrucciones = new ArrayList<String>();
+        
         while(!openList.isEmpty()) {
 
             currentNode = openList.get(0);      //pop de c++
+            
 
             if (currentNode.point.equals(destNode.point)) {
                 return this.calculatePath(destNode);
@@ -169,6 +178,105 @@ public class AStar {
         return null;
     }
 
+    public ArrayList<String> convertToInstructions(ArrayList<MapPoint> points, MapPoint startingPosition){
+        ArrayList<MapPoint> ordenado = new ArrayList<MapPoint>();
+        for(int i=0; i<points.size(); i++){
+            ordenado.add(points.get(points.size()-i-1));
+        }
+        
+        System.out.println("Ordenado: ");
+        
+        for(int i = 0; i < ordenado.size(); i++){
+            System.out.println(ordenado.get(i));
+        }
+        
+        ArrayList<String> result = new ArrayList<String>();
+        
+        //Norte
+        if(startingPosition.x == points.get(0).x && startingPosition.y < points.get(0).y){
+            result.add("moveN");
+        }
+
+        //Norteste
+        else if(startingPosition.x > points.get(0).x && startingPosition.y < points.get(0).y){
+            result.add("moveNE");
+        }
+        
+        //Este
+        else if(startingPosition.x > points.get(0).x && startingPosition.y == points.get(0).y){
+            result.add("moveE");
+        }
+        
+        //Sureste
+        else if(startingPosition.x > points.get(0).x && startingPosition.y > points.get(0).y){
+            result.add("moveSE");
+        }
+        
+        //Sur
+        else if(startingPosition.x == points.get(0).x && startingPosition.y > points.get(0).y){
+            result.add("moveS");
+        }
+        
+        //Suroeste
+        else if(startingPosition.x < points.get(0).x && startingPosition.y > points.get(0).y){
+            result.add("moveSW");
+        }
+        
+        //Oeste
+        else if(startingPosition.x < points.get(0).x && startingPosition.y == points.get(0).y){
+            result.add("moveW");
+        }
+        
+        //Oeste
+        else {
+            result.add("moveNW");
+        }        
+        
+        for(int i = 0; i < ordenado.size()-1; i++){
+            //Norte
+            if(points.get(i).x == points.get(i+1).x && points.get(i).y < points.get(i+1).y){
+                result.add("moveN");
+            }
+
+            //Norteste
+            else if(points.get(i).x > points.get(i+1).x && points.get(i).y < points.get(i+1).y){
+                result.add("moveNE");
+            }
+
+            //Este
+            else if(points.get(i).x > points.get(i+1).x && points.get(i).y == points.get(i+1).y){
+                result.add("moveE");
+            }
+
+            //Sureste
+            else if(points.get(i).x > points.get(i+1).x && points.get(i).y > points.get(i+1).y){
+                result.add("moveSE");
+            }
+
+            //Sur
+            else if(points.get(i).x == points.get(i+1).x && points.get(i).y > points.get(i+1).y){
+                result.add("moveS");
+            }
+
+            //Suroeste
+            else if(points.get(i).x < points.get(i+1).x && points.get(i).y > points.get(i+1).y){
+                result.add("moveSW");
+            }
+
+            //Oeste
+            else if(points.get(i).x < points.get(i+1).x && points.get(i).y == points.get(i+1).y){
+                result.add("moveW");
+            }
+
+            //Oeste
+            else {
+                result.add("moveNW");
+            }
+        }
+        
+        return result;
+    }
+    
     private ArrayList<MapPoint> calculatePath(AStarNode destinationNode) {
         ArrayList<MapPoint> path = new ArrayList<MapPoint>();
         AStarNode node = destinationNode;
