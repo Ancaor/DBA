@@ -84,10 +84,11 @@ public class AgentExplorer extends Agent {
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
     private boolean mapExist;
     private int steps;
+    private int stepsPulgarcito;
     private int iter;
     
-    private final int STEPS_PER_ITER = 1500;
-    private int MAX_STEPS = 1500;
+    private final int STEPS_PER_ITER = 5000;
+    private int MAX_STEPS = 5000;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -117,6 +118,7 @@ public class AgentExplorer extends Agent {
         this.mapName = mapName;
         mapExist = false;
         steps = 1;
+        stepsPulgarcito = steps;
         iter = 0;
         
         this.loadMap(mapName);
@@ -502,7 +504,7 @@ public class AgentExplorer extends Agent {
         
         String movement = selectMovement();
         
-        System.out.println("step: " + steps + " ,iter : " + iter);
+        System.out.println("step: " + steps + ", stepsPulgarcito: "+ stepsPulgarcito +", iter : " + iter);
         
         if(steps < MAX_STEPS){
             JsonObject message = new JsonObject();
@@ -553,8 +555,9 @@ public class AgentExplorer extends Agent {
                 index+=1;
             }
 
-        mapPulgarcito.set(y*m+x, steps);
+        mapPulgarcito.set(y*m+x, this.stepsPulgarcito);
         steps++;
+        stepsPulgarcito++;
         
     }
     
@@ -770,7 +773,7 @@ public class AgentExplorer extends Agent {
     public void savePulgarcito(){
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter("pulg_"+this.mapName+".map"));
-            bw.write(m + " " + m);
+            bw.write(m + " " + m + " " + this.stepsPulgarcito);
             bw.newLine();
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < m; j++) {
@@ -856,6 +859,9 @@ public class AgentExplorer extends Agent {
       
             m = Integer.valueOf(line[0]);
             n = Integer.valueOf(line[1]);
+            this.stepsPulgarcito = Integer.valueOf(line[2]);
+            this.stepsPulgarcito -=1;
+            System.out.println("Pulgarcito cargado: " + stepsPulgarcito );
             
           //  int [][] myArray = new int[m][n];
             while(sc.hasNextLine()) {
