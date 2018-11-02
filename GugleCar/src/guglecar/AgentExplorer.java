@@ -255,6 +255,9 @@ public class AgentExplorer extends Agent {
         if(!this.aStarExecuted && !this.aStarFinished){
             
             MapPoint start = new MapPoint(x,y);
+            
+            this.findObjetive();
+            
             MapPoint goal = new MapPoint(this.x_objetivo,this.y_objetivo);
             
             System.out.println("Crea puntos inicio y final");
@@ -464,17 +467,50 @@ public class AgentExplorer extends Agent {
             this.actual_y=y;
             this.instructionIndex++;
             this.steps++;
+            System.out.println(steps);
         }else{
             this.aStarExecuted = false;
             this.aStarFinished = true;
             System.out.println("AStar acaba en : " + x + " " + y);
-            pulgarcito();
+           message.add("signal","NO_MOVE");
+            System.out.println(message.toString());
+            this.sendMessage(this.Car_ID, message.toString());
         }
         
         
         
     }
   
+    
+    private void findObjetive() {
+
+        int x_min=0;
+        int y_min=0;
+        
+        float distance;
+        float min_distance = 999999;
+        
+        for(int i=0; i < m_real; i++){
+            for(int j=0;j<m_real;j++){
+                
+                if(this.map_real.get(i*m_real+j) == 2){
+                    distance = (Math.abs(x - j) + Math.abs(y - i));
+                    
+                    if(distance < min_distance){
+                        min_distance = distance;
+                        x_min = j;
+                        y_min = i;
+                    }
+                }
+            }
+        }
+        
+        x_objetivo = x_min;
+        y_objetivo = y_min;
+        
+
+
+    }
     
     
     
@@ -683,7 +719,7 @@ public class AgentExplorer extends Agent {
         
         saveMap(this.mapName);
         PrintMap();
-        savePulgarcito();
+        //savePulgarcito();
         //msg = "\nEl Explorer ha finalizado su ejecución.\n";
         //this.sendMessage(new AgentID(Car_ID), msg);
     }
@@ -817,7 +853,7 @@ public class AgentExplorer extends Agent {
             }
             bw.flush();
         } catch (IOException e) {System.out.println("PETA AL ESCRIBIR EL .MAP");}
-        
+        System.out.println(ANSI_YELLOW + "MAPA ESCRITO");
     }
     
     public void loadMap(String mapName){
@@ -907,6 +943,8 @@ public class AgentExplorer extends Agent {
         System.out.println(ANSI_YELLOW+"Fin de AgentExplorer");
         
     }
+
+    
 
     
 }
