@@ -58,7 +58,7 @@ public class AgentBattery extends Agent{
     
     private void Idle(){
         msg = this.receiveMessage();
-        //System.out.println(msg);
+        
         if(msg.contains("CRASHED") || msg.contains("FINISH")){
             state = FINISH;
         }
@@ -74,9 +74,7 @@ public class AgentBattery extends Agent{
     private void ProcessData(){
         JsonObject object = Json.parse(msg).asObject();
         battery = object.get("battery").asFloat();
-        
-    //    System.out.println(ANSI_BLUE+"AgentBattery Battery level : " + battery);
-        
+               
         state = SEND_CONF;
     }
     

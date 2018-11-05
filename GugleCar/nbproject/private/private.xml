@@ -3,7 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/AStar.java</file>
+            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/AgentScanner.java</file>
+            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/AgentBattery.java</file>
+            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/GugleCar.java</file>
+            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/AgentCar.java</file>
+            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/AgentRadar.java</file>
+            <file>file:/C:/Users/Anton/Documents/Github/DBA/GugleCar/src/guglecar/AgentExplorer.java</file>
         </group>
     </open-files>
 </project-private>

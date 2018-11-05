@@ -122,16 +122,8 @@ public class AgentExplorer extends Agent {
         iter = 0;
         
         this.loadMap(mapName);
-        /*/Imprimir mapa
-        for(int i = 0; i < m_real; i++){
-            System.out.print("\n");
-            for (int j = 0; j < m_real; j++)
-                System.out.print(map_real.get(i*m_real+j) + " ");
-        }
-        */
         
         System.out.println("MAPA CARGADO / CREADO");
-        //initMap(map_real);
         
         if(this.map_real.size() != 0){
             this.map_loaded = true;
@@ -189,9 +181,10 @@ public class AgentExplorer extends Agent {
      private void WAKE_UP(){
     
         state = IDLE;
-        msg = "\nExplorer: Wake_up\n";
-                
-       // this.sendMessage(new AgentID(Car_ID), msg);
+        
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"AgentExplrer wake up !");
+
     }
     
     /*
@@ -199,12 +192,14 @@ public class AgentExplorer extends Agent {
     */
     private void IDLE(){
         msg = this.receiveMessage();
-                System.out.println("IDLE");
-        System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 1: " + msg);
-        
+        if(DEBUG){
+            System.out.println("IDLE");
+            System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 1: " + msg);
+        }
         if(!msg.contains("FINISH")){
         msg2 = this.receiveMessage();
-        System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 2: " + msg2);
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 2: " + msg2);
         }
         else msg2 = "";
         
@@ -237,16 +232,16 @@ public class AgentExplorer extends Agent {
             msg_gps = msg;
         }
         
-        System.out.println(ANSI_YELLOW+"Radar: " + msg_radar);
-        System.out.println(ANSI_YELLOW+"GPS: " + msg_gps);
-        
+        if(DEBUG){
+            System.out.println(ANSI_YELLOW+"Radar: " + msg_radar);
+            System.out.println(ANSI_YELLOW+"GPS: " + msg_gps);
+        }
       
         JsonObject objectGPS = Json.parse(msg_gps).asObject().get("gps").asObject();
         JsonArray arrayScanner = Json.parse(msg_gps).asObject().get("scanner").asArray();
         JsonArray arrayRadar = Json.parse(msg_radar).asObject().get("radar").asArray();
         
-        
-        
+            
         x = objectGPS.get("x").asInt();
         y = objectGPS.get("y").asInt();
         y+=2; // el mapa es 104 pero las coordenadas solo cuentan 100;
@@ -257,47 +252,44 @@ public class AgentExplorer extends Agent {
             MapPoint start = new MapPoint(x,y);
             MapPoint goal = new MapPoint(this.x_objetivo,this.y_objetivo);
             
-            System.out.println("Crea puntos inicio y final");
-            System.out.println("Punto start: " + start + " Punto goal: " + goal);
+            if(DEBUG){
+                System.out.println("Crea puntos inicio y final");
+                System.out.println("Punto start: " + start + " Punto goal: " + goal);
+            }
+            
             ArrayList<MapPoint> points = aStar.calculateAStar(start, goal);
             Collections.reverse(points);
-            System.out.println("Mostrando puntos");
-            for(int i = 0; i < points.size(); i++){
-                System.out.println(points.get(i));
-            }
             
-            System.out.println("Calcula points");
-            if(points == null){
-                System.out.println("Puntos nulos");
-            }
+            if(DEBUG){
+                System.out.println("Mostrando puntos");
+                for(int i = 0; i < points.size(); i++){
+                    System.out.println(points.get(i));
+                }
+                System.out.println("Calcula points");
+                if(points == null){
+                    System.out.println("Puntos nulos");
+                }
                 System.out.println(points.get(0).x + " "+ points.get(0).y);
-            instructions = aStar.convertToInstructions(points, start);
-            System.out.println("Size de return de instructions: " + instructions.size());
-            System.out.println("Calcula a*");
- 
-      //      Collections.reverse(instructions);
-            System.out.println("tenemos instrucciones");
-            
-            for(int i=0; i < instructions.size(); i++){
-                System.out.println(instructions.get(i));
             }
+            
+            instructions = aStar.convertToInstructions(points, start);
+            
+            if(DEBUG){
+                System.out.println("Size de return de instructions: " + instructions.size());
+                System.out.println("Calcula a*");
+                System.out.println("tenemos instrucciones");
+            
+                for(int i=0; i < instructions.size(); i++){
+                    System.out.println(instructions.get(i));
+                }  
+            }
+            
             this.aStarExecuted = true;
         }
-      //  x = 17;
-      //  y=2;
-        
-       // msg = "Explorer: GPS x = " +x+"\ty = "+y+"\n";
-       // this.sendMessage(new AgentID(Car_ID), msg);
-        
-       
-       // JsonObject object2 = Json.parse(msg_radar).asObject();
-        
-      //  JsonArray ja = object2.get("radar").asArray();
         
         array_radar.clear();
         for (int i = 0; i < 25; i+=1){
             array_radar.add(arrayRadar.get(i).asInt());
-            // System.out.println(ANSI_YELLOW+"Radar: " + arrayRadar.get(i).asInt());
         }
         
         array_scanner.clear();
@@ -311,23 +303,7 @@ public class AgentExplorer extends Agent {
     }
     
     
-    /*
-        Enviar información al agente del mapa.
-    */
-    
-    //Funcion debug para imprimir matriz del mapa real en la consola
-    private void DEBUG_IMPRIMIRMAPAREAL(){
-        System.out.println("PASOS: " + pasos);
-        for(int i = 0; i < m_real; i++){
-            System.out.print("\n");
-            for(int j = 0; j < n_real; j++){
-                System.out.print(map_real.get(i*m_real + j) + " ");
-                if(map_real.get(i*m_real + j) != -1){
-                    System.out.print(" ");
-                }
-            }
-        }
-    }
+
    
     private void UPDATE_MAP(){
         int index = 0;
@@ -475,18 +451,6 @@ public class AgentExplorer extends Agent {
         
     }
   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -640,36 +604,6 @@ public class AgentExplorer extends Agent {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    private void printPulgarcito(){
-        for(int i = 0; i < m; i+=1){
-            System.out.print("\n");
-            for(int j = 0; j < n; j+=1){
-                if(mapPulgarcito.get(i*m+j) == WALL)
-                    System.out.print((char)1);
-                else{
-                    System.out.print(mapPulgarcito.get(i*m+j));
-                }
-                System.out.print("  ");
-            }
-        }
-        System.out.println();
-    }
-    
-    
-    
     private void FINISH(){
         
         msg_finish = this.receiveMessage();
@@ -689,56 +623,7 @@ public class AgentExplorer extends Agent {
     }
     
     
-    private void PrintPulgarcito(){
-        byte [][] a = new byte[m][m];
-        for(int i = 0; i < m; i++)
-            for(int j = 0; j < m; j++){
-                if((this.mapPulgarcito.get(i*m+j) == 1) || ((mapPulgarcito.get(i*m+j) == -1)))
-                a[i][j] = 0;
-                else a[i][j] = 1;
-            }
-        
-        byte raw[] = new byte[m * m];
-        for (int i = 0; i < a.length; i++) {
-            System.arraycopy(a[i], 0, raw, i*m, m);
-        }
-
-        byte levels[] = new byte[]{0, -1};
-        BufferedImage image = new BufferedImage(m, m, 
-                BufferedImage.TYPE_BYTE_INDEXED,
-                new IndexColorModel(8, 2, levels, levels, levels));
-        DataBuffer buffer = new DataBufferByte(raw, raw.length);
-        SampleModel sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, m, m, 1, m * 1, new int[]{0});
-        Raster raster = Raster.createRaster(sampleModel, buffer, null);
-        image.setData(raster);
-        try {
-            ImageIO.write(image, "png", new File("testpulg.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(AgentExplorer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-    }
-    
     private void PrintMap(){
-        
-        /*
-        for(int i = 0; i < m; i+=1){
-            System.out.print("\n");
-            for(int j = 0; j < n; j+=1){
-                if(map.get(i*m+j) == 1)
-                    System.out.print((char)1);
-                else{
-                    System.out.print("1");
-                }
-                System.out.print("  ");
-            }
-        }
-        System.out.println();
-        */
-        
-        // Crear una imagen con el contenido del mapa
-        
-        // Esta en sucio pero funciona
         
         byte [][] a = new byte[m_real][n_real];
         for(int i = 0; i < m_real; i++)

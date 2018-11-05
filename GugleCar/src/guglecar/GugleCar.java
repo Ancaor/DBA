@@ -27,16 +27,12 @@ public class GugleCar {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        // TODO code application logic here
+        
         AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
-        
-      //  System.out.println("\033[31mEste texto es Rojo");
-
-        
+            
         Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
         
         System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
-
         
         Car.start();
     }
