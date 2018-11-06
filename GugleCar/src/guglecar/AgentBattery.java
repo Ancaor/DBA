@@ -6,7 +6,7 @@ import es.upv.dsic.gti_ia.core.AgentID;
 
 /**
  *
- * @author Ruben
+ * @author Ruben Mógica Garrido
  */
 public class AgentBattery extends Agent{
     AgentID Car_ID;
@@ -26,6 +26,10 @@ public class AgentBattery extends Agent{
         Car_ID = car;
     }
     
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     @Override
     public void init(){
         end = false;
@@ -33,6 +37,10 @@ public class AgentBattery extends Agent{
         state = IDLE;
     }
     
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     @Override
     public void execute(){
         while (!end){    
@@ -56,6 +64,9 @@ public class AgentBattery extends Agent{
         
     }
     
+    /**
+     * @author Ruben Mógica Garrido
+     */
     private void Idle(){
         msg = this.receiveMessage();
         
@@ -67,6 +78,10 @@ public class AgentBattery extends Agent{
         }
     }
     
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     private void Finish(){
         end = true;
     }
@@ -78,7 +93,10 @@ public class AgentBattery extends Agent{
         state = SEND_CONF;
     }
     
-    // mod Antonio
+    /**
+     * @author Ruben Mógica Garrido
+     * @author Antonio José Camarero Ortega
+     */
     private void SendConf(){
         
         JsonObject response = new JsonObject();

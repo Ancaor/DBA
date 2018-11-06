@@ -1,3 +1,4 @@
 
 *.class
 /GugleCar/dist/
+GugleCar/nbproject/private/private\.xml
