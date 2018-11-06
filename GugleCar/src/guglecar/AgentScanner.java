@@ -30,26 +30,47 @@ public class AgentScanner extends Agent{
    private static final int IDLE = 1;
    private static final int PROCESS_DATA = 2;
    private static final int UPDATE_MAP = 3;
-   private static final int WAIT_CONFIRM = 4;
-   private static final int FINISH = 5;
+   private static final int FINISH = 4;
    
    private static final boolean DEBUG = false;
 
+   
+   /**
+    * @author Rubén Marín Asunción
+    * 
+    * Constructor con parámetros de la clase AgentScanner.
+    * 
+    * @param aid Representa el ID que se va a asignar al AgentScanner.
+    * @param car Representa el ID del AgentCar con el que se va a comunicar.
+    * @param explorador Representa el ID del AgentExplorer con el que se va a comunicar.
+    * @throws Exception 
+    */
     public AgentScanner(AgentID aid, AgentID car, AgentID explorador) throws Exception {
         super(aid);
         Car_ID = car;
         Explorador_ID = explorador;
     }
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que se ejecuta al despertar al agente y cambia el estado a IDLE.
+     */
     private void WAKE_UP(){
         state = IDLE;
-        System.out.println("SCANNER WAKE UP");
+        
+        if(DEBUG)
+            System.out.println("SCANNER WAKE UP");
     }
     
     
     /**
-     * @author Ruben Marín Asunción
+     * @author Rubén Marín Asunción
      * @author Antonio José Camarero Ortega
+     * 
+     * Función que recibe un mensaje procedente del AgentCar. Cambia el estado 
+     * a FINISH si se finaliza la ejecución o ocurre un error. En caso contrario
+     * cambia el estado a PROCESS_DATA.
      */
     
     private void IDLE(){
@@ -74,6 +95,14 @@ public class AgentScanner extends Agent{
         }
     }
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que parsea el mensaje recibido en JSON y almacena la información
+     * en variables. Una vez procesada la información cambia el estado 
+     * a UPDATE_MAP.
+     */
+    
     private void PROCESS_DATA(){
       
         JsonObject object = Json.parse(msg).asObject();
@@ -85,9 +114,6 @@ public class AgentScanner extends Agent{
             array_scanner.add(ja.get(i).asFloat());
         }
         
-        
-        
-        //Salida con formato matriz
         if(DEBUG){
             System.out.println("Vision de matriz del escaner");
             for (int i = 0; i < 25; i+=1){
@@ -106,6 +132,10 @@ public class AgentScanner extends Agent{
     /**
      * @author Ruben Marín Asunción
      * @author Antonio José Camarero Ortega
+     * 
+     * Almacena la información del GPS y la suya propia en un objeto JSON para
+     * enviarsela al AgentExplorer para que modifique el mapa que tiene 
+     * almacenado.
      */
     
     private void UPDATE_MAP(){
@@ -119,19 +149,27 @@ public class AgentScanner extends Agent{
         
         this.sendMessage(Explorador_ID, object.toString());
         
-        state = WAIT_CONFIRM;
-    }
-    
-    
-    private void WAIT_CONFIRM(){
         state = IDLE;
     }
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que determina el final de la ejecución del agente.
+     */
     
     private void FINISH(){
     
         end = true;
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que ejecuta la función del agente. Mientras no finalice controla
+     * los diferentes estados por los que pasa el agente.
+     */
     @Override
     public void execute(){
         while(!end){
@@ -148,15 +186,14 @@ public class AgentScanner extends Agent{
                 case UPDATE_MAP: 
                     UPDATE_MAP();
                     break;
-                case WAIT_CONFIRM: 
-                    WAIT_CONFIRM();
-                    break;
                 case FINISH:
                     FINISH();
                     break;
             }
         }
-        System.out.println("------- SCANNER FINISHED -------");
+        
+        if(DEBUG)
+            System.out.println("------- SCANNER FINISHED -------");
 
     }
 }
