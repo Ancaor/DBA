@@ -9,86 +9,98 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import es.upv.dsic.gti_ia.core.AgentID;
 /**
- *
- * @author Rubén
+ * @author Rubén Marín Asunción
+ * 
+ * Clase que representa al agente que maneja el GPS. Hereda de la clase Agent.
  */
 
 public class AgentGPS extends Agent{
     
     AgentID Car_ID;
-    AgentID Explorer_ID;
     AgentID Scanner_ID;
     
     private int x;
     private int y;
     
-    JsonObject msgJson;
     private String msg;
+    
+    private static final boolean DEBUG = false;
     
     private int state = 0;
     Boolean end = false;
     private final static int WAKE_UP = 0;
     private final static int IDLE = 1;
     private final static int PROCESS_DATA = 2;
-    private final static int UPDATE_MAP = 3;
-    private final static int SEND_CONFIRM = 4;
-    private final static int FINISH = 5;
+    private final static int SEND_CONFIRM = 3;
+    private final static int FINISH = 4;
     
     
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Constructor con parámetros de la clase AgentGPS
+     * 
+     * @param aid Representa el id del agente creado.
+     * @param scanner Representa el ID del agente Scanner con el que se comunica.
+     * @param car Representa el ID del agente Car con el que se comunica.
+     * @throws Exception 
+     */
     
-    
-    public AgentGPS(AgentID aid, AgentID scanner, AgentID car) throws Exception {
+    public AgentGPS(AgentID aid, AgentID scanner, AgentID car) throws Exception{
         super(aid);
         Car_ID = car;
-        //Explorer_ID = explorer;
         Scanner_ID = scanner;
     }
     
     
-    /*
-        Levanta al agente que crea el mapa.
-    */
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Funcion que se ejecuta al despertar el agente y modifica el estado a IDLE.
+     */
     private void WAKE_UP(){
-    
+         
         state = IDLE;
+        
+        if(DEBUG)
+            System.out.println(ANSI_GREEN+"AgentGPS despertado");
+        
 
     }
     
-    /*
-        Esperar mensaje 
-    */
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que se encarga de recibir un mensaje con la información asociada
+     * al GPS. Si el mendaje recibido contiene la cadena CRASHED, FINISH o BAD
+     * significa que ha ocurrido un error y cambia el estado a FINISH. Sino cambia
+     * el estado a PROCESS_DATA.
+     */
     private void IDLE(){
     
         msg = this.receiveMessage();
         
-                System.out.println(ANSI_GREEN+"LO QUE RECIVE EL GPS : " + msg);
-
-        /*
-        int x_random = (int) (Math.random() * 15) + 3;
-        int y_random = (int) (Math.random() * 15) + 3;
-        
-        msgJson = new JsonObject();
-        msgJson.add("x", x_random);
-        msgJson.add("y", y_random);
-        
-        msg = msgJson.toString();
-        */
-        if(msg.contains("CRASHED") || msg.contains("FINISH")){
+        if(msg.contains("CRASHED") || msg.contains("FINISH") || msg.contains("BAD"))
             state = FINISH;
-        }
-        else{
+        else
             state = PROCESS_DATA;
-        }
-       
+        
+        if(DEBUG)
+            System.out.println(ANSI_GREEN+"LO QUE RECIVE EL GPS : " + msg);
     }
     
-    /*
-        Parseo de mensaje.
-    */
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que parsea el mensaje recibido en JSON y almacena la información
+     * en variables. Una vez procesada la información cambia el estado 
+     * a SEND_CONFIRM.
+     */
     private void PROCESS_DATA(){
-        System.out.println(ANSI_GREEN+"PROCESS DATA");
+        
+        if(DEBUG)
+            System.out.println(ANSI_GREEN+"PROCESS DATA");
 
         JsonObject object = Json.parse(msg).asObject();
                 
@@ -96,43 +108,47 @@ public class AgentGPS extends Agent{
         x = object.get("gps").asObject().get("x").asInt();
         y = object.get("gps").asObject().get("y").asInt();
         
-        
-        state = UPDATE_MAP;
-        
-        //this.sendMessage(new AgentID(Car_ID), msg);
+        state = SEND_CONFIRM;
     }
     
     
-    /*
-        Enviar información al agente del mapa.
-    */
-   
-    private void UPDATE_MAP(){
-    
-        state = SEND_CONFIRM;   
-    }
-    
-     private void SEND_CONFIRM(){
-        
-        //JsonObject response = new JsonObject();
-        
-       // response.add("gps", true);
-        System.out.println(ANSI_GREEN+"CONFIRMACION GPS : " + msg );
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que envía una confirmación al AgentScanner para que pueda 
+     * comenzar su ejecución. Cambia el estado a IDLE a la espera de un 
+     * nuevo mensaje.
+     */
+    private void SEND_CONFIRM(){
+
+        if(DEBUG)
+            System.out.println(ANSI_GREEN+"CONFIRMACION GPS : " + msg );
+
         this.sendMessage(Scanner_ID, msg);
         
         state = IDLE;
     }
 
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que determina el final de la ejecución del agente.
+     */
     private void FINISH(){
     
         end = true;
-        
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que ejecuta la función del agente. Mientras no finalice controla
+     * los diferentes estados por los que pasa el agente.
+     */
     @Override
     public void execute(){
-        String msg = "";
+
         while(!end){
             switch(state){
                 case WAKE_UP:
@@ -144,9 +160,6 @@ public class AgentGPS extends Agent{
                 case PROCESS_DATA: 
                     PROCESS_DATA();
                     break;
-                case UPDATE_MAP: 
-                    UPDATE_MAP();
-                    break;
                 case SEND_CONFIRM: 
                     SEND_CONFIRM();
                     break;
@@ -155,7 +168,9 @@ public class AgentGPS extends Agent{
                     break;
             }
         }
-        System.out.println(ANSI_GREEN+"------- GPS FINISHED -------");
+        
+        if(DEBUG)
+            System.out.println(ANSI_GREEN+"------- GPS FINISHED -------");
     }
 }
 
