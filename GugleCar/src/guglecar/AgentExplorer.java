@@ -80,6 +80,8 @@ public class AgentExplorer extends Agent {
     private String msg;
     private String msg2;
     private String msg_finish;
+    
+    
     private int state = 0;
     Boolean end = false;
     private final static int WAKE_UP = 0;
@@ -93,7 +95,7 @@ public class AgentExplorer extends Agent {
     
     private String mapName;
         
-    //-------------Pulgarcito START------------------
+    //-------------Pulgarcito------------------
     
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
     private boolean mapExist;
@@ -108,12 +110,6 @@ public class AgentExplorer extends Agent {
     private static final int WALL = 999999999;
     private static final int ROAD = 0;
     
-    
-    ///////////////////////////////////////////////////
-    
-    //PULGARCITO
-    
-    private boolean isPulgarcito = true;
     private boolean map_loaded = false;
     private AStar aStar;
     private boolean aStarExecuted = false;
@@ -123,7 +119,16 @@ public class AgentExplorer extends Agent {
     private int actual_x = 9999999;
     private int actual_y = 9999999;
    
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Constructor con parámetros.
+     * 
+     * @param aid Representa el ID que se va a asignar al AgentExplorer.
+     * @param car Representa el ID del AgentCar con el que se comunica.
+     * @param mapName Representa el nombre del mapa que va a recorrer.
+     * @throws Exception 
+     */
     
     public AgentExplorer(AgentID aid, AgentID car, String mapName) throws Exception {
         super(aid);
@@ -137,25 +142,37 @@ public class AgentExplorer extends Agent {
         this.loadMap(mapName);
         
         if(DEBUG)
-            System.out.println("MAPA CARGADO / CREADO");
+            System.out.println(ANSI_YELLOW+"MAPA CARGADO / CREADO");
         
         if(this.map_real.size() != 0){
             this.map_loaded = true;
-            System.out.println("Map loaded");
+            if(DEBUG)
+                System.out.println(ANSI_YELLOW+"Map loaded");
         }
         
         if(this.map_loaded){
             this.aStar= new AStar(m_real,m_real,this.map_real);
             this.aStarFinished=false;
-            System.out.println("aStar inicializado");
+            if(DEBUG)
+                System.out.println(ANSI_YELLOW+"aStar inicializado");
         }
         
         
 
     }
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que inicializa el mapa real. Guarda el mapa en un array cuyos bordes
+     * con grosor de 2 unidades son inicializados a 1 (muros) y el resto del mapa a -1 (desconocido)
+     * @param mapa ArrayList de enteros que representa el mapa real.
+     */
     public void initMap(ArrayList<Integer> mapa){
-        System.out.println("INIT MAP");
+        
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"INIT MAP");
+        
         for(int i = 0; i < m_real*2; i+=1)
             mapa.add(1);
  
@@ -172,9 +189,21 @@ public class AgentExplorer extends Agent {
             mapa.add(1);
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que inicializa el mapa pulgarcito. Guarda el mapa en un array cuyos bordes
+     * con grosor de 2 unidades son inicializados a WALL (valor muy alto que 
+     * representa un muro) y el resto del mapa a -1 (desconocido).
+     * 
+     * @param mapa ArrayList de enteros que representa el mapa pulgarcito.
+     */
     public void initMapPulgarcito(ArrayList<Integer> mapa){
         
-        System.out.println("INIT MAP PULGARCITO");
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"INIT MAP PULGARCITO");
+        
         for(int i = 0; i < m*2; i+=1)
             mapa.add(WALL);
  
@@ -191,23 +220,33 @@ public class AgentExplorer extends Agent {
             mapa.add(WALL);
     }
 
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que se ejecuta al despertar al agente y cambia el estado a IDLE.
+     */
      private void WAKE_UP(){
     
         state = IDLE;
         
         if(DEBUG)
-            System.out.println(ANSI_YELLOW+"AgentExplrer wake up !");
+            System.out.println(ANSI_YELLOW+"AgentExplorer wake up !");
 
     }
     
-    /*
-        Esperar mensaje 
-    */
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que recibe mensajes procedentes del radar y del GPS. Cambia el estado 
+     * a FINISH si se finaliza la ejecución o ocurre un error en cualquiera de
+     * los dos mensajes. En caso contrario cambia el estado a PROCESS_DATA.
+     * Los mensajes llegan en un orden desconocido así que en este punto no sabriamos
+     * distinguir de que agente es cada mensaje.
+     */
     private void IDLE(){
         msg = this.receiveMessage();
         if(DEBUG){
-            System.out.println("IDLE");
+            System.out.println(ANSI_YELLOW+"IDLE");
             System.out.println(ANSI_YELLOW+"LO QUE RECIBE EL EXPLORER 1: " + msg);
         }
         if(!msg.contains("FINISH")){
@@ -229,10 +268,16 @@ public class AgentExplorer extends Agent {
         
     }
     
-    /*
-        Parseo de mensaje.
-    */
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que procesa los dos mensajes recibidos para saber a quien pertenece
+     * y almacena los valores en variables. Si se va a ejecutar el A* inicializa
+     * los valores del origen del movimiento y el objetivo y se genera una secuencia
+     * de instrucciones a seguir. Una vez procesada toda la información cambia 
+     * el estado a UPDATE_MAP.
+     */
     private void PROCESS_DATA(){
         BasicConfigurator.configure();
         String msg_radar;
@@ -258,7 +303,7 @@ public class AgentExplorer extends Agent {
             
         x = objectGPS.get("x").asInt();
         y = objectGPS.get("y").asInt();
-        y+=2; // el mapa es 104 pero las coordenadas solo cuentan 100;
+        y+=2;
         x+=2;
         
         if(!this.aStarExecuted && !this.aStarFinished){
@@ -267,34 +312,34 @@ public class AgentExplorer extends Agent {
             MapPoint goal = new MapPoint(this.x_objetivo,this.y_objetivo);
             
             if(DEBUG){
-                System.out.println("Crea puntos inicio y final");
-                System.out.println("Punto start: " + start + " Punto goal: " + goal);
+                System.out.println(ANSI_YELLOW+"Crea puntos inicio y final");
+                System.out.println(ANSI_YELLOW+"Punto start: " + start + " Punto goal: " + goal);
             }
             
             ArrayList<MapPoint> points = aStar.calculateAStar(start, goal);
             Collections.reverse(points);
             
             if(DEBUG){
-                System.out.println("Mostrando puntos");
+                System.out.println(ANSI_YELLOW+"Mostrando puntos");
                 for(int i = 0; i < points.size(); i++){
                     System.out.println(points.get(i));
                 }
-                System.out.println("Calcula points");
+                System.out.println(ANSI_YELLOW+"Calcula points");
                 if(points == null){
-                    System.out.println("Puntos nulos");
+                    System.out.println(ANSI_YELLOW+"Puntos nulos");
                 }
-                System.out.println(points.get(0).x + " "+ points.get(0).y);
+                System.out.println(ANSI_YELLOW+points.get(0).x + " "+ points.get(0).y);
             }
             
             instructions = aStar.convertToInstructions(points, start);
             
             if(DEBUG){
-                System.out.println("Size de return de instructions: " + instructions.size());
-                System.out.println("Calcula a*");
-                System.out.println("tenemos instrucciones");
+                System.out.println(ANSI_YELLOW+"Size de return de instructions: " + instructions.size());
+                System.out.println(ANSI_YELLOW+"Calcula a*");
+                System.out.println(ANSI_YELLOW+"tenemos instrucciones");
             
                 for(int i=0; i < instructions.size(); i++){
-                    System.out.println(instructions.get(i));
+                    System.out.println(ANSI_YELLOW+instructions.get(i));
                 }  
             }
             
@@ -318,113 +363,57 @@ public class AgentExplorer extends Agent {
     
     
 
-   
+   /**
+    * @author Rubén Marín Asunción
+    * 
+    * Función que actualiza el mapa con la información de los sensores. Una vez
+    * actualizados los mapas evalúa segun la estrategia elegida(pulgarcito o A*)
+    * el movimiento que va a realizar. Una vez realizadas las funciones del A* o
+    * del pulgarcito cambia el estado a IDLE.
+    */
     private void UPDATE_MAP(){
         int index = 0;
         
-        
         if(map_real.size() == 0){
-            if(DEBUG)
-            System.out.println("ENTRA EN IF");
-        for(int i = y-2; i <= y+2; i+=1)
-            for(int j = x-2; j <= x+2; j+=1){
-               // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
-               // System.out.println("i:" + i + ", j" + j);
-               if(DEBUG)
-                System.out.println("pos mapa: " + j +" " + i +" contiene " +map.get(i*m+j));
-               if(DEBUG) 
-               System.out.println("radar en esa pos contiene " +array_radar.get(index));
-                map.set(i*m+j, array_radar.get(index));
-                index+=1;
-            }
-        }
-        else{
-            if(DEBUG)
-             System.out.println("ENTRA EN ELSE: " + index );
             for(int i = y-2; i <= y+2; i+=1)
                 for(int j = x-2; j <= x+2; j+=1){
-                   // System.out.println(ANSI_YELLOW+"aaaaaaaaaaa ");
-                   // System.out.println("i:" + i + ", j" + j);
-                   // System.out.println(map_real.get(i*m_real+j));
-                   // System.out.println(array_radar.get(index));
-                 //  if(map_real.get(i*m_real+j))
+                   if(DEBUG){
+                        System.out.println(ANSI_YELLOW+"pos mapa: " + j +" " + i +" contiene " +map.get(i*m+j));
+                        System.out.println(ANSI_YELLOW+"radar en esa pos contiene " +array_radar.get(index));
+                   }
+                    map.set(i*m+j, array_radar.get(index));
+                    index+=1;
+                }
+        }
+        else{
+            for(int i = y-2; i <= y+2; i+=1)
+                for(int j = x-2; j <= x+2; j+=1){
                     if(map_real.get(i*m_real+j) ==0 && array_radar.get(index) ==1){
                         if(DEBUG)
-                        System.out.println("SOBRESCRIBIENDO UN CERO CON UN UNO");
+                            System.out.println(ANSI_YELLOW+"SOBRESCRIBIENDO UN CERO CON UN UNO");
                     }
                     if(DEBUG)
-                    System.out.println(array_radar.get(index));
+                        System.out.println(ANSI_YELLOW+array_radar.get(index));
                     
                     map_real.set(i*m_real+j, array_radar.get(index));
                     if(map_real.get(i*m_real+j) == 0){
                         if(DEBUG)
-                        System.out.println("PUESTOS 0");
+                            System.out.println(ANSI_YELLOW+"PUESTOS 0");
                     }
                     index+=1;
                 }
         }
         
-        /*
-            //DEBUG 
-            System.out.println("ESTO ES LO QUE VE EL ARRAY");
-            index = 0;
-            for(int i = y-2; i <= y+2; i+=1){
-                System.out.print("\n");
-                for(int j = x-2; j <= x+2; j+=1){
-                    System.out.print(array_radar.get(index) + " ");
-                    index++;
-                }
-            }
-        */
-       /*     
-         System.out.println("\nESTO ES LO QUE VE EL MAPA");
-                for(int i = y-2; i <= y+2; i+=1){
-                    System.out.print("\n");
-                    for(int j = x-2; j <= x+2; j+=1){
-                        System.out.print(map_real.get(i*m_real+j) + " ");
-                    }
-                }
-                
-                System.out.print("\n");
-*/
-       // map.set(x*m+y, 9);
-        System.out.println(ANSI_YELLOW+"Pasa el parseo ");
-        /*
-        
-        JsonObject movement = new JsonObject();
-        */
-        //Mirar a que posicion moverse
-        //Mirar donde pude moverse por el radar
-    //    System.out.println(ANSI_YELLOW+"Info radar PULGARCITO: "+ array_radar.toString());
-        
-    //    DEBUG_IMPRIMIRMAPAREAL();
-    /*
-        if(this.array_radar.get(11) == 0 || this.array_radar.get(11) == 2){
-            movement.add("command", "moveW");
-            this.sendMessage(this.Car_ID, movement.toString());
-            pasos++;
-        }else if(this.array_radar.get(17) == 0 || this.array_radar.get(17) == 2){
-            movement.add("command", "moveS");  
-            this.sendMessage(this.Car_ID, movement.toString());
-            pasos++;
+        if(DEBUG){
+            System.out.println(ANSI_YELLOW+"Pasa el parseo ");
+
+            System.out.println(ANSI_YELLOW+"Antes del if aStarExecuted es: " + this.aStarExecuted);
         }
-    */
-        /*if(this.array_radar.get(12) != 2){
-            movement.add("command", "moveSW");
-            this.sendMessage(this.Car_ID, movement.toString());
-            pasos++;
-        }
-        *//*else{
-            System.out.println("--------PASOS HASTA LLEGAR A OBJETIVO : "+ pasos + " -------------");
-            movement.add("signal","NO_MOVE");
-            this.sendMessage(this.Car_ID, movement.toString());
-        }
-            */
-        System.out.println("Antes del if aStarExecuted es: " + this.aStarExecuted);
         if(this.aStarExecuted)
             aStar();
         else{
-            System.out.println("Entra en else de pulgarcito");
+            if(DEBUG)
+                System.out.println(ANSI_YELLOW+"Entra en else de pulgarcito");
               
             pulgarcito();
         }
@@ -435,6 +424,14 @@ public class AgentExplorer extends Agent {
         
     }
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que coge una instrucción de una lista de instrucciones generadas
+     * anteriormente por el A* y le envía ese movimiento al AgentCar. Si se
+     * han ejecutado todas las ordenes finaliza el movimiento A* y comienza el
+     * pulgarcito.
+     */
     private void aStar() {
        
         JsonObject message = new JsonObject();
@@ -446,18 +443,20 @@ public class AgentExplorer extends Agent {
                 
             }
             
-                message.add("command", this.instructions.get(this.instructionIndex));
-                System.out.println(message.toString());
-                this.sendMessage(this.Car_ID, message.toString());
+            message.add("command", this.instructions.get(this.instructionIndex));
+            System.out.println(message.toString());
+            this.sendMessage(this.Car_ID, message.toString());
             
             this.actual_x = x;
             this.actual_y=y;
             this.instructionIndex++;
             this.steps++;
         }else{
+            if(DEBUG)
+                System.out.println(ANSI_YELLOW+"AStar acaba en : " + x + " " + y);
+            
             this.aStarExecuted = false;
             this.aStarFinished = true;
-            System.out.println("AStar acaba en : " + x + " " + y);
             pulgarcito();
         }
         
@@ -468,12 +467,16 @@ public class AgentExplorer extends Agent {
     
     
     
-    
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que se encarga de ejecutar el algoritmo del pulgarcito para evaluar
+     * el camino que va a seguir. El algoritmo se ejecuta hasta alcanzar un número
+     * máximo de pasos.
+     */
     private void pulgarcito(){
         
         if(!this.mapExist){
-           // this.initMapPulgarcito(this.mapPulgarcito);
            loadPulgarcito();
             this.mapExist = true;
         }
@@ -482,43 +485,29 @@ public class AgentExplorer extends Agent {
         
         String movement = selectMovement();
         
-        System.out.println("step: " + steps + ", stepsPulgarcito: "+ stepsPulgarcito +", iter : " + iter);
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"step: " + steps + ", stepsPulgarcito: "+ stepsPulgarcito +", iter : " + iter);
         
         if(steps < MAX_STEPS){
             JsonObject message = new JsonObject();
             message.add("command", movement);
             this.sendMessage(this.Car_ID, message.toString());
-            if(steps == MAX_STEPS-1){
-                iter++;
-            }
-        }else if(iter < MAX_ITERS){
-            try {
-                System.out.println("SE VA A DORMIR ");
-                sleep(6000);
-                System.out.println("SE DESPIERTA ");
-                MAX_STEPS = MAX_STEPS + STEPS_PER_ITER;
-                JsonObject message = new JsonObject();
-                message.add("command", movement);
-                System.out.println(message.toString());
-                this.sendMessage(this.Car_ID, message.toString());
-                
-            } catch (InterruptedException ex) {
-               // Logger.getLogger(AgentExplorer.class.getName()).log(Level.SEVERE, null, ex);
-               System.out.println("Peta en el sleep de pulgarcito");
-            }
-            
-            }else{
-                JsonObject message = new JsonObject();
-                message.add("signal","NO_MOVE");
-                this.sendMessage(this.Car_ID, message.toString());
-            }
+        }else{
+            JsonObject message = new JsonObject();
+            message.add("signal","NO_MOVE");
+            this.sendMessage(this.Car_ID, message.toString());
+        }
         
         
        
     }
 
     
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que actualiza los valores del mapa pulgarcito
+     */
     private void updatePulgarcitoMap(){
         int index = 0;
         
@@ -539,7 +528,12 @@ public class AgentExplorer extends Agent {
         
     }
     
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que se encarga de elegir el movimiento del pulgarcito evaluando
+     * los valores del mapa.
+     */
     private String selectMovement(){
         String movement = "";
         int box_selected = 0;
@@ -564,7 +558,7 @@ public class AgentExplorer extends Agent {
         
         for(int i=0; i < box_values.size(); i++){
             if(DEBUG)
-                System.out.println("Box " + i + ": pulg = "+box_values.get(i) + " scanner = " + scanner_near.get(i) + " radar = " + radar_near.get(i));
+                System.out.println(ANSI_YELLOW+"Box " + i + ": pulg = "+box_values.get(i) + " scanner = " + scanner_near.get(i) + " radar = " + radar_near.get(i));
             if(box_values.get(i) < min){
                 box_selected = i;
                 min = box_values.get(i);
@@ -609,7 +603,7 @@ public class AgentExplorer extends Agent {
         }
         
         if(DEBUG)
-           System.out.println("Elije Box "+ box_selected + ": "+ movement);
+           System.out.println(ANSI_YELLOW+"Elije Box "+ box_selected + ": "+ movement);
         return movement;
         
     }
@@ -617,26 +611,39 @@ public class AgentExplorer extends Agent {
     
     
     
-    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que determina el final de la ejecución del agente. Al finalizar
+     * guarda los dos mapas utilizados en archivos.
+     */
     private void FINISH(){
         
         msg_finish = this.receiveMessage();
-        System.out.println("MENSAGE DE FINISH " + msg_finish);
+        
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"MENSAGE DE FINISH " + msg_finish);
         end = true;
         
         this.m_real = Json.parse(msg_finish).asObject().get("size").asInt();
         this.n_real = this.m_real;
-        System.out.println(ANSI_YELLOW+"m_real : " + m_real);
+        
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"m_real : " + m_real);
         
         
         saveMap(this.mapName);
         PrintMap();
         savePulgarcito();
-        //msg = "\nEl Explorer ha finalizado su ejecución.\n";
-        //this.sendMessage(new AgentID(Car_ID), msg);
     }
     
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que te crea un archivo PNG usando los valores del mapa como 
+     * referencia.
+     */
     private void PrintMap(){
         
         byte [][] a = new byte[m_real][n_real];
@@ -669,6 +676,12 @@ public class AgentExplorer extends Agent {
         
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que guarda el mapa pulgarcito en un archivo.
+     */
     public void savePulgarcito(){
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter("pulg_"+this.mapName+".map"));
@@ -676,32 +689,37 @@ public class AgentExplorer extends Agent {
             bw.newLine();
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < m; j++) {
-                //    System.out.println(map_real.get(i*m_real + j));
                     bw.write(this.mapPulgarcito.get(i*m + j) + ((j == m-1) ? "" : ","));
                 }
                 bw.newLine();
             }
             bw.flush();
-        } catch (IOException e) {System.out.println("PETA AL ESCRIBIR EL .MAP");}
+        } catch (IOException e) {
+            System.out.println(ANSI_YELLOW+"ERROR AL ESCRIBIR EL .MAP");
+        }
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que guarda el mapa real en un archivo
+     */
     public void saveMap(String mapName){
         if(this.map_real.size() == 0){
-            System.out.println(ANSI_YELLOW + "size=0");
+            if(DEBUG)
+                System.out.println(ANSI_YELLOW + "map_real.size=0");
             
             this.initMap(map_real);
         
             for(int i=0;i<this.m_real;i++){
                 for(int j=0;j<this.m_real;j++){
                     int casilla = this.map.get(i*m+j);
-                   // if(casilla == 0)
                     this.map_real.set(i*m_real+j, casilla);
                 }
             }
         }
         
-        
-        System.out.println(ANSI_YELLOW + "sale bien");
         
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(mapName+".map"));
@@ -709,16 +727,26 @@ public class AgentExplorer extends Agent {
             bw.newLine();
             for (int i = 0; i < m_real; i++) {
                 for (int j = 0; j < n_real; j++) {
-                //    System.out.println(map_real.get(i*m_real + j));
                     bw.write(map_real.get(i*m_real + j) + ((j == m_real-1) ? "" : ","));
                 }
                 bw.newLine();
             }
             bw.flush();
-        } catch (IOException e) {System.out.println("PETA AL ESCRIBIR EL .MAP");}
+        } catch (IOException e) {
+            System.out.println(ANSI_YELLOW+"PETA AL ESCRIBIR EL .MAP");
+        }
         
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que carga el archivo .map que representa el mapa real y almacena 
+     * esa información en variables.
+     * 
+     * @param mapName String que representa el nombre del mapa.
+     */
     public void loadMap(String mapName){
         Scanner sc;
         
@@ -731,17 +759,15 @@ public class AgentExplorer extends Agent {
             x_objetivo = Integer.valueOf(line[2]);
             y_objetivo = Integer.valueOf(line[3]);
             
-          //  int [][] myArray = new int[m][n];
             while(sc.hasNextLine()) {
               for (int i=0; i<(m_real); i++) {
                   line = sc.nextLine().trim().split(",");
                  for (int j=0; j<line.length; j++) {
-                   // myArray[i][j] = Integer.parseInt(line[j]);
                     map_real.add( Integer.parseInt(line[j]));
                  }
               }
            }
-        } catch (FileNotFoundException ex) {   // SI NO EXISTE EL ARCHIVO
+        } catch (FileNotFoundException ex) {
 
             initMap(map);
             System.out.println(ANSI_YELLOW+"No existe mapa, se utilizan valores por defecto");
@@ -749,6 +775,14 @@ public class AgentExplorer extends Agent {
       
     }
     
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que carga el archivo .map del pulgarcito y almacena esa información
+     * en variables.
+     * 
+     * 
+     */
     public void loadPulgarcito(){
         Scanner sc;
         
@@ -780,10 +814,16 @@ public class AgentExplorer extends Agent {
       
     }
     
+    
+    /**
+     * @author Rubén Marín Asunción
+     * 
+     * Función que ejecuta la función del agente. Mientras no finalice controla
+     * los diferentes estados por los que pasa el agente.
+     */
     @Override
     public void execute(){
         
-        //PrintMap();
         while(!end){
             switch(state){
                 case WAKE_UP:
@@ -803,7 +843,9 @@ public class AgentExplorer extends Agent {
                     break;
             }
         }   
-        System.out.println(ANSI_YELLOW+"Fin de AgentExplorer");
+        
+        if(DEBUG)
+            System.out.println(ANSI_YELLOW+"Fin de AgentExplorer");
         
     }
 
