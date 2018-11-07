@@ -15,10 +15,11 @@ public class AgentBattery extends Agent{
     private int state;
     private float battery;
     private String msg;
-    private static final int IDLE = 0;
-    private static final int FINISH = 1;
-    private static final int PROCESS_DATA = 2;
-    private static final int SEND_CONF = 3;
+    private static final int WAKE_UP = 0;
+    private static final int IDLE = 1;
+    private static final int FINISH = 2;
+    private static final int PROCESS_DATA = 3;
+    private static final int SEND_CONF = 4;
     
     
     public AgentBattery(AgentID aid, AgentID car) throws Exception {
@@ -34,8 +35,10 @@ public class AgentBattery extends Agent{
     public void init(){
         end = false;
         battery = 0;
-        state = IDLE;
+        state = WAKE_UP;
     }
+    
+    
     
     
     /**
@@ -45,6 +48,9 @@ public class AgentBattery extends Agent{
     public void execute(){
         while (!end){    
             switch(state){
+                case WAKE_UP:
+                    Wake_up();
+                    break;
                 case IDLE:
                     Idle();
                     break;
@@ -62,6 +68,12 @@ public class AgentBattery extends Agent{
         
         System.out.println(ANSI_BLUE+"------- BATTERY FINISHED -------");
         
+    }
+    
+    
+    private void Wake_up(){
+        System.out.println(ANSI_BLUE+"------- BATTERY WAKE UP -------");
+        state = IDLE;
     }
     
     /**

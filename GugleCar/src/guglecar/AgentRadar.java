@@ -65,9 +65,7 @@ public class AgentRadar extends Agent{
      * Función que se ejecuta al despertar el agente y modifica el estado a IDLE.
      */
     private void WAKE_UP(){
-
-        if(DEBUG)
-            System.out.println(ANSI_PURPLE+"Radar: Wake_up\n");
+        System.out.println(ANSI_PURPLE+"------- RADAR WAKE UP -------");
         
         state = IDLE;
     }
@@ -182,8 +180,7 @@ public class AgentRadar extends Agent{
             }
         }
         
-        if(DEBUG)
-            System.out.println(ANSI_PURPLE+"------- RADAR FINISHED -------");
+        System.out.println(ANSI_PURPLE+"------- RADAR FINISHED -------");
     }
 }
 

@@ -60,8 +60,7 @@ public class AgentScanner extends Agent{
     private void WAKE_UP(){
         state = IDLE;
         
-        if(DEBUG)
-            System.out.println("SCANNER WAKE UP");
+        System.out.println("------- SCANNER WAKE UP -------");
     }
     
     
@@ -193,8 +192,7 @@ public class AgentScanner extends Agent{
             }
         }
         
-        if(DEBUG)
-            System.out.println("------- SCANNER FINISHED -------");
+        System.out.println("------- SCANNER FINISHED -------");
 
     }
 }

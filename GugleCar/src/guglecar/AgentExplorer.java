@@ -103,9 +103,7 @@ public class AgentExplorer extends Agent {
     private int stepsPulgarcito;
     private int iter;
     
-    private final int STEPS_PER_ITER = 10000;
-    private int MAX_STEPS = 10000;
-    private final int MAX_ITERS = 1;
+    private int MAX_STEPS = 1000;
     
     private static final int WALL = 999999999;
     private static final int ROAD = 0;
@@ -228,9 +226,7 @@ public class AgentExplorer extends Agent {
      private void WAKE_UP(){
     
         state = IDLE;
-        
-        if(DEBUG)
-            System.out.println(ANSI_YELLOW+"AgentExplorer wake up !");
+        System.out.println(ANSI_YELLOW+"------- EXPLORER WAKE UP -------");
 
     }
     
@@ -809,7 +805,7 @@ public class AgentExplorer extends Agent {
         } catch (FileNotFoundException ex) {   // SI NO EXISTE EL ARCHIVO
 
             initMapPulgarcito(mapPulgarcito);
-            System.out.println(ANSI_YELLOW+"ERROR");
+            System.out.println(ANSI_YELLOW+"pulg_"+this.mapName+".map no existe. inicializando.");
         }
       
     }
@@ -844,8 +840,7 @@ public class AgentExplorer extends Agent {
             }
         }   
         
-        if(DEBUG)
-            System.out.println(ANSI_YELLOW+"Fin de AgentExplorer");
+        System.out.println(ANSI_YELLOW+"------- EXPLORER FINISHED -------");
         
     }
 

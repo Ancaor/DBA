@@ -39,7 +39,7 @@ public class AgentCar extends Agent{
     private static final int FINISH = 5;
     private static final int SEND_COMMAND = 6;
     
-    private static final String MAPA = "map10";
+    private static final String MAPA = "map11";
     
     private static final boolean DEBUG = false;
     
@@ -59,11 +59,11 @@ public class AgentCar extends Agent{
     AgentScanner agentScanner;
     
     AgentID serverAgent;
-    AgentID radarAgent = new AgentID("Radar1");
-    AgentID scannerAgent = new AgentID("Scanner1");
-    AgentID gpsAgent = new AgentID("Gps1");
-    AgentID batteryAgent = new AgentID("Bateria1");
-    AgentID explorerAgent = new AgentID("Explorador1");
+    AgentID radarAgent = new AgentID("Radar111");
+    AgentID scannerAgent = new AgentID("Scanner111");
+    AgentID gpsAgent = new AgentID("Gps111");
+    AgentID batteryAgent = new AgentID("Bateria111");
+    AgentID explorerAgent = new AgentID("Explorador111");
     
     /**
     *
@@ -285,7 +285,8 @@ public class AgentCar extends Agent{
     
     public void sendCommand(){
         
-        System.out.println(ANSI_RED+"Esta en send command");
+        if(DEBUG)
+            System.out.println(ANSI_RED+"Esta en send command");
         
         if(this.refuel){
             if(DEBUG)

@@ -64,8 +64,7 @@ public class AgentGPS extends Agent{
          
         state = IDLE;
         
-        if(DEBUG)
-            System.out.println(ANSI_GREEN+"AgentGPS despertado");
+        System.out.println(ANSI_GREEN+"------- GPS WAKE UP -------");
         
 
     }
@@ -170,8 +169,7 @@ public class AgentGPS extends Agent{
             }
         }
         
-        if(DEBUG)
-            System.out.println(ANSI_GREEN+"------- GPS FINISHED -------");
+        System.out.println(ANSI_GREEN+"------- GPS FINISHED -------");
     }
 }
 
