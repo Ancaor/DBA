@@ -17,9 +17,9 @@ public class AStarNode {
 
     public int gValue; //points from start
     public int hValue; //distance from target
+    public int fValue;
     public boolean isWall = false;
 
-    private final int MOVEMENT_COST = 10;
 
     public AStarNode(MapPoint point) {
         this.point = point;
@@ -33,19 +33,20 @@ public class AStarNode {
     }
 
     public void calculateHValue(AStarNode destPoint) {
-        this.hValue = (Math.abs(point.x - destPoint.point.x) + Math.abs(point.y - destPoint.point.y)) * this.MOVEMENT_COST;
+        this.hValue = (Math.abs(point.x - destPoint.point.x) + Math.abs(point.y - destPoint.point.y)) ;
     }
 
     @Override
     public String toString() {
-        return "AStarNode{" + "point=" + point + ", parent=" + parent + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall + ", MOVEMENT_COST=" + MOVEMENT_COST + '}';
+        return "AStarNode{" + "point=" + point + ", parent=" + parent + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall '}';
     }
 
-    public void calculateGValue(AStarNode point) {
-        this.gValue = point.gValue + this.MOVEMENT_COST;
-    }
 
-    public int getFValue() {
-        return this.gValue + this.hValue;
+    public void calculateFValue() {
+         fValue = gValue + this.hValue;
+    }
+    
+    public int getFValue(){
+        return fValue;
     }
 }
