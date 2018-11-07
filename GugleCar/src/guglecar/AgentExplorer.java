@@ -305,6 +305,7 @@ public class AgentExplorer extends Agent {
         if(!this.aStarExecuted && !this.aStarFinished){
             
             MapPoint start = new MapPoint(x,y);
+            this.findObjetive();
             MapPoint goal = new MapPoint(this.x_objetivo,this.y_objetivo);
             
             if(DEBUG){
@@ -453,7 +454,12 @@ public class AgentExplorer extends Agent {
             
             this.aStarExecuted = false;
             this.aStarFinished = true;
-            pulgarcito();
+            
+            if(DEBUG)
+                System.out.println("AStar acaba en : " + x + " " + y);
+            message.add("signal", "NO_MOVE");
+            //pulgarcito();
+            this.sendMessage(this.Car_ID, message.toString());
         }
         
         
@@ -476,8 +482,8 @@ public class AgentExplorer extends Agent {
                 if(this.map_real.get(i*m_real+j) == 2){
                     a++;
                     distance = (Math.abs(x - j) + Math.abs(y - i));
-                    //if(a==9){
-                    if(distance < min_distance){
+                    if(a==5){
+                    //if(distance < min_distance){
                         min_distance = distance;
                         x_min = j;
                         y_min = i;
