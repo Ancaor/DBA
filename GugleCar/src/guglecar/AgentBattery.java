@@ -85,7 +85,7 @@ public class AgentBattery extends Agent{
         
         JsonObject response = new JsonObject();
         
-        if(this.battery < 10.0){        //Valor de prueba
+        if(this.battery < 2.0){        //Valor de prueba
             response.add("battery", true);
             this.sendMessage(Car_ID, response.toString());
         }

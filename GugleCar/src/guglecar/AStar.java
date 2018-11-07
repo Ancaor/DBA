@@ -78,10 +78,12 @@ public class AStar {
 
     @SuppressWarnings("unchecked")
     public ArrayList<MapPoint> calculateAStar(MapPoint inicio, MapPoint destino) {
-                    
-        List<AStarNode> openList = new ArrayList<AStarNode>();
-        ArrayList<AStarNode> closedList = new ArrayList<AStarNode>();
+        Comparator<AStarNode> comparator = new ComparatorNode();
+        PriorityQueue<AStarNode> openList = new PriorityQueue<AStarNode>(this.fComparator);
+        HashSet<AStarNode> closedList = new HashSet<AStarNode>();
 
+        boolean isDiagonal = false;
+        
         AStarNode destNode = this.nodes.get(destino);
         System.out.println("A* dest: " +  destNode.isWall);
      //   AStarNode destNode = this.nodes.get(destinoDebug);
@@ -99,7 +101,7 @@ public class AStar {
         
         while(!openList.isEmpty()) {
 
-            currentNode = openList.get(0);      //pop de c++
+            currentNode = openList.poll();      //pop de c++
             
 
             if (currentNode.point.equals(destNode.point)) {
@@ -114,33 +116,41 @@ public class AStar {
                 MapPoint adjPoint ;
                 if(i == 0){     //Norte
                     adjPoint = new MapPoint(currentPoint.x, currentPoint.y-1);
+                    isDiagonal = false;
                 }
                 else if(i == 1){     //NorEste
                     adjPoint = new MapPoint(currentPoint.x+1, currentPoint.y-1);
+                    isDiagonal = true;
                 }
-                
+        
                 else if(i == 2){     //Este
                     adjPoint = new MapPoint(currentPoint.x+1, currentPoint.y);
+                    isDiagonal = false;
                 }
                 
                 else if(i == 3){     //SurEste
                     adjPoint = new MapPoint(currentPoint.x+1, currentPoint.y+1);
+                    isDiagonal = true;
                 }
                 
                 else if(i == 4){     //Sur
                     adjPoint = new MapPoint(currentPoint.x, currentPoint.y+1);
+                    isDiagonal = false;
                 }
                 
                 else if(i == 5){     //SurOeste
                     adjPoint = new MapPoint(currentPoint.x-1, currentPoint.y+1);
+                    isDiagonal = true;
                 }
                 
                 else if(i == 6){     //Oeste
                     adjPoint = new MapPoint(currentPoint.x-1, currentPoint.y);
+                    isDiagonal = false;
                 }
                 
                 else{     //NorOeste
                     adjPoint = new MapPoint(currentPoint.x-1, currentPoint.y-1);
+                    isDiagonal = true;
                 }
                 
                 if (!this.isInsideBounds(adjPoint)) {

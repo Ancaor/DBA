@@ -87,8 +87,8 @@ public class AgentExplorer extends Agent {
     private int stepsPulgarcito;
     private int iter;
     
-    private final int STEPS_PER_ITER = 5000;
-    private int MAX_STEPS = 5000;
+    private final int STEPS_PER_ITER = 1000;
+    private int MAX_STEPS = 1000;
     private final int MAX_ITERS = 1;
     
     private static final int WALL = 999999999;
@@ -489,13 +489,15 @@ public class AgentExplorer extends Agent {
         
         float distance;
         float min_distance = 999999;
+        int a = 0;
         
         for(int i=0; i < m_real; i++){
             for(int j=0;j<m_real;j++){
                 
                 if(this.map_real.get(i*m_real+j) == 2){
+                    a++;
                     distance = (Math.abs(x - j) + Math.abs(y - i));
-                    
+                    //if(a==9){
                     if(distance < min_distance){
                         min_distance = distance;
                         x_min = j;
