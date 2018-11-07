@@ -15,7 +15,7 @@ import es.upv.dsic.gti_ia.core.AgentsConnection;
 public class GugleCar {
     
     private static final AgentID SERVER_AGENT = new AgentID("Keid");
-    private static final AgentID CAR_AGENT = new AgentID("JUANET22E1717777777777177557777777777776");
+    private static final AgentID CAR_AGENT = new AgentID("Car111");
     
     public static final String ANSI_RESET = "\033[30m";
     public static final String ANSI_RED = "\033[31m";
@@ -27,16 +27,12 @@ public class GugleCar {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        // TODO code application logic here
+        
         AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
-        
-      //  System.out.println("\033[31mEste texto es Rojo");
-
-        
+            
         Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
         
-        System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
-
+        System.out.println("\n\n"+ANSI_RED + "------CAR WAKE UP-----\n");
         
         Car.start();
     }

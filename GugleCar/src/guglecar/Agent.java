@@ -10,8 +10,11 @@ import es.upv.dsic.gti_ia.core.AgentID;
 import es.upv.dsic.gti_ia.core.SingleAgent;
 
 /**
- *
- * @author Anton
+ * @author Antonio José Camarero Ortega
+ * 
+ * Clase de la que eredan todos los agentes.
+ * Define funciones para el envio y recepción de mensajes
+ * entre agentes.
  */
 public class Agent extends SingleAgent{
     
@@ -27,10 +30,25 @@ public class Agent extends SingleAgent{
         super(aid);
     }
     
+    /**
+     * @author Antonio José Camarero Ortega
+     * 
+     * Función que devuelve el nombre local del agente.
+     * 
+     * @return Nombre local del agente.
+     */
     public String getName(){
         return this.getAid().getLocalName();
     }
     
+    /**
+     * @author Antonio José Camarero Ortega
+     * 
+     * Función que envia un mensaje a otro agente.
+     * 
+     * @param sendTo nombre del agente que recibirá el mensaje.
+     * @param content contenido del mensaje.
+     */
     public void sendMessage(AgentID sendTo, String content){
         ACLMessage outbox = new ACLMessage();
 		
@@ -41,6 +59,14 @@ public class Agent extends SingleAgent{
         this.send(outbox);
     }
     
+    
+    /**
+     * @author Antonio José Camarero Ortega
+     * 
+     * Función que recibe un mensaje de cualquier agente.
+     * 
+     * @return Contenido del mensaje recibido.
+     */
     public String receiveMessage(){
         try {
             

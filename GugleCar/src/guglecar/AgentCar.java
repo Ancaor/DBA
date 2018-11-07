@@ -36,11 +36,10 @@ public class AgentCar extends Agent{
     private static final int LOGIN_AGENTS = 1;
     private static final int WAIT_SERVER_RESPONSE = 2;
     private static final int WAIT_AGENTS = 3;
-    private static final int FINISH_MOVEMENT = 4;
     private static final int FINISH = 5;
     private static final int SEND_COMMAND = 6;
     
-    private static final String MAPA = "map6";
+    private static final String MAPA = "map11";
     
     private static final boolean DEBUG = true;
     
@@ -60,11 +59,11 @@ public class AgentCar extends Agent{
     AgentScanner agentScanner;
     
     AgentID serverAgent;
-    AgentID radarAgent = new AgentID("Radar1712211111111111111111111111111");
-    AgentID scannerAgent = new AgentID("scanne1r111122111111111111111111111111");
-    AgentID gpsAgent = new AgentID("gps6111111111111221111111111111111");
-    AgentID batteryAgent = new AgentID("bater1iCoche111211111111111111111111111111");
-    AgentID explorerAgent = new AgentID("Explo1rador71122DSA111111111111111111111111111");
+    AgentID radarAgent = new AgentID("Radar111");
+    AgentID scannerAgent = new AgentID("Scanner111");
+    AgentID gpsAgent = new AgentID("Gps111");
+    AgentID batteryAgent = new AgentID("Bateria111");
+    AgentID explorerAgent = new AgentID("Explorador111");
     
     /**
     *
@@ -94,7 +93,7 @@ public class AgentCar extends Agent{
             this.agentGPS = new AgentGPS(gpsAgent, scannerAgent, this.getAid());
             this.agentRadar = new AgentRadar(this.radarAgent,this.explorerAgent, this.getAid());
             this.agentScanner = new AgentScanner(this.scannerAgent,this.getAid(),this.explorerAgent);
-            this.agentExplorer = new AgentExplorer(this.explorerAgent,this.gpsAgent,this.getAid(),MAPA);
+            this.agentExplorer = new AgentExplorer(this.explorerAgent,this.getAid(),MAPA);
         } catch (Exception ex) {
             Logger.getLogger(AgentCar.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ANSI_RED+"Error inicializando agentes");
@@ -116,8 +115,6 @@ public class AgentCar extends Agent{
     */
     
     public void loginAgentsState(){
-       // String response  = this.receiveMessage();
-       // JsonObject injson = Json.parse(response).asObject();
          command = Json.object().add("command", "login")
                 .add("world", MAPA)
                 .add("battery", batteryAgent.getLocalName())
@@ -173,22 +170,23 @@ public class AgentCar extends Agent{
             JsonObject injson = Json.parse(server_response).asObject();
                 
             if(injson.get("result").toString().contains("BAD")){
-                //this.state = FINISH_MOVEMENT;
                 this.state = WAIT_AGENTS;
-                System.out.println(ANSI_RED +"ERROR_SERVER : " + server_response);
+                if(DEBUG)
+                    System.out.println(ANSI_RED +"ERROR_SERVER : " + server_response);
             }else if(injson.get("result").toString().contains("CRASHED")){
-                //this.state = FINISH;
                 this.state = FINISH;
-                System.out.println(ANSI_RED +"ERROR_SERVER : " + server_response);
+                if(DEBUG)
+                    System.out.println(ANSI_RED +"ERROR_SERVER : " + server_response);
             }else{
                 if(this.clave.equals("")){
                     this.clave = injson.get("result").asString();
-                    System.out.println(ANSI_RED +"Logeado en servidor");
+                    if(DEBUG)
+                        System.out.println(ANSI_RED +"Logeado en servidor");
                 }
                 
                 if(DEBUG){
-            System.out.println(ANSI_RED +"YA ESTABA REGISTRADO, HA LLEGADO UN OK");
-            }
+                    System.out.println(ANSI_RED +"YA ESTABA REGISTRADO, HA LLEGADO UN OK");
+                }
                     
                 this.state = WAIT_AGENTS;   
                     
@@ -248,7 +246,8 @@ public class AgentCar extends Agent{
         
         for(int i = 0; i < this.agentsNum; i++){
             messages.add(this.receiveMessage());
-            System.out.println(ANSI_RED+"Contenido mensage " + i + messages.get(messages.size()-1));
+            if(DEBUG)
+                System.out.println(ANSI_RED+"Contenido mensage " + i + messages.get(messages.size()-1));
         }
         for(int i = 0; i < messages.size(); i++){
             if(messages.get(i).contains("battery")){
@@ -286,39 +285,42 @@ public class AgentCar extends Agent{
     
     public void sendCommand(){
         
-        System.out.println(ANSI_RED+"Esta en send command");
+        if(DEBUG)
+            System.out.println(ANSI_RED+"Esta en send command");
         
         if(this.refuel){
-            System.out.println(ANSI_RED+"-------HAGO REFUEL ---------------------->");
+            if(DEBUG)
+                System.out.println(ANSI_RED+"-------HAGO REFUEL ---------------------->");
             command = Json.object().add("command", "refuel")
                     .add("key", this.clave);
             this.state = WAIT_SERVER_RESPONSE;
         }else if(this.movement.contains("move")){
-            System.out.println(ANSI_RED+"tiene move");
+            if(DEBUG)
+                System.out.println(ANSI_RED+"tiene move");
             command = Json.object().add("command", this.movement)
                     .add("key", this.clave);
             this.state = WAIT_SERVER_RESPONSE;
-        }else if(this.signal.contains("NO_MOVE")){ //LOGOUT porque no hay movmiento
-            System.out.println(ANSI_RED+"no tiene move");
+        }else if(this.signal.contains("NO_MOVE")){ 
+            if(DEBUG)
+                System.out.println(ANSI_RED+"no tiene move");
             command = Json.object().add("command", "logout")
                     .add("key", this.clave);
             this.state = FINISH;
+            
            //mando a finish los agentes antes de recibir el OK
             JsonObject outjson = Json.object().add("signal", "FINISH");
         
-        this.sendMessage(this.batteryAgent, outjson.toString());
-        this.sendMessage(this.gpsAgent, outjson.toString());
-        this.sendMessage(this.radarAgent, outjson.toString());
-        this.sendMessage(this.scannerAgent, outjson.toString());
-        this.sendMessage(this.explorerAgent, outjson.toString());
+            this.sendMessage(this.batteryAgent, outjson.toString());
+            this.sendMessage(this.gpsAgent, outjson.toString());
+            this.sendMessage(this.radarAgent, outjson.toString());
+            this.sendMessage(this.scannerAgent, outjson.toString());
+            this.sendMessage(this.explorerAgent, outjson.toString());
         }
         
         
         this.sendMessage(this.serverAgent, command.toString());
         
         
-        
-        //
     }
     
     
@@ -335,7 +337,7 @@ public class AgentCar extends Agent{
     public void finish(){
         
         if(DEBUG)
-        System.out.println(ANSI_RED+"ENVIO LOGOUT : " + command.toString());
+            System.out.println(ANSI_RED+"ENVIO LOGOUT : " + command.toString());
         
         
         
@@ -345,10 +347,10 @@ public class AgentCar extends Agent{
      
         
         if(DEBUG)
-        System.out.println(ANSI_RED+"aux1 : " + aux1);
+            System.out.println(ANSI_RED+"aux1 : " + aux1);
         
         if(DEBUG)
-        System.out.println(ANSI_RED+"aux2 : " + aux2);
+            System.out.println(ANSI_RED+"aux2 : " + aux2);
         
         JsonObject outjson = Json.object().add("signal", "FINISH");
         
@@ -356,6 +358,7 @@ public class AgentCar extends Agent{
         
         if(aux1.contains("trace")){
             try{
+                
                 System.out.println(ANSI_RED+"Recibiendo traza ...");
 
                 JsonObject injson = Json.parse(aux1).asObject();
@@ -368,8 +371,7 @@ public class AgentCar extends Agent{
                 FileOutputStream fos  = new FileOutputStream("mitraza.png");
                 fos.write(data);
                 fos.close();
-                double a  = array.size();
-                 im = ImageIO.read(new File("mitraza.png"));
+                im = ImageIO.read(new File("mitraza.png"));
                 
                 System.out.println(ANSI_RED+"TAMANIO MAPA: " + im.getWidth());
                 System.out.println(ANSI_RED+"Traza guardada");
@@ -390,7 +392,7 @@ public class AgentCar extends Agent{
                 FileOutputStream fos  = new FileOutputStream("mitraza.png");
                 fos.write(data);
                 fos.close();
-                double a  = array.size();
+
                  im = ImageIO.read(new File("mitraza.png"));
                 
                 System.out.println(ANSI_RED+"TAMANIO MAPA: " + im.getWidth());
@@ -426,7 +428,6 @@ public class AgentCar extends Agent{
         this.finish = false;
         this.clave = "";
         this.state = AWAKE_AGENTS;
-        //this.state = WAIT_AGENTS;
     }
     
     /**
@@ -441,10 +442,6 @@ public class AgentCar extends Agent{
     @Override
     public void execute(){
         
-        //String msg = this.receiveMessage();
-        //System.out.print(msg);
-      //  if(DEBUG)
-       //     System.out.println(ANSI_RED+"ESTADO_CAR : " + state);
         
         while(!finish)
         {
@@ -467,10 +464,6 @@ public class AgentCar extends Agent{
                 case WAIT_AGENTS:
                     waitAgents();
                     break;
-
-                case FINISH_MOVEMENT:
-
-                break;
 
                 case FINISH:
                     finish();

@@ -6,7 +6,7 @@ import es.upv.dsic.gti_ia.core.AgentID;
 
 /**
  *
- * @author Ruben
+ * @author Ruben Mógica Garrido
  */
 public class AgentBattery extends Agent{
     AgentID Car_ID;
@@ -15,10 +15,11 @@ public class AgentBattery extends Agent{
     private int state;
     private float battery;
     private String msg;
-    private static final int IDLE = 0;
-    private static final int FINISH = 1;
-    private static final int PROCESS_DATA = 2;
-    private static final int SEND_CONF = 3;
+    private static final int WAKE_UP = 0;
+    private static final int IDLE = 1;
+    private static final int FINISH = 2;
+    private static final int PROCESS_DATA = 3;
+    private static final int SEND_CONF = 4;
     
     
     public AgentBattery(AgentID aid, AgentID car) throws Exception {
@@ -26,17 +27,30 @@ public class AgentBattery extends Agent{
         Car_ID = car;
     }
     
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     @Override
     public void init(){
         end = false;
         battery = 0;
-        state = IDLE;
+        state = WAKE_UP;
     }
     
+    
+    
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     @Override
     public void execute(){
         while (!end){    
             switch(state){
+                case WAKE_UP:
+                    Wake_up();
+                    break;
                 case IDLE:
                     Idle();
                     break;
@@ -56,9 +70,18 @@ public class AgentBattery extends Agent{
         
     }
     
+    
+    private void Wake_up(){
+        System.out.println(ANSI_BLUE+"------- BATTERY WAKE UP -------");
+        state = IDLE;
+    }
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     private void Idle(){
         msg = this.receiveMessage();
-        //System.out.println(msg);
+        
         if(msg.contains("CRASHED") || msg.contains("FINISH")){
             state = FINISH;
         }
@@ -67,6 +90,10 @@ public class AgentBattery extends Agent{
         }
     }
     
+    
+    /**
+     * @author Ruben Mógica Garrido
+     */
     private void Finish(){
         end = true;
     }
@@ -74,13 +101,14 @@ public class AgentBattery extends Agent{
     private void ProcessData(){
         JsonObject object = Json.parse(msg).asObject();
         battery = object.get("battery").asFloat();
-        
-    //    System.out.println(ANSI_BLUE+"AgentBattery Battery level : " + battery);
-        
+               
         state = SEND_CONF;
     }
     
-    // mod Antonio
+    /**
+     * @author Ruben Mógica Garrido
+     * @author Antonio José Camarero Ortega
+     */
     private void SendConf(){
         
         JsonObject response = new JsonObject();
