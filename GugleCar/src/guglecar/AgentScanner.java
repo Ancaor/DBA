@@ -12,8 +12,9 @@ import es.upv.dsic.gti_ia.core.AgentID;
 import java.util.ArrayList;
 
 /**
- *
- * @author Ruben Marín Asunción
+ * @author Rubén Marín Asunción
+ * 
+ * Clase que representa al agente que maneja el Scanner. Hereda de la clase Agent.
  */
 public class AgentScanner extends Agent{
    private String msg;
