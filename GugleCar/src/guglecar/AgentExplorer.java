@@ -496,10 +496,10 @@ public class AgentExplorer extends Agent {
                 
                 if(this.map_real.get(i*m_real+j) == 2){
                     a++;
-                    distance = (Math.abs(x - j) + Math.abs(y - i));
-                    //if(a==9){
-                    if(distance < min_distance){
-                        min_distance = distance;
+                   // distance = (Math.abs(x - j) + Math.abs(y - i));
+                    if(a==9){
+                    //if(distance < min_distance){
+                     //   min_distance = distance;
                         x_min = j;
                         y_min = i;
                     }

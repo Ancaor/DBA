@@ -40,7 +40,7 @@ public class AgentCar extends Agent{
     private static final int FINISH = 5;
     private static final int SEND_COMMAND = 6;
     
-    private static final String MAPA = "map6";
+    private static final String MAPA = "map11";
     
     private static final boolean DEBUG = true;
     

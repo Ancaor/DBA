@@ -171,7 +171,7 @@ public class AStar {
                         openList.add(adjNode);
                  //       System.out.println("Pasa");
                     } else {
-                        if (adjNode.gValue < currentNode.gValue) {
+                        if (adjNode.getFValue() < currentNode.getFValue()) {
                             adjNode.calculateGValue(currentNode);
                             currentNode = adjNode;
                         }
