@@ -1,10 +1,2 @@
 
 *.class
-/GugleCar/dist/
-GugleCar/nbproject/private/private\.xml
-
-GugleCar/nbproject/private/private\.properties
-
-*.xml
-
-GugleCar/nbproject/project\.properties
