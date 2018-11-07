@@ -103,7 +103,7 @@ public class AgentExplorer extends Agent {
     private int stepsPulgarcito;
     private int iter;
     
-    private int MAX_STEPS = 1000;
+    private int MAX_STEPS = 5000;
     
     private static final int WALL = 999999999;
     private static final int ROAD = 0;
