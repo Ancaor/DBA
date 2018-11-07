@@ -7,41 +7,22 @@ package guglecar;
 
 /**
  *
- * @author Rubén Mogica Garrido
+ * @author Ruben
  */
 public class MapPoint {
     public int x;
     public int y;
 
-    
-    /**
-     * @author Rubén Mogica Garrido
-     * @param x representa el valor de la coordenada X en un punto del mapa.
-     * @param y representa el valor de la coordenada Y en un punto del mapa.
-     */
     MapPoint(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    
-    /**
-     * @author Rubén Mogica Garrido
-     * 
-     * Función que transforma la información de un objeto de la clase en un String.
-     * 
-     * @return String que muestra la información del objeto.
-     */
     @Override
     public String toString() {
         return "MapPoint{" + "x=" + x + ", y=" + y + '}';
     }
 
-    /**
-     * @author Rubén Mogica Garrido
-     * 
-     * @return 
-     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -50,15 +31,6 @@ public class MapPoint {
         return hash;
     }
 
-    
-    /**
-     * @author Rubén Mogica Garrido
-     * 
-     * Función que compara si dos objetos de la clase son iguales.
-     * 
-     * @param obj representa al objeto con el que se quiere comparar.
-     * @return Booleano a true si los objetos son iguales. False en caso contrario
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

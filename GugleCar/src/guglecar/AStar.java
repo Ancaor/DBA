@@ -54,14 +54,13 @@ public class AStar {
 
                 
                // System.out.println("Mapa real tiene: " + map_real.get(x*this.width+y));
-             //  if(map_real.get(y*this.width+x) == 2){
-               //    destinoDebug = point;
-              // }
+               if(map_real.get(y*this.width+x) == 2){
+                   destinoDebug = point;
+               }
                
                 if(map_real.get(y*this.width+x) != 0 && map_real.get(y*this.width+x) != 2 ){
                     AStarNode node = this.nodes.get(point);
                     node.isWall = true;
-                   // System.out.println("PRUEBAA " + this.nodes.get(point).isWall );
                  //   System.out.println("Muro en: "+  x + ":" + y );
                 }
 
@@ -98,7 +97,7 @@ public class AStar {
 
         currentNode.setGValue(0);
         openList.add(currentNode);
-
+        ArrayList<String> instrucciones = new ArrayList<String>();
         
         while(!openList.isEmpty()) {
 
@@ -172,7 +171,7 @@ public class AStar {
                         openList.add(adjNode);
                  //       System.out.println("Pasa");
                     } else {
-                        if (adjNode.gValue < currentNode.gValue) {
+                        if (adjNode.getFValue() < currentNode.getFValue()) {
                             adjNode.calculateGValue(currentNode);
                             currentNode = adjNode;
                         }
