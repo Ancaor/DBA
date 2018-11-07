@@ -36,11 +36,28 @@ import org.apache.log4j.BasicConfigurator;
 
 /**
  *
- * @author Rubén
+ * @author Rubén Marín Asunción
+ * 
+ * Clase del agente explorador que se encarga de recibir información de los demás 
+ * agentes que actúan como sensores como son el radar, el gps y el scanner.
+ * Guarda información sobre dos mapas. 
+ * 
+ * Mapa real: En este mapa se almacena la información que le llega del radar
+ * ayudandose del GPS para conocer su ubicación. Con esta información el agente
+ * conoce donde hay caminos, muros y donde esta el objetivo si se cruza con el.
+ * Como al principio no conocemos el tamaño real del mapa usamos un mapa auxiliar
+ * 'map' de tamaño 504x504 que es el tamaño máximo posible. En cuanto conocemos
+ * el tamaño real del mapa hacemos uso de map_real con los tamaños reales.
+ * 
+ * Mapa pulgarcito: En este mapa se almacena la información del pulgarcito para
+ * conocer por que zonas se ha movido el agente para evitar, en medida de lo 
+ * posible, pasar por una misma zona varias veces.
+ * 
+ * La información de estos dos mapas se crean y se guardan en un fichero. Si 
+ * existe el fichero se carga.
  */
 public class AgentExplorer extends Agent {
     
-    private AgentID GPS_ID;
     private AgentID Car_ID;
     
     private ArrayList<Integer> map = new ArrayList<>();
@@ -63,7 +80,6 @@ public class AgentExplorer extends Agent {
     private String msg;
     private String msg2;
     private String msg_finish;
-    private JsonObject msgJson;
     private int state = 0;
     Boolean end = false;
     private final static int WAKE_UP = 0;
@@ -76,9 +92,7 @@ public class AgentExplorer extends Agent {
     private int y_objetivo;
     
     private String mapName;
-    
-    private int pasos = 0; // para movimiento pocho
-    
+        
     //-------------Pulgarcito START------------------
     
     private ArrayList<Integer> mapPulgarcito = new ArrayList<>();
@@ -111,9 +125,8 @@ public class AgentExplorer extends Agent {
    
     
     
-    public AgentExplorer(AgentID aid, AgentID gps, AgentID car, String mapName) throws Exception {
+    public AgentExplorer(AgentID aid, AgentID car, String mapName) throws Exception {
         super(aid);
-        GPS_ID = gps;
         Car_ID = car;
         this.mapName = mapName;
         mapExist = false;
@@ -123,7 +136,8 @@ public class AgentExplorer extends Agent {
         
         this.loadMap(mapName);
         
-        System.out.println("MAPA CARGADO / CREADO");
+        if(DEBUG)
+            System.out.println("MAPA CARGADO / CREADO");
         
         if(this.map_real.size() != 0){
             this.map_loaded = true;

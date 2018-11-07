@@ -93,7 +93,7 @@ public class AgentCar extends Agent{
             this.agentGPS = new AgentGPS(gpsAgent, scannerAgent, this.getAid());
             this.agentRadar = new AgentRadar(this.radarAgent,this.explorerAgent, this.getAid());
             this.agentScanner = new AgentScanner(this.scannerAgent,this.getAid(),this.explorerAgent);
-            this.agentExplorer = new AgentExplorer(this.explorerAgent,this.gpsAgent,this.getAid(),MAPA);
+            this.agentExplorer = new AgentExplorer(this.explorerAgent,this.getAid(),MAPA);
         } catch (Exception ex) {
             Logger.getLogger(AgentCar.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ANSI_RED+"Error inicializando agentes");
