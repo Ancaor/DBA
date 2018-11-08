@@ -2,3 +2,4 @@
 *.class
 /Mutenroshi/build/
 /GugleCar/dist/
+/GugleCar_aStar_puro/nbproject/private/
