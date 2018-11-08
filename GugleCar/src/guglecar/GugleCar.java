@@ -8,14 +8,17 @@ package guglecar;
 import es.upv.dsic.gti_ia.core.AgentID;
 import es.upv.dsic.gti_ia.core.AgentsConnection;
 
-/**
- *
- * @author Anton
- */
+/** 
+ * 
+ * @author Antonio Camarero Ortega 
+ *  
+ * Clase con main que realiza la conexión con el servidor. 
+ *  
+ */ 
 public class GugleCar {
     
     private static final AgentID SERVER_AGENT = new AgentID("Keid");
-    private static final AgentID CAR_AGENT = new AgentID("JUANET22E17177777777777777177557777777777776");
+    private static final AgentID CAR_AGENT = new AgentID("Car11djsdsaaddsaasdsadsadsasas1");
     
     public static final String ANSI_RESET = "\033[30m";
     public static final String ANSI_RED = "\033[31m";
@@ -23,19 +26,18 @@ public class GugleCar {
     public static final String ANSI_BLUE = "\033[34m";
 
 
-    /**
-     * @param args the command line arguments
-     */
+     /** 
+     * @author Antonio Camarero Ortega 
+     *  
+     * @param args the command line arguments 
+     */ 
     public static void main(String[] args) throws Exception {
-        // TODO code application logic here
-    //    AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
         
-      //  System.out.println("\033[31mEste texto es Rojo");
-
-   Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
+        AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);
+            
+        Agent Car = new AgentCar(CAR_AGENT,SERVER_AGENT);
         
-        System.out.println("\n\n"+ANSI_RED + "------Inicializando Coche-----\n");
-
+        System.out.println("\n\n"+ANSI_RED + "------CAR WAKE UP-----\n");
         
         Car.start();
     }
