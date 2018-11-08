@@ -33,7 +33,7 @@ public class AStar {
     @SuppressWarnings("rawtypes")
     private final Comparator fComparator = new Comparator<AStarNode>() {
         public int compare(AStarNode a, AStarNode b) {
-            return Integer.compare(a.getFValue(), b.getFValue()); //ascending to get the lowest
+            return Double.compare(a.getFValue(), b.getFValue()); //ascending to get the lowest
         }
     };
 
@@ -78,19 +78,18 @@ public class AStar {
 
     @SuppressWarnings("unchecked")
     public ArrayList<MapPoint> calculateAStar(MapPoint inicio, MapPoint destino) {
-        Comparator<AStarNode> comparator = new ComparatorNode();
         PriorityQueue<AStarNode> openList = new PriorityQueue<AStarNode>(this.fComparator);
         HashSet<AStarNode> closedList = new HashSet<AStarNode>();
 
         boolean isDiagonal = false;
         
         AStarNode destNode = this.nodes.get(destino);
-        System.out.println("A* dest: " +  destNode.isWall);
+        System.out.println("A* dest: " +  destNode.isWall + destino);
      //   AStarNode destNode = this.nodes.get(destinoDebug);
      //   System.out.println("Punto destino: " + destNode.point);
         AStarNode currentNode = this.nodes.get(inicio);
          System.out.println("A* ini: " +  currentNode.isWall);
-        
+
         currentNode.parent = null;
         
  
@@ -122,17 +121,16 @@ public class AStar {
                     adjPoint = new MapPoint(currentPoint.x+1, currentPoint.y-1);
                     isDiagonal = true;
                 }
-        
                 else if(i == 2){     //Este
                     adjPoint = new MapPoint(currentPoint.x+1, currentPoint.y);
                     isDiagonal = false;
                 }
-                
+
                 else if(i == 3){     //SurEste
                     adjPoint = new MapPoint(currentPoint.x+1, currentPoint.y+1);
                     isDiagonal = true;
                 }
-                
+
                 else if(i == 4){     //Sur
                     adjPoint = new MapPoint(currentPoint.x, currentPoint.y+1);
                     isDiagonal = false;
@@ -152,6 +150,7 @@ public class AStar {
                     adjPoint = new MapPoint(currentPoint.x-1, currentPoint.y-1);
                     isDiagonal = true;
                 }
+
                 
                 if (!this.isInsideBounds(adjPoint)) {
                     continue;
@@ -165,14 +164,16 @@ public class AStar {
                 if (!closedList.contains(adjNode)) {
                     if (!openList.contains(adjNode)) {
                         adjNode.parent = currentNode;
-                        adjNode.calculateGValue(currentNode);
+                        adjNode.calculateGValue(currentNode, isDiagonal);
                         adjNode.calculateHValue(destNode);
                    //     System.out.println("Nodo: " + adjNode.point);
                         openList.add(adjNode);
                  //       System.out.println("Pasa");
                     } else {
+                     //   if (adjNode.gValue < currentNode.gValue) {
                         if (adjNode.getFValue() < currentNode.getFValue()) {
-                            adjNode.calculateGValue(currentNode);
+                            adjNode.calculateGValue(currentNode,isDiagonal);
+                      //      adjNode.calculateHValue(destNode);
                             currentNode = adjNode;
                         }
                     }
@@ -184,6 +185,7 @@ public class AStar {
     }
 
     public ArrayList<String> convertToInstructions(ArrayList<MapPoint> points, MapPoint startingPosition){
+     
         ArrayList<MapPoint> ordenado = new ArrayList<MapPoint>();
         for(int i=0; i<points.size(); i++){
             ordenado.add(points.get(points.size()-i-1));

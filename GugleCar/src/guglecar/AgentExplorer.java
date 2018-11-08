@@ -121,6 +121,7 @@ public class AgentExplorer extends Agent {
         stepsPulgarcito = steps;
         iter = 0;
         
+        
         this.loadMap(mapName);
         /*/Imprimir mapa
         for(int i = 0; i < m_real; i++){
@@ -144,8 +145,6 @@ public class AgentExplorer extends Agent {
             System.out.println("aStar inicializado");
         }
         
-        
-
     }
     
     public void initMap(ArrayList<Integer> mapa){
@@ -263,6 +262,9 @@ public class AgentExplorer extends Agent {
             System.out.println("Crea puntos inicio y final");
             System.out.println("Punto start: " + start + " Punto goal: " + goal);
             ArrayList<MapPoint> points = aStar.calculateAStar(start, goal);
+            if(points == null){
+                System.out.println("PUNTOS NULOS");
+            }
             Collections.reverse(points);
             System.out.println("Mostrando puntos");
             for(int i = 0; i < points.size(); i++){
@@ -497,7 +499,7 @@ public class AgentExplorer extends Agent {
                 if(this.map_real.get(i*m_real+j) == 2){
                     a++;
                    // distance = (Math.abs(x - j) + Math.abs(y - i));
-                    if(a==9){
+                    if(a==5){
                     //if(distance < min_distance){
                      //   min_distance = distance;
                         x_min = j;
