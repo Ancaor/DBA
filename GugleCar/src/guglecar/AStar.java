@@ -41,7 +41,7 @@ public class AStar {
     @SuppressWarnings("rawtypes")
     private final Comparator fComparator = new Comparator<AStarNode>() {
         public int compare(AStarNode a, AStarNode b) {
-            return Integer.compare(a.getFValue(), b.getFValue()); //ascending to get the lowest
+            return Integer.compare(a.getFValue(), b.getFValue());
         }
     };
 

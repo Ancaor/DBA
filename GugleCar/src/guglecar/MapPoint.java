@@ -18,6 +18,9 @@ public class MapPoint {
     
     /**
      * @author Rubén Mogica Garrido
+     * 
+     * Constructor con parámetros
+     * 
      * @param x representa el valor de la coordenada X en un punto del mapa.
      * @param y representa el valor de la coordenada Y en un punto del mapa.
      */

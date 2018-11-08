@@ -16,8 +16,8 @@ public class AStarNode {
 
     public AStarNode parent;
 
-    public int gValue; //points from start
-    public int hValue; //distance from target
+    public int gValue; 
+    public int hValue;
     public boolean isWall = false;
 
     private final int MOVEMENT_COST = 10;
@@ -50,7 +50,7 @@ public class AStarNode {
      * 
      * Función que calcula el hValue
      * 
-     * @param destino MapPoint que representa el punto objetivo del mapa.
+     * @param destPoint MapPoint que representa el punto objetivo del mapa.
      */
     public void calculateHValue(AStarNode destPoint) {
         this.hValue = (Math.abs(point.x - destPoint.point.x) + Math.abs(point.y - destPoint.point.y)) * this.MOVEMENT_COST;
