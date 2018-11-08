@@ -138,9 +138,9 @@ public class AStar {
                    // if (adjNode.isWall) {
                    //     continue;
                    // }
-                   System.out.println(adjPoint.toString());
-                   System.out.println(this.map_real.get(adjPoint.y * this.width + adjPoint.x));
-                   System.out.println(this.map_real.get(50 * this.width + 50));
+                  // System.out.println(adjPoint.toString());
+                  // System.out.println(this.map_real.get(adjPoint.y * this.width + adjPoint.x));
+                  // System.out.println(this.map_real.get(50 * this.width + 50));
                    if((this.map_real.get(adjPoint.y * this.width + adjPoint.x) != 1) && (this.map_real.get(adjPoint.y * this.width + adjPoint.x) != -1) ){
                        System.out.println("EMPIEZA WHILE" + i);
                        AStarNode adjNode = new AStarNode(adjPoint,currentNode);
@@ -186,7 +186,7 @@ public class AStar {
                        
                        
                    }
-                   System.out.println("FUERA DE IF");
+                 //  System.out.println("FUERA DE IF");
                    
 
                     
