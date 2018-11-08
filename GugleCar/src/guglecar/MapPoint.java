@@ -42,6 +42,14 @@ public class MapPoint {
         return "MapPoint{" + "x=" + x + ", y=" + y + '}';
     }
     
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + this.x;
+        hash = 17 * hash + this.y;
+        return hash;
+    }
+    
     /**
      * @author Rubén Mogica Garrido
      * 
