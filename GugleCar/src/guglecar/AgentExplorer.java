@@ -37,6 +37,8 @@ import org.apache.log4j.BasicConfigurator;
 /**
  *
  * @author Rubén Marín Asunción
+ * @author Antonio José Camarero Ortega
+ * @author Rubén Mógica Garrido
  * 
  * Clase del agente explorador que se encarga de recibir información de los demás 
  * agentes que actúan como sensores como son el radar, el gps y el scanner.
@@ -119,6 +121,7 @@ public class AgentExplorer extends Agent {
    
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
      * 
      * Constructor con parámetros.
      * 
@@ -232,6 +235,7 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
      * 
      * Función que recibe mensajes procedentes del radar y del GPS. Cambia el estado 
      * a FINISH si se finaliza la ejecución o ocurre un error en cualquiera de
@@ -423,6 +427,8 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
+     * @author Rubén Mógica Garrido
      * 
      * Función que coge una instrucción de una lista de instrucciones generadas
      * anteriormente por el A* y le envía ese movimiento al AgentCar. Si se
@@ -466,6 +472,12 @@ public class AgentExplorer extends Agent {
         
     }
   
+    /**
+     * @author Antonio José Camarero Ortega
+     * 
+     * Encuentra el centro del objetivo del mapa para ser
+     * utilizado en el A*
+     */
     
     private void findObjetive() {
 
@@ -502,6 +514,8 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
+     * @author Pablo Garcia Llorente
      * 
      * Función que se encarga de ejecutar el algoritmo del pulgarcito para evaluar
      * el camino que va a seguir. El algoritmo se ejecuta hasta alcanzar un número
@@ -538,6 +552,8 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
+     * @author Pablo Garcia Llorente
      * 
      * Función que actualiza los valores del mapa pulgarcito
      */
@@ -563,6 +579,8 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
+     * @author Pablo Garcia Llorente
      * 
      * Función que se encarga de elegir el movimiento del pulgarcito evaluando
      * los valores del mapa.
@@ -673,6 +691,7 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
      * 
      * Función que te crea un archivo PNG usando los valores del mapa como 
      * referencia.
@@ -735,6 +754,7 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
      * 
      * Función que guarda el mapa real en un archivo
      */
@@ -774,6 +794,7 @@ public class AgentExplorer extends Agent {
     
     /**
      * @author Rubén Marín Asunción
+     * @author Antonio José Camarero Ortega
      * 
      * Función que carga el archivo .map que representa el mapa real y almacena 
      * esa información en variables.
