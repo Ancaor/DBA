@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package guglecar;
+package practica2;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
