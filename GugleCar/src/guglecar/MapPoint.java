@@ -8,6 +8,8 @@ package guglecar;
 /**
  *
  * @author Rubén Mogica Garrido
+ * 
+ * Clase que representa un punto en el mapa.
  */
 public class MapPoint {
     public int x;
@@ -36,20 +38,6 @@ public class MapPoint {
     public String toString() {
         return "MapPoint{" + "x=" + x + ", y=" + y + '}';
     }
-
-    /**
-     * @author Rubén Mogica Garrido
-     * 
-     * @return 
-     */
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + this.x;
-        hash = 17 * hash + this.y;
-        return hash;
-    }
-
     
     /**
      * @author Rubén Mogica Garrido

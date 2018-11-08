@@ -16,8 +16,16 @@ import java.util.Queue;
 import java.util.Scanner;
 
 
+/**
+ * 
+ * @author Rubén Marín Asunción
+ * @author Rubén Mogica Garrido
+ * @author Antonio Camarero Ortega
+ * 
+ * Clase que lleva a cabo el algoritmo del A*
+ * 
+ */
 public class AStar {
-    //De la clase explorer para hacer pruebas
     int m_real;
     int n_real;
     private ArrayList<Integer> map_real = new ArrayList<>();
@@ -25,6 +33,8 @@ public class AStar {
     private final int width;
     private final int height;
 
+    private static final boolean DEBUG = false;
+    
     private HashMap<MapPoint, AStarNode> nodes = new HashMap<MapPoint, AStarNode>();
     private ArrayList<MapPoint> points = new ArrayList<MapPoint>();
 
@@ -37,11 +47,18 @@ public class AStar {
         }
     };
 
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * Constructor con parametros.
+     * 
+     * @param width Representa el ancho del mapa.
+     * @param height Representa la altura del mapa.
+     * @param map ArrayList con la información del mapa.
+     */
     public AStar(int width, int height, ArrayList<Integer> map) {
         this.width = width;
         this.height = height;
-      //  this.width = 104;
-    //    this.height = 104;
         map_real = map;
 
         for (int x = 0; x < this.width; x++) {
@@ -51,44 +68,42 @@ public class AStar {
                 points.add(point);
                 this.nodes.put(point, new AStarNode(point));
                 
-
-                
-               // System.out.println("Mapa real tiene: " + map_real.get(x*this.width+y));
-             //  if(map_real.get(y*this.width+x) == 2){
-               //    destinoDebug = point;
-              // }
                
                 if(map_real.get(y*this.width+x) != 0 && map_real.get(y*this.width+x) != 2 ){
                     AStarNode node = this.nodes.get(point);
                     node.isWall = true;
-                   // System.out.println("PRUEBAA " + this.nodes.get(point).isWall );
-                 //   System.out.println("Muro en: "+  x + ":" + y );
                 }
 
             }
 
-        }
-/*
-        for (MapPoint point : wallPositions) {
-            AStarNode node = this.nodes.get(point);
-            node.isWall = true;
-        }
-*/  
-        
+        }        
     }
 
+    /**
+     * 
+     * @author Rubén Mogica Garrido
+     * 
+     * Función que ejecuta el algoritmo A* y genera un camino.
+     * 
+     * @param inicio MapPoint que representa el lugar donde se empieza el movimiento.
+     * @param destino MapPoint que representa el lugar donde finaliza el movimiento.
+     * 
+     * @return ArrayList<MapPoint> con los puntos por los que pasa el camino encontrado.
+     */
     @SuppressWarnings("unchecked")
     public ArrayList<MapPoint> calculateAStar(MapPoint inicio, MapPoint destino) {
                     
         List<AStarNode> openList = new ArrayList<AStarNode>();
         ArrayList<AStarNode> closedList = new ArrayList<AStarNode>();
 
-        AStarNode destNode = this.nodes.get(destino);
-        System.out.println("A* dest: " +  destNode.isWall);
-     //   AStarNode destNode = this.nodes.get(destinoDebug);
-     //   System.out.println("Punto destino: " + destNode.point);
+        AStarNode destNode = this.nodes.get(destino);        
         AStarNode currentNode = this.nodes.get(inicio);
-         System.out.println("A* ini: " +  currentNode.isWall);
+         
+         
+         if(DEBUG){
+            System.out.println("A* dest: " +  destNode.isWall);
+            System.out.println("A* ini: " +  currentNode.isWall);
+         }
         
         currentNode.parent = null;
         
@@ -100,7 +115,7 @@ public class AStar {
         
         while(!openList.isEmpty()) {
 
-            currentNode = openList.get(0);      //pop de c++
+            currentNode = openList.get(0);    
             
 
             if (currentNode.point.equals(destNode.point)) {
@@ -109,8 +124,8 @@ public class AStar {
             openList.remove(currentNode);
             closedList.add(currentNode);
 
-            for (int i = 0; i < 8; i++) {
-                //Recorrer 8 direcciones en sentido horario empezando por el norte
+            for (int i = 0; i < 8; i++) {       //Recorrer 8 direcciones en sentido horario empezando por el norte
+                
                 MapPoint currentPoint = currentNode.point;
                 MapPoint adjPoint ;
                 if(i == 0){     //Norte
@@ -158,9 +173,7 @@ public class AStar {
                         adjNode.parent = currentNode;
                         adjNode.calculateGValue(currentNode);
                         adjNode.calculateHValue(destNode);
-                   //     System.out.println("Nodo: " + adjNode.point);
                         openList.add(adjNode);
-                 //       System.out.println("Pasa");
                     } else {
                         if (adjNode.gValue < currentNode.gValue) {
                             adjNode.calculateGValue(currentNode);
@@ -174,16 +187,29 @@ public class AStar {
         return null;
     }
 
+    /**
+     * @author Rubén Marín Asunción
+     * @author Rubén Mogica Garrido
+     * 
+     * Función que transforma el ArrayList de MapPoints obtenido con el A* en instrucciones
+     * 
+     * @param points ArrayList<MapPoint> que representa los puntos de la ruta calculada
+     * @param startingPosition MapPoint que nos indica la posición inicial.
+     * 
+     * @return ArrayList<String> de instrucciones.
+     */
     public ArrayList<String> convertToInstructions(ArrayList<MapPoint> points, MapPoint startingPosition){
         ArrayList<MapPoint> ordenado = new ArrayList<MapPoint>();
         for(int i=0; i<points.size(); i++){
             ordenado.add(points.get(points.size()-i-1));
         }
         
-        System.out.println("Ordenado: ");
-        
-        for(int i = 0; i < ordenado.size(); i++){
-            System.out.println(ordenado.get(i));
+        if(DEBUG){
+            System.out.println("Ordenado: ");
+
+            for(int i = 0; i < ordenado.size(); i++){
+                System.out.println(ordenado.get(i));
+            }
         }
         
         ArrayList<String> result = new ArrayList<String>();
@@ -228,8 +254,6 @@ public class AStar {
         else {
             result.add("moveSE");
         }   
-        
-        System.out.println("Tamanio before bucle: " + result.size());
        
         for(int i = 0; i < ordenado.size()-1; i++){
             //Norte
@@ -272,13 +296,24 @@ public class AStar {
                 result.add("moveSE");
             }
         }
-        
-        int aux = 9 + ordenado.size()-1;
-        System.out.println("Tamanio real result: " + result.size() + " Tamanio calculado: " + aux);
+        if(DEBUG)
+            System.out.println("Tamanio real result: " + result.size());
         
         return result;
     }
     
+    
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * Función que te recorre desde el objetivo hasta el origen del camino
+     * para calcular el camino.
+     * 
+     * @param destinationNode último nodo descubierto en el algoritmo A* que esta
+     * situado en el objetivo.
+     * 
+     * @return ArrayList<MapPoint> con los puntos del camino a recorrer.
+     */
     private ArrayList<MapPoint> calculatePath(AStarNode destinationNode) {
         ArrayList<MapPoint> path = new ArrayList<MapPoint>();
         AStarNode node = destinationNode;
@@ -289,6 +324,14 @@ public class AStar {
         return path;
     }
 
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * Función que nos indica si un MapPoint esta dentro de los límites del mapa
+     * 
+     * @param point MapPoint que vamos a comprobar
+     * @return true si esta dentro, false si no.
+     */
     private boolean isInsideBounds(MapPoint point) {
         return point.x >= 0 &&
                point.x < this.width && 
@@ -296,31 +339,4 @@ public class AStar {
                point.y < this.height;
     }
     
-    public void loadMap(String mapName){
-        Scanner sc;
-        
-        try {
-            sc = new Scanner(new BufferedReader(new FileReader(mapName+".map")));
-            String[] line = sc.nextLine().trim().split(" ");
-      
-            m_real = Integer.valueOf(line[0]);
-            n_real = Integer.valueOf(line[1]);
-            
-          //  int [][] myArray = new int[m][n];
-            while(sc.hasNextLine()) {
-              for (int i=0; i<(m_real); i++) {
-                  line = sc.nextLine().trim().split(",");
-                 for (int j=0; j<line.length; j++) {
-                   // myArray[i][j] = Integer.parseInt(line[j]);
-                    map_real.add( Integer.parseInt(line[j]));
-                 }
-              }
-           }
-        } catch (FileNotFoundException ex) {   // SI NO EXISTE EL ARCHIVO
-
-        //    initMap(map);
-            System.out.println(ANSI_YELLOW+"No existe mapa");
-        }
-      
-    }
 }
