@@ -667,7 +667,7 @@ public class AgentExplorer extends Agent {
         
         saveMap(this.mapName);
         PrintMap();
-        savePulgarcito();
+        
     }
     
     
