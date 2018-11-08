@@ -28,7 +28,6 @@ import java.util.Scanner;
  */
 
 public class AStar {
-    //De la clase explorer para hacer pruebas
     int m_real;
     int n_real;
     private ArrayList<Integer> map_real = new ArrayList<>();

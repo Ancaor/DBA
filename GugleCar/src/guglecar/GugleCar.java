@@ -8,10 +8,13 @@ package guglecar;
 import es.upv.dsic.gti_ia.core.AgentID;
 import es.upv.dsic.gti_ia.core.AgentsConnection;
 
-/**
- *
- * @author Anton
- */
+/** 
+ * 
+ * @author Antonio Camarero Ortega 
+ *  
+ * Clase con main que realiza la conexión con el servidor. 
+ *  
+ */ 
 public class GugleCar {
     
     private static final AgentID SERVER_AGENT = new AgentID("Keid");
@@ -23,9 +26,11 @@ public class GugleCar {
     public static final String ANSI_BLUE = "\033[34m";
 
 
-    /**
-     * @param args the command line arguments
-     */
+     /** 
+     * @author Antonio Camarero Ortega 
+     *  
+     * @param args the command line arguments 
+     */ 
     public static void main(String[] args) throws Exception {
         
         AgentsConnection.connect("isg2.ugr.es",6000,SERVER_AGENT.getLocalName(),"Cancer","Kipling",false);

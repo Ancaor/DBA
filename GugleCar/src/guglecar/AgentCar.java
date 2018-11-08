@@ -27,7 +27,8 @@ import javax.imageio.ImageIO;
  * Agente controlador, es el que lanza a los demas agentes.
  * Además es el que se comunica con el servidor.
  * 
- * @author Antonio José Camarero Ortega.
+ * @author Antonio José Camarero Ortega
+ * @author Rubén Marín Asunción 
  * 
  */
 public class AgentCar extends Agent{
@@ -85,6 +86,7 @@ public class AgentCar extends Agent{
     * Inistancia los demás agentes y los inicia.
     * 
     * @author Antonio José Camarero Ortega
+    * @author Rubén Marín Asunción 
     */
     
     public void awakeAgents(){
@@ -112,6 +114,7 @@ public class AgentCar extends Agent{
     * reciba la informacion que necesita.
     * 
     * @author Antonio José Camarero Ortega
+    * @author Rubén Marín Asunción 
     */
     
     public void loginAgentsState(){
