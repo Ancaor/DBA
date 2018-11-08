@@ -1,6 +1,6 @@
-package guglecar;
+package practica2;
 
-import static guglecar.Agent.ANSI_YELLOW;
+import static practica2.Agent.ANSI_YELLOW;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
