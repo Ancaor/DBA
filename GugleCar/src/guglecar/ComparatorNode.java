@@ -19,11 +19,11 @@ public class ComparatorNode implements Comparator<AStarNode>
     public int compare(AStarNode a, AStarNode b)
     {
 
-        if (a.gValue < b.gValue)
+        if (a.getFValue() < b.getFValue())
         {
             return -1;
         }
-        if (a.gValue > b.gValue)
+        if (a.getFValue() > b.getFValue())
         {
             return 1;
         }

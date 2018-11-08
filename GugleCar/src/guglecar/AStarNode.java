@@ -21,8 +21,9 @@ public class AStarNode {
     public boolean isWall = false;
 
 
-    public AStarNode(MapPoint point) {
+    public AStarNode(MapPoint point, AStarNode p) {
         this.point = point;
+        this.parent = p;
     }
 
     
@@ -36,23 +37,29 @@ public class AStarNode {
         return "AStarNode{" + "point=" + point + ", parent=" + parent.point + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall + ", MOVEMENT_COST=}";
     }
 
-    public void calculateFValue(AStarNode point) {
+    public void calculateFValue() {
         this.fValue = this.gValue + this.hValue;
     }
     
-    public void calculateGValue(AStarNode point) {
+    public void calculateGValue() {
         this.gValue = this.parent.getGValue() + 1;
     }
     
-    public void calculateHValue(AStarNode destPoint) {
-        int dif_x = Math.abs(point.x - destPoint.point.x);
-        int dif_y = Math.abs(point.y - destPoint.point.y);
+    public void calculateHValue(MapPoint destino) {
+        int dif_x = Math.abs(point.x - destino.x);
+        int dif_y = Math.abs(point.y - destino.y);
         
         if(dif_x >= dif_y)
             this.hValue = dif_x;
         else
             this.hValue = dif_y;
         
+    }
+    
+    public void calculateValues(MapPoint destino){
+        calculateHValue(destino);
+        calculateGValue();
+        calculateFValue();
     }
 
     public int getFValue() {
@@ -65,6 +72,24 @@ public class AStarNode {
     
     public int getHValue() {
         return this.hValue;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AStarNode other = (AStarNode) obj;
+        if (!this.point.equals(other.point)) {
+            return false;
+        }
+        return true;
     }
     
 }
