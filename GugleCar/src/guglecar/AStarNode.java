@@ -6,8 +6,9 @@
 package guglecar;
 
 /**
- *
- * @author Ruben
+ * @author Rubén Mogica Garrido
+ * 
+ * Clase que contiene la estructura de un nodo del algoritmo A*
  */
 public class AStarNode {
 
@@ -15,23 +16,43 @@ public class AStarNode {
 
     public AStarNode parent;
 
-    public double gValue; //points from start
-    public double hValue; //distance from target
+    public double gValue;
+    public double hValue;
     public boolean isWall = false;
 
     private final int MOVEMENT_COST = 1;
 
+    
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * Constructor con parámetros
+     * 
+     * @param point Representa el punto del mapa del nodo
+     */
     public AStarNode(MapPoint point) {
         this.point = point;
     }
 
     /**
-     * Used for setting the starting node value to 0
+     * @author Rubén Mogica Garrido
+     * 
+     * Set del gValue
+     * 
+     * @param amount Representa el peso que se le va a asignar al gValue
      */
     public void setGValue(int amount) {
         this.gValue = amount;
     }
 
+    
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * Función que calcula el hValue
+     * 
+     * @param destPoint MapPoint que representa el punto objetivo del mapa.
+     */
     public void calculateHValue(AStarNode destPoint) {
        
         int maxValue1 = 0;
@@ -46,38 +67,28 @@ public class AStarNode {
         else{
             this.hValue = this.MOVEMENT_COST*maxValue2;
         }
-        
-        
-        //version 2
-        /*
-        double cost_diagonal = MOVEMENT_COST*1.414;
-        
-        int value1 = 0;
-        int value2 = 0;
-        float max;
-        float min;
-        value1 = (Math.abs(point.x - destPoint.point.x));
-        value2 = (Math.abs(point.y - destPoint.point.y));
-        
-        if(value1 > value2){
-            max = value1;
-            min = value2;
-        }
-        
-        else{
-            max = value2;
-            min = value1;
-        }
-        
-        this.hValue = cost_diagonal*min+MOVEMENT_COST*(max-min);
-        */
+
     }
 
+    
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * Función que transforma en un String el contenido de un objeto de la clase.
+     * 
+     * @return String con información del objeto.
+     */
     @Override
     public String toString() {
         return "AStarNode{" + "point=" + point + ", parent=" + parent + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall + ", MOVEMENT_COST=" + MOVEMENT_COST + '}';
     }
 
+    
+    /**
+    * @author Rubén Mogica Garrido
+    * 
+    * Función que calcula el gValue
+    */ 
     public void calculateGValue(AStarNode point, boolean diagonal) {
         double multiplier = 1;
         if(diagonal)
@@ -85,6 +96,13 @@ public class AStarNode {
         this.gValue = point.gValue + this.MOVEMENT_COST * multiplier;
     }
 
+    /**
+     * @author Rubén Mogica Garrido
+     * 
+     * get del fValue
+     * 
+     * @return Integer que representa al fValue
+     */
     public double getFValue() {
         return this.gValue + this.hValue;
     }

@@ -447,7 +447,8 @@ public class AgentExplorer extends Agent {
             }
             
             message.add("command", this.instructions.get(this.instructionIndex));
-            System.out.println(message.toString());
+            if(DEBUG)
+                System.out.println(message.toString());
             this.sendMessage(this.Car_ID, message.toString());
             
             this.actual_x = x;

@@ -60,11 +60,11 @@ public class AgentCar extends Agent{
     AgentScanner agentScanner;
     
     AgentID serverAgent;
-    AgentID radarAgent = new AgentID("Radsadddassaar11dsadddewddddddd1");
-    AgentID scannerAgent = new AgentID("Scandasdsndsddaeddr11ew1");
-    AgentID gpsAgent = new AgentID("Gps11dsdsaasdddddddddddewd1");
-    AgentID batteryAgent = new AgentID("Batsdasaasderida1sadewq11");
-    AgentID explorerAgent = new AgentID("Explosddassaddsaaradorewq111");
+    AgentID radarAgent = new AgentID("Radar");
+    AgentID scannerAgent = new AgentID("Scaner");
+    AgentID gpsAgent = new AgentID("Gps");
+    AgentID batteryAgent = new AgentID("Battery");
+    AgentID explorerAgent = new AgentID("Explorer");
     
     /**
     *
