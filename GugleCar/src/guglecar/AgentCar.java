@@ -40,7 +40,7 @@ public class AgentCar extends Agent{
     private static final int FINISH = 5;
     private static final int SEND_COMMAND = 6;
     
-    private static final String MAPA = "map10";
+    private static final String MAPA = "map1";
     
     private static final boolean DEBUG = true;
     
@@ -60,11 +60,11 @@ public class AgentCar extends Agent{
     AgentScanner agentScanner;
     
     AgentID serverAgent;
-    AgentID radarAgent = new AgentID("Radsaddsaar11dsadddewddddddd1");
-    AgentID scannerAgent = new AgentID("Scandsndsddaeddr11ew1");
-    AgentID gpsAgent = new AgentID("Gps11dsdsaddddddddddewd1");
-    AgentID batteryAgent = new AgentID("Batsdasaerida1sadewq11");
-    AgentID explorerAgent = new AgentID("Explosdsaddsaaradorewq111");
+    AgentID radarAgent = new AgentID("Radsadddassaar11dsadddewddddddd1");
+    AgentID scannerAgent = new AgentID("Scandasdsndsddaeddr11ew1");
+    AgentID gpsAgent = new AgentID("Gps11dsdsaasdddddddddddewd1");
+    AgentID batteryAgent = new AgentID("Batsdasaasderida1sadewq11");
+    AgentID explorerAgent = new AgentID("Explosddassaddsaaradorewq111");
     
     /**
     *

@@ -86,6 +86,8 @@ public class AStar {
                 
         openList.add(currentNode);
         
+        System.out.println("Ejecutando A* ...");
+        
         
         while(!openList.isEmpty() && !solFound) {
             
@@ -94,6 +96,7 @@ public class AStar {
 
             if (currentNode.point.equals(destino)) {
                 solFound = true;
+                System.out.println("A* Finalizado");
                 return this.calculatePath(currentNode);
             }else{
                 
@@ -158,6 +161,8 @@ public class AStar {
                             }
                         }else{
                         /*
+                           //Comentado por llenar el heap en mapas complejos
+                           
                             AStarNode old = findNode(adjNode,closedList);
                             
                             if(adjNode.getGValue() < old.getGValue()){
