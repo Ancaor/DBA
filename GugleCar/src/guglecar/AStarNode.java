@@ -15,37 +15,56 @@ public class AStarNode {
 
     public AStarNode parent;
 
-    public int gValue; //points from start
-    public int hValue; //distance from target
+    public int gValue; //Pasos dados desde el inicio
+    public int hValue; //Distancia hasta el objetivo
+    public int fValue; //Peso del nodo
     public boolean isWall = false;
 
-    private final int MOVEMENT_COST = 10;
 
     public AStarNode(MapPoint point) {
         this.point = point;
     }
 
-    /**
-     * Used for setting the starting node value to 0
-     */
+    
     public void setGValue(int amount) {
         this.gValue = amount;
     }
 
-    public void calculateHValue(AStarNode destPoint) {
-        this.hValue = (Math.abs(point.x - destPoint.point.x) + Math.abs(point.y - destPoint.point.y)) * this.MOVEMENT_COST;
-    }
-
+    
     @Override
     public String toString() {
-        return "AStarNode{" + "point=" + point + ", parent=" + parent + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall + ", MOVEMENT_COST=" + MOVEMENT_COST + '}';
+        return "AStarNode{" + "point=" + point + ", parent=" + parent.point + ", gValue=" + gValue + ", hValue=" + hValue + ", isWall=" + isWall + ", MOVEMENT_COST=}";
     }
 
+    public void calculateFValue(AStarNode point) {
+        this.fValue = this.gValue + this.hValue;
+    }
+    
     public void calculateGValue(AStarNode point) {
-        this.gValue = point.gValue + this.MOVEMENT_COST;
+        this.gValue = this.parent.getGValue() + 1;
+    }
+    
+    public void calculateHValue(AStarNode destPoint) {
+        int dif_x = Math.abs(point.x - destPoint.point.x);
+        int dif_y = Math.abs(point.y - destPoint.point.y);
+        
+        if(dif_x >= dif_y)
+            this.hValue = dif_x;
+        else
+            this.hValue = dif_y;
+        
     }
 
     public int getFValue() {
-        return this.gValue + this.hValue;
+        return this.fValue;
     }
+    
+    public int getGValue() {
+        return this.gValue;
+    }
+    
+    public int getHValue() {
+        return this.hValue;
+    }
+    
 }
