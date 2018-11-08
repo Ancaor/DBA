@@ -17,10 +17,8 @@ import java.util.Scanner;
 
 
 /**
- * 
- * @author Rubén Marín Asunción
  * @author Rubén Mogica Garrido
- * @author Antonio Camarero Ortega
+ * @author Rubén Marín Asunción
  * 
  * Clase que lleva a cabo el algoritmo del A*
  * 

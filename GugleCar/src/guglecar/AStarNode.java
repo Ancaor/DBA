@@ -6,7 +6,6 @@
 package guglecar;
 
 /**
- *
  * @author Rubén Mogica Garrido
  * 
  * Clase que contiene la estructura de un nodo del algoritmo A*

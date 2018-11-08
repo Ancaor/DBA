@@ -10,7 +10,10 @@ import es.upv.dsic.gti_ia.core.AgentsConnection;
 
 /**
  *
- * @author Anton
+ * @author Antonio Camarero Ortega
+ * 
+ * Clase con main que realiza la conexión con el servidor.
+ * 
  */
 public class GugleCar {
     
@@ -24,6 +27,8 @@ public class GugleCar {
 
 
     /**
+     * @author Antonio Camarero Ortega
+     * 
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
